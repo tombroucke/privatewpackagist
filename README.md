@@ -61,6 +61,7 @@ The repo is protected with basic authentication. You can create credentials in t
 
 # TODO
 
+-   Add more providers (PuC etc.)
 -   Schedule the update command
 -   Send notifications after new releases
 -   Exhaustive testing
