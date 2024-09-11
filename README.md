@@ -1,11 +1,17 @@
 > [!WARNING]  
 > This is an experimental project, proceed with caution
 
-This application allows you to maintain a composer repository with all your premium WordPress plugins.
+This application allows you to maintain a composer repository with all your premium WordPress plugins. It is highly inspired by https://github.com/generoi/github-action-update-plugins, You can use the same recipes mentioned in their README file.
 
 # Setup
 
 -   Set package vendor name in .env `PACKAGES_VENDOR_NAME`
+
+# Triggering package updates
+
+```bash
+php artisan app:update-packages
+```
 
 # Packages
 
@@ -31,7 +37,7 @@ This application allows you to maintain a composer repository with all your prem
     -   **Source url**: The url attached to your license
     -   **Endpoint url**: You need to find this in the plugin source code. E.g. 'https://polylang.pro'
     -   **Method**: GET or POST, currently only GET is supported. I have no idea if POST should be supported
-    -   **Changelog extract**: Regex to extract latest release changelog
+    -   **Changelog extract**: Regex to extract latest release changelog, leave empty to use fallback (Isn't used anywhere right now)
 
 # Usage
 
@@ -52,3 +58,9 @@ composer require privatewpackagist-plugin/polylang-pro
 ```
 
 The repo is protected with basic authentication. You can create credentials in the admin/tokens screen: https://example.com/tokens
+
+# TODO
+
+-   Schedule the update command
+-   Send notifications after new releases
+-   Exhaustive testing
