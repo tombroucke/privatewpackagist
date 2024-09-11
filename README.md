@@ -31,11 +31,11 @@ php artisan app:update-packages
 
 ## EDD (Easy Digital Downloads) packages
 
--   Needs a `{{PACKAGE_SLUG}}_LICENSE_KEY`env variable
+-   Needs a `{{PACKAGE_SLUG}}_LICENSE_KEY`env variable E.g. `POLYLANG_PRO_LICENSE_KEY`
 -   Required fields are
     -   **Slug**: You need to find this in the plugin / theme source code. E.g. 'Polylang Pro'
     -   **Source url**: The url attached to your license
-    -   **Endpoint url**: You need to find this in the plugin source code. E.g. 'https://polylang.pro'
+    -   **Endpoint url**: You need to find this in the plugin source code (search for `edd_action`). E.g. 'https://polylang.pro'
     -   **Method**: GET or POST, currently only GET is supported. I have no idea if POST should be supported
     -   **Changelog extract**: Regex to extract latest release changelog, leave empty to use fallback (Isn't used anywhere right now)
 
