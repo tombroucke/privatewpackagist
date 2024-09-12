@@ -45,6 +45,23 @@ php artisan app:update-packages
     -   **Method**: GET or POST, currently only GET is supported. I have no idea if POST should be supported
     -   **Changelog extract**: Regex to extract latest release changelog, leave empty to use fallback (Isn't used anywhere right now)
 
+## Gravity Forms packages
+
+-   Needs a `GRAVITYFORMS_LICENSE_KEY` env variable
+-   Required field is Gravity Forms **Slug**: gravityformsmailchimp, gravityformszapier etc.
+
+## PuC (YahnisElsts Plugin Update Checker) packages
+
+-   Needs a `{{PACKAGE_SLUG}}_LICENSE_KEY`env variable E.g. `WOO_DISCOUNT_RULES_PRO_LICENSE_KEY`
+-   Required fields are
+    -   **Slug**: You need to find this in the plugin / theme source code. E.g. 'discount-rules-v2-pro'
+    -   **Source url**: The url attached to your license
+    -   **Endpoint url**: You need to find this in the plugin source code (search for `Puc_v4_Factory::buildUpdateChecker`). E.g. 'https://my.flycart.org/'
+
+## WP Rocket packages
+
+-   Needs a `WP_ROCKET_EMAIL`, `WP_ROCKET_KEY`, `WP_ROCKET_URL` env variable.
+
 # Usage
 
 For each application, you can generate a different token.
@@ -67,7 +84,7 @@ The repo is protected with basic authentication. You can create credentials in t
 
 # TODO
 
--   Add more providers (PuC etc.)
+-   Add more updaters (NF_Extension_Updater etc.)
 -   Schedule the update command
 -   Send notifications after new releases / failed releases
 -   Exhaustive testing
