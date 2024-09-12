@@ -2,6 +2,7 @@
 
 namespace App\Updaters;
 
+use App\Exceptions\EddLicenseCheckFailedException;
 use App\Models\Package;
 use App\Models\Release;
 use Illuminate\Support\Collection;
@@ -77,7 +78,7 @@ class Edd implements Contracts\Updater
     public function update(): ?Release
     {
         if (! $this->checkLicense()) {
-            return null;
+            throw new EddLicenseCheckFailedException;
         }
 
         $response = $this->doEddAction('get_version');

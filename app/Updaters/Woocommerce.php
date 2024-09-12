@@ -2,6 +2,8 @@
 
 namespace App\Updaters;
 
+use App\Exceptions\WoocommerceProductNotFoundException;
+use App\Exceptions\WoocommerceSubscriptionNotFoundException;
 use App\Models\Package;
 use App\Models\Release;
 use Illuminate\Support\Collection;
@@ -43,23 +45,19 @@ class Woocommerce implements Contracts\Updater
     public function update(): ?Release
     {
 
-        $subscriptions = $this->doRequest(
+        $subscriptions = collect($this->doRequest(
             endpoint: 'https://woocommerce.com/wp-json/helper/1.0/subscriptions',
             method: 'GET',
-        );
+        ))
+            ->mapWithKeys(fn ($subscription) => [$subscription['zip_slug'] => $subscription]);
 
-        $subscription = array_reduce(
-            (array) $subscriptions,
-            fn ($carry, $subscription) => $subscription->zip_slug === $this->package->slug ? $subscription : $carry,
-            null
-        );
+        $subscription = $subscriptions->get($this->package->slug);
 
         if (! $subscription) {
-            echo 'Cannot find subscription'.PHP_EOL;
-            exit(1);
+            throw new WoocommerceSubscriptionNotFoundException;
         }
 
-        $productId = $subscription->product_id;
+        $productId = (int) $subscription['product_id'];
 
         $payload = [
             $productId => [
@@ -72,21 +70,27 @@ class Woocommerce implements Contracts\Updater
             'products' => $payload,
         ]);
 
-        $response = $this->doRequest(
-            endpoint: 'https://woocommerce.com/wp-json/helper/1.0/update-check',
-            method: 'POST',
-            body: $body,
-        );
-
-        $product = $response->{$productId};
-
-        if (! $product) {
-            return null;
+        $status = null;
+        while ($status !== 200) {
+            $response = $this->doRequest(
+                endpoint: 'https://woocommerce.com/wp-json/helper/1.0/update-check',
+                method: 'POST',
+                body: $body,
+            );
+            $status = $response['data']['status'] ?? 200;
+            if ($status !== 200) {
+                sleep(5);
+            }
         }
 
-        $version = $product->version;
+        $product = $response[$productId];
+        if (! $product) {
+            throw new WoocommerceProductNotFoundException;
+        }
+
+        $version = $product['version'];
         $changelog = '';
-        $downloadLink = $product->package;
+        $downloadLink = $product['package'];
 
         return $this->createRelease($version, $downloadLink, $changelog);
     }
@@ -117,6 +121,6 @@ class Woocommerce implements Contracts\Updater
             escapeshellarg($endpoint.'?'.$query),
         ));
 
-        return json_decode($response);
+        return json_decode($response, true);
     }
 }

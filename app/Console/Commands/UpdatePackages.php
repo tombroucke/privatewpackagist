@@ -34,8 +34,7 @@ class UpdatePackages extends Command
             try {
                 $package->updater()->update();
             } catch (\Exception $e) {
-                ray($e);
-                $this->error("Failed to update {$package->slug}");
+                $this->error("Failed to update {$package->slug}: {$e->getMessage()}");
             }
             $bar->advance();
         });

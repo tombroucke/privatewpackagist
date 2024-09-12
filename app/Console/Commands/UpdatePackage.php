@@ -27,10 +27,13 @@ class UpdatePackage extends Command
     {
         $slug = $this->argument('package');
         $package = \App\Models\Package::where('slug', $slug)->first();
-
         if (! $package) {
             $this->fail('Package not found');
         }
-        $package->updater()->update();
+        try {
+            $package->updater()->update();
+        } catch (\Exception $e) {
+            $this->error("Failed to update {$package->slug}: {$e->getMessage()}");
+        }
     }
 }

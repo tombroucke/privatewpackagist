@@ -2,6 +2,7 @@
 
 namespace App\Updaters;
 
+use App\Exceptions\WpmlProductNotFoundException;
 use App\Models\Package;
 use App\Models\Release;
 use Illuminate\Support\Collection;
@@ -48,7 +49,7 @@ class Wpml implements Contracts\Updater
         $product = $this->getProduct($this->package->slug);
 
         if (! $product) {
-            return null;
+            throw new WpmlProductNotFoundException;
         }
 
         $version = $product['version'];

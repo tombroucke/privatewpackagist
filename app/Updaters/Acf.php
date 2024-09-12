@@ -2,6 +2,7 @@
 
 namespace App\Updaters;
 
+use App\Exceptions\AcfFailedToGetLatestVersionException;
 use App\Models\Package;
 use App\Models\Release;
 use Illuminate\Support\Collection;
@@ -42,7 +43,7 @@ class Acf implements Contracts\Updater
         $version = $this->getLatestVersion();
 
         if (! $version) {
-            return null;
+            throw new AcfFailedToGetLatestVersionException;
         }
 
         $changelog = '';
