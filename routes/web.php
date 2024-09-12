@@ -8,7 +8,6 @@ Route::middleware(BasicAuth::class)->group(function () {
     Route::get('/repo/packages.json', PackagesJsonController::class.'@show');
 
     Route::get('/repo/{file}', function ($file) {
-
         $allowedFileTypes = ['zip'];
         $fileType = pathinfo($file, PATHINFO_EXTENSION);
         $fileTypeAllowed = in_array($fileType, $allowedFileTypes);

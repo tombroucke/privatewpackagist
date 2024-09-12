@@ -11,7 +11,9 @@ class PackagesJson
 
     private function fullPackageName(Package $package): string
     {
-        return $this->packageVendorName.'/'.$package->slug;
+        $type = str_replace('wordpress-', '', $package->type);
+
+        return $this->packageVendorName.'-'.$type.'/'.$package->slug;
     }
 
     public function regenerate(): array
@@ -24,7 +26,6 @@ class PackagesJson
                         return [$release->version => [
                             'name' => $fullPackageName,
                             'version' => $release->version,
-                            'url' => $release->url,
                             'type' => $package->type,
                             'require' => [
                                 'composer/installers' => '^1.0',
@@ -32,6 +33,7 @@ class PackagesJson
                             'dist' => [
                                 'type' => 'zip',
                                 'url' => asset('repo/'.$release->path),
+                                'shasum' => sha1_file(storage_path('app/packages/'.$release->path)),
                             ],
                         ]];
                     })
