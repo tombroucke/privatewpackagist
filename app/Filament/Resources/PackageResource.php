@@ -34,6 +34,7 @@ class PackageResource extends Resource
                         'acf' => 'ACF',
                         'gravity_forms' => 'Gravity Forms',
                         'wp_rocket' => 'WP Rocket',
+                        'puc' => 'YahnisElsts Plugin Update Checker',
                     ])
                     ->reactive()
                     ->afterStateUpdated(function (callable $set, $state) {
@@ -101,7 +102,7 @@ class PackageResource extends Resource
                             ->required(),
                     ]),
 
-                // Conditionally display fields for Woocommerce
+                // Conditionally display fields for Gravity forms
                 Forms\Components\Section::make('Gravity Forms Details')
                     ->statePath('settings')
                     ->visible(function ($get) {
@@ -110,6 +111,26 @@ class PackageResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('slug')
                             ->label('Slug')
+                            ->required(),
+                    ]),
+
+                // Conditionally display fields for PuC
+                Forms\Components\Section::make('PuC Details')
+                    ->statePath('settings')
+                    ->visible(function ($get) {
+                        return $get('updater') === 'puc';
+                    })
+                    ->schema([
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->required(),
+                        Forms\Components\TextInput::make('source_url')
+                            ->label('Source URL')
+                            ->url()
+                            ->required(),
+                        Forms\Components\TextInput::make('endpoint_url')
+                            ->label('Endpoint URL')
+                            ->url()
                             ->required(),
                     ]),
             ]);

@@ -45,7 +45,7 @@ class WpRocket implements Contracts\Updater
 
     private function userAgent()
     {
-        return sprintf('WordPress/6.0.0; %1$s;WP-Rocket|3.6.3|%2$s|%3$s|%1$s|8.2;',
+        return sprintf('WordPress/6.6.2; %1$s;WP-Rocket|3.6.3|%2$s|%3$s|%1$s|8.2;',
             getenv('WP_ROCKET_URL'),
             getenv('WP_ROCKET_KEY'),
             getenv('WP_ROCKET_EMAIL'),
