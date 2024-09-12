@@ -84,7 +84,7 @@ class Woocommerce implements Contracts\Updater
                 body: $body,
             );
 
-            $limitReached = $response['code']['wccom_rest_limit_reached'] ?? false;
+            $limitReached = ($response['code'] ?? false) === 'wccom_rest_limit_reached';
             if ($limitReached) {
                 throw new WoocommerceApiRestLimitReachedException;
             }
