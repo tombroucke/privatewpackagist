@@ -2,6 +2,7 @@
 
 namespace App\Updaters;
 
+use App\Exceptions\WoocommerceApiNotRespondingException;
 use App\Exceptions\WoocommerceProductNotFoundException;
 use App\Exceptions\WoocommerceSubscriptionNotFoundException;
 use App\Models\Package;
@@ -71,7 +72,11 @@ class Woocommerce implements Contracts\Updater
         ]);
 
         $status = null;
+        $iterations = 0;
         while ($status !== 200) {
+            if ($iterations++ > 5) {
+                throw new WoocommerceApiNotRespondingException;
+            }
             $response = $this->doRequest(
                 endpoint: 'https://woocommerce.com/wp-json/helper/1.0/update-check',
                 method: 'POST',
@@ -79,7 +84,7 @@ class Woocommerce implements Contracts\Updater
             );
             $status = $response['data']['status'] ?? 200;
             if ($status !== 200) {
-                sleep(5);
+                sleep(3);
             }
         }
 
