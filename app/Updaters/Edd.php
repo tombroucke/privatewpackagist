@@ -89,7 +89,7 @@ class Edd implements Contracts\Updater
         $response = $this->doEddAction('get_version');
 
         $version = $response['new_version'];
-        $sections = unserialize($response['sections']);
+        $sections = @unserialize($response['sections']);
 
         $pattern = $this->package->settings['changelog_extract'] ?? '\*\*(\d+\.\d+\.\d+) \((.*?)\)\*\*\n(.*?)\n\n';
 
