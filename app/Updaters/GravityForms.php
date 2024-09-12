@@ -16,7 +16,6 @@ class GravityForms implements Contracts\Updater
     use Concerns\ExtractsChangelog;
 
     const ENV_VARIABLES = [
-        'LICENSE_KEY',
     ];
 
     public function __construct(private Package $package) {}
@@ -33,12 +32,11 @@ class GravityForms implements Contracts\Updater
     {
         $errors = new Collection;
 
-        return $errors;
-    }
+        if (! env('GRAVITYFORMS_LICENSE_KEY')) {
+            $errors->push('GRAVITYFORMS_LICENSE_KEY is required');
+        }
 
-    private function licenseKey(): string
-    {
-        return $this->package->environmentVariable('LICENSE_KEY');
+        return $errors;
     }
 
     public function update(): ?Release
@@ -46,7 +44,7 @@ class GravityForms implements Contracts\Updater
         $url = sprintf(
             'https://gravityapi.com/wp-content/plugins/gravitymanager/api.php?op=get_plugin&slug=%s&key=%s',
             $this->package->settings['slug'],
-            $this->licenseKey(),
+            getenv('GRAVITYFORMS_LICENSE_KEY'),
         );
 
         $response = Http::get($url);
