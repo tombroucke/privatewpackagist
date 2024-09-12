@@ -10,8 +10,8 @@ use Illuminate\Support\Str;
 
 class Edd implements Contracts\Updater
 {
+    use Concerns\CreatesRelease;
     use Concerns\ExtractsChangelog;
-    use Concerns\StoresDownload;
 
     const ENV_VARIABLES = [
         'LICENSE_KEY',
@@ -74,7 +74,7 @@ class Edd implements Contracts\Updater
         return json_decode($body, true);
     }
 
-    public function createRelease(): ?Release
+    public function update(): ?Release
     {
         if (! $this->checkLicense()) {
             return null;
@@ -89,17 +89,7 @@ class Edd implements Contracts\Updater
 
         $changelog = $this->extractLatestChangelog($sections['changelog'] ?? '', $pattern);
         $downloadLink = $response['download_link'];
-        $existingRelease = $this->package->releases()->where('version', $version)->first();
-        if ($existingRelease) {
-            return $existingRelease;
-        }
 
-        $filePath = $this->storeDownload($this->package, $downloadLink, $version);
-
-        return $this->package->releases()->create([
-            'version' => $version,
-            'changelog' => $changelog,
-            'path' => $filePath,
-        ]);
+        return $this->createRelease($version, $downloadLink, $changelog);
     }
 }

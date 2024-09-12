@@ -3,8 +3,14 @@
 
 This application allows you to maintain a composer repository with all your premium WordPress plugins. It is highly inspired by https://github.com/generoi/github-action-update-plugins, You can use the same recipes mentioned in their README file.
 
+# Installation
+
+-   Clone this repo `git clone git@github.com:tombroucke/privatewpackagist.git`
+-   Install dependencies `composer install`
+
 # Setup
 
+-   Add a filament user `php artisan make:filament-user`
 -   Set package vendor name in .env `PACKAGES_VENDOR_NAME`
 
 # Triggering package updates
@@ -63,5 +69,5 @@ The repo is protected with basic authentication. You can create credentials in t
 
 -   Add more providers (PuC etc.)
 -   Schedule the update command
--   Send notifications after new releases
+-   Send notifications after new releases / failed releases
 -   Exhaustive testing

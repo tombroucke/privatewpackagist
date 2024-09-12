@@ -9,8 +9,8 @@ use Illuminate\Support\Str;
 
 class Woocommerce implements Contracts\Updater
 {
+    use Concerns\CreatesRelease;
     use Concerns\ExtractsChangelog;
-    use Concerns\StoresDownload;
 
     const ENV_VARIABLES = [
     ];
@@ -40,7 +40,7 @@ class Woocommerce implements Contracts\Updater
         return $errors;
     }
 
-    public function createRelease(): ?Release
+    public function update(): ?Release
     {
 
         $subscriptions = $this->doRequest(
@@ -88,18 +88,7 @@ class Woocommerce implements Contracts\Updater
         $changelog = '';
         $downloadLink = $product->package;
 
-        $existingRelease = $this->package->releases()->where('version', $version)->first();
-        if ($existingRelease) {
-            return $existingRelease;
-        }
-
-        $filePath = $this->storeDownload($this->package, $downloadLink, $version);
-
-        return $this->package->releases()->create([
-            'version' => $version,
-            'changelog' => $changelog,
-            'path' => $filePath,
-        ]);
+        return $this->createRelease($version, $downloadLink, $changelog);
     }
 
     public function doRequest(string $endpoint, string $method = 'GET', ?string $body = null)

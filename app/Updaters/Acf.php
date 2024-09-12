@@ -10,8 +10,8 @@ use Illuminate\Support\Str;
 
 class Acf implements Contracts\Updater
 {
+    use Concerns\CreatesRelease;
     use Concerns\ExtractsChangelog;
-    use Concerns\StoresDownload;
 
     const ENV_VARIABLES = [
     ];
@@ -37,7 +37,7 @@ class Acf implements Contracts\Updater
         return $errors;
     }
 
-    public function createRelease(): ?Release
+    public function update(): ?Release
     {
         $version = $this->getLatestVersion();
 
@@ -52,18 +52,7 @@ class Acf implements Contracts\Updater
             getenv('ACF_LICENSE_KEY'),
         );
 
-        $existingRelease = $this->package->releases()->where('version', $version)->first();
-        if ($existingRelease) {
-            return $existingRelease;
-        }
-
-        $filePath = $this->storeDownload($this->package, $downloadLink, $version);
-
-        return $this->package->releases()->create([
-            'version' => $version,
-            'changelog' => $changelog,
-            'path' => $filePath,
-        ]);
+        return $this->createRelease($version, $downloadLink, $changelog);
     }
 
     private function getLatestVersion()

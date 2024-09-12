@@ -13,5 +13,5 @@ interface Updater
 
     public function fetchTitle(): string;
 
-    public function createRelease(): ?Release;
+    public function update(): ?Release;
 }

@@ -10,8 +10,8 @@ use Illuminate\Support\Str;
 
 class Wpml implements Contracts\Updater
 {
+    use Concerns\CreatesRelease;
     use Concerns\ExtractsChangelog;
-    use Concerns\StoresDownload;
 
     const ENV_VARIABLES = [
     ];
@@ -43,7 +43,7 @@ class Wpml implements Contracts\Updater
         return $errors;
     }
 
-    public function createRelease(): ?Release
+    public function update(): ?Release
     {
         $product = $this->getProduct($this->package->slug);
 
@@ -59,18 +59,7 @@ class Wpml implements Contracts\Updater
             getenv('WPML_LICENSE_KEY'),
         );
 
-        $existingRelease = $this->package->releases()->where('version', $version)->first();
-        if ($existingRelease) {
-            return $existingRelease;
-        }
-
-        $filePath = $this->storeDownload($this->package, $downloadLink, $version);
-
-        return $this->package->releases()->create([
-            'version' => $version,
-            'changelog' => $changelog,
-            'path' => $filePath,
-        ]);
+        return $this->createRelease($version, $downloadLink, $changelog);
     }
 
     private function getProduct($slug)

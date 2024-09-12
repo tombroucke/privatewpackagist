@@ -31,6 +31,6 @@ class UpdatePackage extends Command
         if (! $package) {
             $this->fail('Package not found');
         }
-        $package->updater()->createRelease();
+        $package->updater()->update();
     }
 }
