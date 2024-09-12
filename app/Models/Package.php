@@ -22,7 +22,7 @@ class Package extends Model
     public function updater(): Updater
     {
         $updater = $this->updater;
-        $pascalCaseUpdater = str_replace(' ', '', ucwords(str_replace('-', ' ', $updater)));
+        $pascalCaseUpdater = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $updater)));
         $updaterClass = "App\\Updaters\\{$pascalCaseUpdater}";
 
         return new $updaterClass($this);

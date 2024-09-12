@@ -32,6 +32,7 @@ class PackageResource extends Resource
                         'wpml' => 'WPML',
                         'woocommerce' => 'WooCommerce',
                         'acf' => 'ACF',
+                        'gravity_forms' => 'Gravity Forms',
                     ])
                     ->reactive()
                     ->afterStateUpdated(function (callable $set, $state) {
@@ -75,7 +76,7 @@ class PackageResource extends Resource
                             ->helperText('Regular expression to extract changelog'),
                     ]),
 
-                // Conditionally display fields for Direct
+                // Conditionally display fields for WPML
                 Forms\Components\Section::make('WPML Details')
                     ->statePath('settings')
                     ->visible(function ($get) {
@@ -87,11 +88,23 @@ class PackageResource extends Resource
                             ->required(),
                     ]),
 
-                // Conditionally display fields for Direct
+                // Conditionally display fields for Woocommerce
                 Forms\Components\Section::make('Woocommerce Details')
                     ->statePath('settings')
                     ->visible(function ($get) {
                         return $get('updater') === 'woocommerce';
+                    })
+                    ->schema([
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->required(),
+                    ]),
+
+                // Conditionally display fields for Woocommerce
+                Forms\Components\Section::make('Gravity Forms Details')
+                    ->statePath('settings')
+                    ->visible(function ($get) {
+                        return $get('updater') === 'gravity_forms';
                     })
                     ->schema([
                         Forms\Components\TextInput::make('slug')

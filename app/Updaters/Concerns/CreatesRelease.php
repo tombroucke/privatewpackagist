@@ -2,6 +2,8 @@
 
 namespace App\Updaters\Concerns;
 
+use App\Exceptions\DownloadLinkNotSetException;
+use App\Exceptions\VersionNotSetException;
 use App\Models\Release;
 use Illuminate\Support\Facades\Http;
 
@@ -9,6 +11,15 @@ trait CreatesRelease
 {
     public function createRelease(string $version, string $downloadLink, string $changelog): ?Release
     {
+
+        if ($version === null || $version === '') {
+            throw new VersionNotSetException;
+        }
+
+        if ($downloadLink === null || $downloadLink === '') {
+            throw new DownloadLinkNotSetException;
+        }
+
         $existingRelease = $this->package->releases()->where('version', $version)->first();
         if ($existingRelease) {
             return $existingRelease;
