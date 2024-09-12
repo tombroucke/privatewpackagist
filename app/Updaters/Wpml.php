@@ -55,10 +55,12 @@ class Wpml implements Contracts\Updater
         $version = $product['version'];
         $changelog = $this->extractLatestChangelog($product['changelog'] ?? '', '#### (\d+\.\d+\.\d+)(?:\s*\n\n)?(.*?)(?=\n\n#### \d+\.\d+\.\d+|$)');
         $downloadLink = sprintf(
-            $product['url'].'&user_id=&s&subscription_key=%s',
+            $product['url'].'&user_id=%s&subscription_key=%s',
             getenv('WPML_USER_ID'),
             getenv('WPML_LICENSE_KEY'),
         );
+
+        ray($downloadLink);
 
         return $this->createRelease($version, $downloadLink, $changelog);
     }
@@ -69,7 +71,6 @@ class Wpml implements Contracts\Updater
         $body = $response->body();
 
         $products = json_decode($body, true);
-
         if (! is_array($products) || ! isset($products['downloads']['plugins'])) {
             return null;
         }
