@@ -3,6 +3,7 @@
 namespace App\Updaters;
 
 use App\Exceptions\WoocommerceApiNotRespondingException;
+use App\Exceptions\WoocommerceApiRestLimitReachedException;
 use App\Exceptions\WoocommerceProductNotFoundException;
 use App\Exceptions\WoocommerceSubscriptionNotFoundException;
 use App\Models\Package;
@@ -82,6 +83,12 @@ class Woocommerce implements Contracts\Updater
                 method: 'POST',
                 body: $body,
             );
+
+            $limitReached = $response['code']['wccom_rest_limit_reached'] ?? false;
+            if ($limitReached) {
+                throw new WoocommerceApiRestLimitReachedException;
+            }
+
             $status = $response['data']['status'] ?? 200;
             if ($status !== 200) {
                 sleep(3);
