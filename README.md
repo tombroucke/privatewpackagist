@@ -55,7 +55,7 @@ Add the repository to your `composer.json` file (replace `privatewpackagist` wit
 {
     "type": "composer",
     "url": "https://example.com/repo",
-    "only": ["privatewpackagist/*"]
+    "only": ["privatewpackagist-plugin/*", "privatewpackagist-theme/*"]
 },
 ```
 
