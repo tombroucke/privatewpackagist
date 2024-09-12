@@ -18,16 +18,23 @@ class Edd implements Contracts\Updater
         'LICENSE_KEY',
     ];
 
-    public function __construct(private Package $package) {}
+    private bool $skipLicenseCheck = false;
+
+    public function __construct(private Package $package)
+    {
+        $this->skipLicenseCheck = isset($this->package->settings['skip_license_check']) && $this->package->settings['skip_license_check'];
+    }
 
     public function fetchTitle(): string
     {
         $response = $this->doEddAction('check_license');
 
-        return strip_tags($response['item_name']) ?? Str::of($this->package->slug)
+        $name = $response['item_name'] ?? $response['name'] ?? Str::of($this->package->slug)
             ->title()
             ->replace('-', ' ')
             ->__toString();
+
+        return strip_tags($name);
     }
 
     public function validationErrors(): Collection
@@ -35,8 +42,7 @@ class Edd implements Contracts\Updater
         $errors = new Collection;
 
         $this->activateLicense();
-
-        if (! $this->checkLicense()) {
+        if (! $this->skipLicenseCheck && ! $this->checkLicense()) {
             $errors->push('Invalid license');
         }
 
@@ -51,14 +57,13 @@ class Edd implements Contracts\Updater
     private function activateLicense(): void
     {
         $this->doEddAction('activate_license');
-
     }
 
     private function checkLicense(): bool
     {
         $response = $this->doEddAction('check_license');
 
-        return $response['license'] === 'valid';
+        return isset($response['license']) && $response['license'] === 'valid';
     }
 
     private function doEddAction(string $action): array
@@ -77,7 +82,7 @@ class Edd implements Contracts\Updater
 
     public function update(): ?Release
     {
-        if (! $this->checkLicense()) {
+        if (! $this->skipLicenseCheck && ! $this->checkLicense()) {
             throw new EddLicenseCheckFailedException;
         }
 

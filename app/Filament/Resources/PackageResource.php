@@ -76,6 +76,9 @@ class PackageResource extends Resource
                         Forms\Components\TextInput::make('changelog_extract')
                             ->label('Changelog extract')
                             ->helperText('Regular expression to extract changelog'),
+                        Forms\Components\Checkbox::make('skip_license_check')
+                            ->label('Skip license check')
+                            ->helperText('Some plugins like WP All Import does not return a valid license key. Only tick this box if you get a \'403 Invalid license\' error'),
                     ]),
 
                 // Conditionally display fields for WPML
