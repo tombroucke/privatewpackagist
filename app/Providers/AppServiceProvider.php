@@ -6,6 +6,7 @@ use App\Models\Package;
 use App\Models\Release;
 use App\Observers\PackageObserver;
 use App\Observers\ReleaseObserver;
+use App\PackagesJson;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +14,12 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
-    public function register(): void {}
+    public function register(): void
+    {
+        $this->app->singleton(PackagesJson::class, function ($app) {
+            return new PackagesJson(config('app.packages_vendor_name'));
+        });
+    }
 
     /**
      * Bootstrap any application services.

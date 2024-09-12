@@ -12,7 +12,7 @@ class PackagesJsonController extends Controller
         $json = Cache::store('database')->get('packages.json');
 
         if (! $json) {
-            $json = PackagesJson::regenerate();
+            $json = app()->make(PackagesJson::class)->regenerate();
         }
 
         return response()->json($json);

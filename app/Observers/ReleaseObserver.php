@@ -12,7 +12,7 @@ class ReleaseObserver
      */
     public function created(Release $release): void
     {
-        PackagesJson::regenerate();
+        $this->regeneratePackagesJson();
     }
 
     /**
@@ -20,7 +20,7 @@ class ReleaseObserver
      */
     public function updated(Release $release): void
     {
-        PackagesJson::regenerate();
+        $this->regeneratePackagesJson();
     }
 
     /**
@@ -28,7 +28,7 @@ class ReleaseObserver
      */
     public function deleted(Release $release): void
     {
-        PackagesJson::regenerate();
+        $this->regeneratePackagesJson();
     }
 
     /**
@@ -36,7 +36,7 @@ class ReleaseObserver
      */
     public function restored(Release $release): void
     {
-        PackagesJson::regenerate();
+        $this->regeneratePackagesJson();
     }
 
     /**
@@ -44,6 +44,11 @@ class ReleaseObserver
      */
     public function forceDeleted(Release $release): void
     {
-        PackagesJson::regenerate();
+        $this->regeneratePackagesJson();
+    }
+
+    private function regeneratePackagesJson(): void
+    {
+        app()->make(PackagesJson::class)->regenerate();
     }
 }

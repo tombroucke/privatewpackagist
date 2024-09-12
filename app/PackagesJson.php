@@ -7,32 +7,42 @@ use Illuminate\Support\Facades\Cache;
 
 class PackagesJson
 {
-    public static function regenerate(): array
+    public function __construct(private string $packageVendorName) {}
+
+    private function fullPackageName(Package $package): string
+    {
+        return $this->packageVendorName.'/'.$package->slug;
+    }
+
+    public function regenerate(): array
     {
         $packages = Package::all()
             ->mapWithKeys(function ($package) {
-                $packageVendorName = config('app.packages_vendor_name').'/'.$package->slug;
-                $releases = $package->releases->mapwithKeys(function ($release) use ($package) {
-                    return [$release->version => [
-                        'name' => config('app.packages_vendor_name').'/'.$package->slug,
-                        'version' => $release->version,
-                        'url' => $release->url,
-                        'type' => $package->type,
-                        'require' => [
-                            'composer/installers' => '^1.0',
-                        ],
-                        'dist' => [
-                            'type' => 'zip',
-                            'url' => asset('repo/'.$release->path),
-                        ],
-                    ]];
-                });
+                $fullPackageName = $this->fullPackageName($package);
+                $releases = $package->releases
+                    ->mapwithKeys(function ($release) use ($package, $fullPackageName) {
+                        return [$release->version => [
+                            'name' => $fullPackageName,
+                            'version' => $release->version,
+                            'url' => $release->url,
+                            'type' => $package->type,
+                            'require' => [
+                                'composer/installers' => '^1.0',
+                            ],
+                            'dist' => [
+                                'type' => 'zip',
+                                'url' => asset('repo/'.$release->path),
+                            ],
+                        ]];
+                    })
+                    ->sortKeysDesc();
 
-                return [$packageVendorName => $releases];
+                return [$fullPackageName => $releases];
             })
             ->reject(function ($package) {
                 return $package->isEmpty();
-            });
+            })
+            ->sortKeys();
 
         $output = [
             'packages' => $packages->toArray(),
