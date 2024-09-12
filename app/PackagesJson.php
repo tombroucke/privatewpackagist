@@ -28,7 +28,7 @@ class PackagesJson
                             'version' => $release->version,
                             'type' => $package->type,
                             'require' => [
-                                'composer/installers' => '^1.0',
+                                'composer/installers' => '^1.0 || ^2.0',
                             ],
                             'dist' => [
                                 'type' => 'zip',
