@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Updaters\Contracts\Updater;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class Package extends Model
 {
@@ -31,7 +33,14 @@ class Package extends Model
         return $this->hasMany(Release::class);
     }
 
-    public function prefixedVariable($variable): string
+    protected function slug(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => Str::slug($value),
+        );
+    }
+
+    public function prefixedEnvironmentVariable($variable): string
     {
         return str_replace('-', '_', strtoupper($this->slug)).'_'.$variable;
     }
@@ -41,7 +50,7 @@ class Package extends Model
         $updater = $this->updater();
 
         return collect($updater::ENV_VARIABLES)
-            ->mapWithKeys(fn ($variable) => ["{$variable}" => getenv($this->prefixedVariable($variable))]);
+            ->mapWithKeys(fn ($variable) => ["{$variable}" => getenv($this->prefixedEnvironmentVariable($variable))]);
     }
 
     public function environmentVariable(string $variable): string

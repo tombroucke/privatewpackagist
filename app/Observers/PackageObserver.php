@@ -38,7 +38,7 @@ class PackageObserver
             ->environmentVariables()
             ->each(function ($value, $key) use ($errors, $package) {
                 if (empty($value)) {
-                    $errors->push("{$package->prefixedVariable($key)} is required");
+                    $errors->push("{$package->prefixedEnvironmentVariable($key)} is required");
                 }
             });
 
