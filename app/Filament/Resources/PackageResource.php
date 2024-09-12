@@ -33,6 +33,7 @@ class PackageResource extends Resource
                         'woocommerce' => 'WooCommerce',
                         'acf' => 'ACF',
                         'gravity_forms' => 'Gravity Forms',
+                        'wp_rocket' => 'WP Rocket',
                     ])
                     ->reactive()
                     ->afterStateUpdated(function (callable $set, $state) {

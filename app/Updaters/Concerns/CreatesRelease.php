@@ -2,6 +2,7 @@
 
 namespace App\Updaters\Concerns;
 
+use App\Exceptions\CouldNotDownloadPackageException;
 use App\Exceptions\DownloadLinkNotSetException;
 use App\Exceptions\VersionNotSetException;
 use App\Models\Release;
@@ -27,6 +28,10 @@ trait CreatesRelease
 
         $filePath = $this->storeDownload($downloadLink, $version);
 
+        if ($filePath === null) {
+            throw new CouldNotDownloadPackageException($downloadLink);
+        }
+
         return $this->package->releases()->create([
             'version' => $version,
             'changelog' => $changelog,
@@ -36,7 +41,7 @@ trait CreatesRelease
 
     public function storeDownload(string $link, string $version): ?string
     {
-        $zip = Http::get($link)->body();
+        $zip = $this->fetchZip($link);
 
         $type = str_replace('wordpress-', '', $this->package->type);
 
@@ -53,5 +58,10 @@ trait CreatesRelease
         }
 
         return $path;
+    }
+
+    public function fetchZip(string $link): string
+    {
+        return Http::get($link)->body();
     }
 }
