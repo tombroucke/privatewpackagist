@@ -58,19 +58,19 @@ class Package extends Model
         return $this->environmentVariables()[$variable] ?? null;
     }
 
-    public function getLatestRelease()
+    public function getLatestRelease(): ?Release
     {
         return $this->releases()->latest()->first();
     }
 
-    public function getLatestReleaseAttribute()
+    public function getLatestReleaseAttribute(): ?string
     {
-        return $this->getLatestRelease()->created_at;
+        return $this->getLatestRelease()->created_at ?? null;
     }
 
-    public function getLatestVersionAttribute()
+    public function getLatestVersionAttribute(): ?string
     {
-        return $this->getLatestRelease()->version;
+        return $this->getLatestRelease()->version ?? null;
     }
 
     public function vendoredName(): string
