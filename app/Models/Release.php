@@ -15,4 +15,9 @@ class Release extends Model
     {
         return $this->belongsTo(Package::class);
     }
+
+    public function isLatest()
+    {
+        return $this->package->getLatestRelease()->is($this);
+    }
 }

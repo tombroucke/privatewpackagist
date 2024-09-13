@@ -58,13 +58,18 @@ class Package extends Model
         return $this->environmentVariables()[$variable] ?? null;
     }
 
+    public function getLatestRelease()
+    {
+        return $this->releases()->latest()->first();
+    }
+
     public function getLatestReleaseAttribute()
     {
-        return $this->releases()->latest()->first()->created_at;
+        return $this->getLatestRelease()->created_at;
     }
 
     public function getLatestVersionAttribute()
     {
-        return $this->releases()->latest()->first()->version;
+        return $this->getLatestRelease()->version;
     }
 }

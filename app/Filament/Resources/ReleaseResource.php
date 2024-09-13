@@ -36,13 +36,16 @@ class ReleaseResource extends Resource
                 Tables\Columns\TextColumn::make('package.name')
                     ->label('Package')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->size(\Filament\Tables\Columns\TextColumn\TextColumnSize::ExtraSmall),
                 Tables\Columns\TextColumn::make('package.slug')
                     ->label('Package Slug')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('version')
-                    ->searchable(),
+                    ->searchable()
+                    ->badge()
+                    ->color(fn ($record) => $record->isLatest() ? 'success' : 'warning'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Released')
                     ->dateTime(config('app.date_time_format'))
