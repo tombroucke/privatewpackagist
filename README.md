@@ -97,6 +97,12 @@ php artisan app:update-packages
 
 -   Needs a `WP_ROCKET_EMAIL`, `WP_ROCKET_KEY`, `WP_ROCKET_URL` environment variable.
 
+## Direct packages
+
+Packages with direct links E.g. Revolution Slider, WPBakery Visual Composer
+
+-   You can add environment variable in the name. Note that the variable needs to be prefixed with the plugin name
+
 # Usage
 
 https://example.com/repo/packages.json and all the packages are protected with basic authentication. You can create credentials in the admin/tokens screen: https://example.com/tokens\
@@ -691,6 +697,34 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 	endpoint_url: https://update.wpallimport.com/check_version,
 	method: GET,
 	skip_license_check: true
+}
+```
+
+</details>
+
+<details>
+<summary>WPBakery Page Builder</summary>
+
+**type:** direct\
+**slug:** js-composer
+
+```
+{
+	url: https://support.wpbakery.coms/updates/download-link?product=vc&url=https://examplke.com&key=${{ JS_COMPOSER_LICENSE_KEY }}
+}
+```
+
+</details>
+
+<details>
+<summary>Revolution slider</summary>
+
+**type:** direct\
+**slug:** revslider
+
+```
+{
+	url: https://updates.themepunch-ext-a.tools/revslider/download.php?code=${{ REVSLIDER_LICENSE_KEY }}
 }
 ```
 

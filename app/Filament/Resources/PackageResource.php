@@ -36,6 +36,7 @@ class PackageResource extends Resource
                         'gravity_forms' => 'Gravity Forms',
                         'wp_rocket' => 'WP Rocket',
                         'puc' => 'YahnisElsts Plugin Update Checker',
+                        'direct' => 'Direct',
                     ])
                     ->reactive()
                     ->afterStateUpdated(function (callable $set, $state) {
@@ -137,6 +138,19 @@ class PackageResource extends Resource
                             ->url()
                             ->required(),
                     ]),
+
+                // Conditionally display fields for Gravity forms
+                Forms\Components\Section::make('Direct Details')
+                    ->statePath('settings')
+                    ->visible(function ($get) {
+                        return $get('updater') === 'direct';
+                    })
+                    ->schema([
+                        Forms\Components\TextInput::make('url')
+                            ->label('Url')
+                            ->required()
+                            ->helperText('The direct link to the package. You can use ${{ YOUR_VAR }} as a placeholder for environment variables. Note that the environment variables must be prefixed with the package prefix.'),
+                    ]),
             ]);
     }
 
@@ -184,6 +198,7 @@ class PackageResource extends Resource
                         'gravity_forms' => 'Gravity Forms',
                         'wp_rocket' => 'WP Rocket',
                         'puc' => 'YahnisElsts Plugin Update Checker',
+                        'direct' => 'Direct',
                     ]),
             ])
             ->actions([

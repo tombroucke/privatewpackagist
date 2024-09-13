@@ -40,9 +40,14 @@ class Package extends Model
         );
     }
 
+    public function prefix(): string
+    {
+        return str_replace('-', '_', strtoupper($this->slug)).'_';
+    }
+
     public function prefixedEnvironmentVariable($variable): string
     {
-        return str_replace('-', '_', strtoupper($this->slug)).'_'.$variable;
+        return $this->prefix().$variable;
     }
 
     public function environmentVariables(): Collection
