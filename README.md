@@ -5,33 +5,34 @@ This application allows you to maintain a composer repository with all your prem
 
 # Installation
 
-1. Clone this repo
+1. **Clone this repo**
 
 ```
 git clone git@github.com:tombroucke/privatewpackagist.git
 ```
 
-2. Install dependencies
+2. **Install dependencies**
 
 ```
 composer install
 ```
 
-3. Duplicate .env.example to .env & set `APP_NAME`, `APP_URL`, `PACKAGES_VENDOR_NAME` and database credentials
+3. **Create .env**\
+   Duplicate .env.example to .env & set `APP_NAME`, `APP_URL`, `PACKAGES_VENDOR_NAME` and database credentials
 
-4. Generate encryption key
+4. **Generate encryption key**
 
 ```
 php artisan key:generate
 ```
 
-5. Run migrations
+5. **Run migrations**
 
 ```
 php artisan migrate
 ```
 
-5.  Add a filament user
+6.  **Add a filament user**
 
 ```
 php artisan make:filament-user
