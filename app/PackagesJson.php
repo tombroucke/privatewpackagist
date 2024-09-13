@@ -50,7 +50,7 @@ class PackagesJson
             'packages' => $packages->toArray(),
         ];
 
-        Cache::store('database')->put('packages.json', $output);
+        Cache::put('packages.json', $output);
 
         return $output;
     }
