@@ -13,9 +13,18 @@ This application allows you to maintain a composer repository with all your prem
 -   Add a filament user `php artisan make:filament-user`
 -   Set package vendor name in .env `PACKAGES_VENDOR_NAME`
 
-# Triggering package updates
+# Schedule package updates
+
+To schedule package updates (every 6 hours), you need to add this cron job:
+
+```
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+# Manually triggering package updates
 
 ```bash
+php artisan app:update-package package-slug
 php artisan app:update-packages
 ```
 
@@ -85,6 +94,5 @@ The repo is protected with basic authentication. You can create credentials in t
 # TODO
 
 -   Add more updaters (NF_Extension_Updater etc.)
--   Schedule the update command
 -   Send notifications after new releases / failed releases
 -   Exhaustive testing
