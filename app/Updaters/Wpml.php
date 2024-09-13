@@ -60,8 +60,6 @@ class Wpml implements Contracts\Updater
             getenv('WPML_LICENSE_KEY'),
         );
 
-        ray($downloadLink);
-
         return $this->createRelease($version, $downloadLink, $changelog);
     }
 
