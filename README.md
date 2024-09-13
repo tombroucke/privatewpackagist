@@ -710,7 +710,7 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 
 ```
 {
-	url: https://support.wpbakery.coms/updates/download-link?product=vc&url=https://examplke.com&key=${{ JS_COMPOSER_LICENSE_KEY }}
+	url: https://support.wpbakery.com/updates/download-link?product=vc&url=https://example.com&key=${{ JS_COMPOSER_LICENSE_KEY }}
 }
 ```
 
