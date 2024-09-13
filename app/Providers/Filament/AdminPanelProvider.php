@@ -45,9 +45,7 @@ class AdminPanelProvider extends PanelProvider
                     ->enableTwoFactorAuthentication(
                         force: true,
                     )
-                    ->enableSanctumTokens(
-                        permissions: ['create', 'view'] // optional, customize the permissions (default = ["create", "view", "update", "delete"])
-                    )
+                    ->enableSanctumTokens()
                     ->myProfile(
                         shouldRegisterUserMenu: true,
                         shouldRegisterNavigation: true,
