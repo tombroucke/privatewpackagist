@@ -698,7 +698,7 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 
 # TODO
 
--   Add more updaters (NF_Extension_Updater etc.)
+-   Add more updaters
 -   Send notifications after new releases / failed releases
 -   Check mime-type application/zip for downloaded packages before creating release
 -   Exhaustive testing
