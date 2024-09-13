@@ -47,6 +47,7 @@ class ReleaseResource extends Resource
                     ->label('Package'),
             ])
             ->actions([
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

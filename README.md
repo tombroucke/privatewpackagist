@@ -5,13 +5,31 @@ This application allows you to maintain a composer repository with all your prem
 
 # Installation
 
--   Clone this repo `git clone git@github.com:tombroucke/privatewpackagist.git`
--   Install dependencies `composer install`
+Clone this repo
+
+```
+git clone git@github.com:tombroucke/privatewpackagist.git
+```
+
+Install dependencies
+
+```
+composer install
+```
 
 # Setup
 
--   Add a filament user `php artisan make:filament-user`
--   Set package vendor name in .env `PACKAGES_VENDOR_NAME`
+-   Add a filament user
+
+```
+php artisan make:filament-user
+```
+
+-   Set package vendor name in .env
+
+```
+PACKAGES_VENDOR_NAME
+```
 
 # Schedule package updates
 
