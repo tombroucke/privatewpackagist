@@ -152,10 +152,8 @@ class PackageResource extends Resource
                 Tables\Columns\TextColumn::make('updater')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('latest_release')
-                    ->searchable()
                     ->dateTime(config('app.date_time_format')),
                 Tables\Columns\TextColumn::make('latest_version')
-                    ->searchable()
                     ->badge()
                     ->color('success'),
             ])
