@@ -40,6 +40,10 @@ class WpRocket implements Contracts\Updater
             $errors->push('WP_ROCKET_EMAIL is required');
         }
 
+        if (! env('WP_ROCKET_URL')) {
+            $errors->push('WP_ROCKET_URL is required');
+        }
+
         return $errors;
     }
 

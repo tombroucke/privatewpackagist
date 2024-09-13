@@ -60,7 +60,7 @@ php artisan app:update-packages
 
 ## WP Rocket packages
 
--   Needs a `WP_ROCKET_EMAIL`, `WP_ROCKET_KEY`, `WP_ROCKET_URL` env variable.
+-   Needs a `WP_ROCKET_EMAIL`, `WP_ROCKET_KEY`, `WP_ROCKET_URL` environment variable.
 
 # Usage
 
