@@ -52,7 +52,7 @@ class Puc implements Contracts\Updater
     {
         $licenseCheck = $this->doWpAction('licensecheck');
 
-        if ($licenseCheck['license_check'] !== true) {
+        if (($licenseCheck['license_check'] ?? true) !== true) {
             throw new PucLicenceCheckFailed;
         }
 
