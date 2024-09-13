@@ -14,7 +14,7 @@ git clone git@github.com:tombroucke/privatewpackagist.git
 2. **Install dependencies**
 
 ```
-composer install
+composer install --optimize-autoloader --no-dev
 ```
 
 3. **Create .env**\
