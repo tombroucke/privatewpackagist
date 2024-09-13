@@ -700,6 +700,5 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 
 -   Add more updaters (NF_Extension_Updater etc.)
 -   Send notifications after new releases / failed releases
--   Remove zip when removing release
 -   Check mime-type application/zip for downloaded packages before creating release
 -   Exhaustive testing
