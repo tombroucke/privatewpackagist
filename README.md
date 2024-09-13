@@ -1,6 +1,3 @@
-> [!WARNING]  
-> This is an experimental project, proceed with caution
-
 This application allows you to maintain a composer repository with all your premium WordPress plugins. It is highly inspired by https://github.com/generoi/github-action-update-plugins, You can use the same recipes mentioned in their README file.
 
 # Installation
