@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PackageResource\Pages;
+use App\Filament\Resources\PackageResource\RelationManagers\ReleasesRelationManager;
 use App\Models\Package;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -144,10 +145,16 @@ class PackageResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('updater')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('latest_release')
+                    ->searchable()
+                    ->dateTime(config('app.date_time_format')),
+                Tables\Columns\TextColumn::make('latest_version')
                     ->searchable(),
             ])
             ->filters([
@@ -158,6 +165,9 @@ class PackageResource extends Resource
                         'wpml' => 'WPML',
                         'woocommerce' => 'WooCommerce',
                         'acf' => 'ACF',
+                        'gravity_forms' => 'Gravity Forms',
+                        'wp_rocket' => 'WP Rocket',
+                        'puc' => 'YahnisElsts Plugin Update Checker',
                     ]),
             ])
             ->actions([
@@ -167,13 +177,14 @@ class PackageResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('name');
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            ReleasesRelationManager::class,
         ];
     }
 

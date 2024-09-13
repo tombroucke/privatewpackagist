@@ -57,4 +57,14 @@ class Package extends Model
     {
         return $this->environmentVariables()[$variable] ?? null;
     }
+
+    public function getLatestReleaseAttribute()
+    {
+        return $this->releases()->latest()->first()->created_at;
+    }
+
+    public function getLatestVersionAttribute()
+    {
+        return $this->releases()->latest()->first()->version;
+    }
 }

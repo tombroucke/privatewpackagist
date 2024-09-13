@@ -28,6 +28,10 @@ class ReleaseResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultGroup('package.name')
+            ->groups([
+                'package.name',
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('package.name')
                     ->label('Package')
@@ -39,6 +43,10 @@ class ReleaseResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('version')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Released')
+                    ->dateTime(config('app.date_time_format'))
+                    ->sortable(),
             ])
             ->filters([
                 // Filter by package
@@ -53,7 +61,8 @@ class ReleaseResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array

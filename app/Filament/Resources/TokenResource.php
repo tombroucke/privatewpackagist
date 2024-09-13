@@ -28,7 +28,10 @@ class TokenResource extends Resource
                 Forms\Components\TextInput::make('token')
                     ->required()
                     ->default(fn () => bin2hex(random_bytes(16)))
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->disabled(function ($record) {
+                        return $record; // Disable the field when editing an existing record.
+                    }),
             ]);
     }
 

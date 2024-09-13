@@ -14,6 +14,8 @@ class AccountPage extends Page
 
     protected static ?int $navigationSort = 99;
 
+    protected static ?string $navigationIcon = 'heroicon-o-user';
+
     public function getTitle(): string
     {
         return __('filament-breezy::default.profile.my_profile');
