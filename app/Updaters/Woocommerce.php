@@ -2,14 +2,15 @@
 
 namespace App\Updaters;
 
-use App\Exceptions\WoocommerceApiNotRespondingException;
-use App\Exceptions\WoocommerceApiRestLimitReachedException;
-use App\Exceptions\WoocommerceProductNotFoundException;
-use App\Exceptions\WoocommerceSubscriptionNotFoundException;
 use App\Models\Package;
 use App\Models\Release;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
+use App\Exceptions\IncorrectApiResponseCodeException;
+use App\Exceptions\WoocommerceProductNotFoundException;
+use App\Exceptions\WoocommerceApiNotRespondingException;
+use App\Exceptions\WoocommerceApiRestLimitReachedException;
+use App\Exceptions\WoocommerceSubscriptionNotFoundException;
 
 class Woocommerce implements Contracts\Updater
 {
@@ -50,10 +51,15 @@ class Woocommerce implements Contracts\Updater
         $subscriptions = collect($this->doRequest(
             endpoint: 'https://woocommerce.com/wp-json/helper/1.0/subscriptions',
             method: 'GET',
-        ))
-            ->mapWithKeys(fn ($subscription) => [$subscription['zip_slug'] => $subscription]);
+        ));
 
-        $subscription = $subscriptions->get($this->package->slug);
+        if ($subscriptions->get('data') && $subscriptions->get('data')['status'] !== 200) {
+            throw new IncorrectApiResponseCodeException($subscriptions->get('message'));
+        }
+
+        $subscription = $subscriptions
+            ->mapWithKeys(fn ($subscription) => [$subscription['zip_slug'] => $subscription])
+            ->get($this->package->slug);
 
         if (! $subscription) {
             throw new WoocommerceSubscriptionNotFoundException;
