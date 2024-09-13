@@ -155,7 +155,9 @@ class PackageResource extends Resource
                     ->searchable()
                     ->dateTime(config('app.date_time_format')),
                 Tables\Columns\TextColumn::make('latest_version')
-                    ->searchable(),
+                    ->searchable()
+                    ->badge()
+                    ->color('success'),
             ])
             ->filters([
                 // filter by updater
