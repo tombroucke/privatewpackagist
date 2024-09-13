@@ -102,7 +102,8 @@ php artisan app:update-packages
 
 # Usage
 
-For each application, you can generate a different token.
+https://example.com/repo/packages.json and all the packages are protected with basic authentication. You can create credentials in the admin/tokens screen: https://example.com/tokens\
+You should generate a different token for each application, so you can revoke the tokens later on.
 
 Add the repository to your `composer.json` file (replace `privatewpackagist` with your chosen package vendor name):
 
@@ -111,14 +112,12 @@ Add the repository to your `composer.json` file (replace `privatewpackagist` wit
     "type": "composer",
     "url": "https://example.com/repo",
     "only": ["privatewpackagist-plugin/*", "privatewpackagist-theme/*"]
-},
+}
 ```
 
 ```
-composer require privatewpackagist-plugin/polylang-pro
+composer require privatewpackagist-plugin/advanced-custom-fields-pro
 ```
-
-The repo is protected with basic authentication. You can create credentials in the admin/tokens screen: https://example.com/tokens
 
 # Package configurations
 
