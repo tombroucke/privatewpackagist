@@ -8,9 +8,10 @@ Route::middleware(BasicAuth::class)->group(function () {
     Route::get('/repo/packages.json', PackagesJsonController::class.'@show');
 
     Route::get('/repo/{file}', function ($file) {
+
         $allowedFileTypes = ['zip'];
-        $fileType = pathinfo($file, PATHINFO_EXTENSION);
-        $fileTypeAllowed = in_array($fileType, $allowedFileTypes);
+        $requestedFileType = pathinfo($file, PATHINFO_EXTENSION);
+        $fileTypeAllowed = in_array($requestedFileType, $allowedFileTypes);
         if (! $fileTypeAllowed) {
             abort(403);
         }
@@ -21,10 +22,10 @@ Route::middleware(BasicAuth::class)->group(function () {
         }
 
         $filePath = storage_path('app/packages/'.$file);
-        if (file_exists($filePath)) {
-            return response()->file($filePath);
-        } else {
+        if (! file_exists($filePath)) {
             abort(404);
         }
+
+        return response()->file($filePath);
     })->where('file', '.*');
 });
