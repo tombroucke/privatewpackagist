@@ -148,7 +148,23 @@ class PackageResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
+                    ->searchable()
+                    ->copyable()
+                    ->state(function ($record) {
+                        $vendoredName = $record->vendoredName();
+                        $parts = explode('/', $vendoredName);
+
+                        return '<span class="text-xs text-gray-400">'.$parts[0].'/<br/></span><span>'.$parts[1].'</span>';
+                    })
+                    ->html()
+                    ->icon('heroicon-o-document-duplicate')
+                    ->iconColor('gray')
+                    ->copyableState(function ($record) {
+                        return 'composer require '.$record->vendoredName();
+                    })
+                    ->copyMessage(function ($record) {
+                        return 'Copied "composer require '.$record->vendoredName().'"';
+                    }),
                 Tables\Columns\TextColumn::make('updater')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('latest_release')

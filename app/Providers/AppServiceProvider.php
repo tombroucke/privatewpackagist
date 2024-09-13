@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(PackagesJson::class, function ($app) {
-            return new PackagesJson(config('app.packages_vendor_name'));
+            return new PackagesJson;
         });
     }
 

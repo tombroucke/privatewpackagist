@@ -72,4 +72,11 @@ class Package extends Model
     {
         return $this->getLatestRelease()->version;
     }
+
+    public function vendoredName(): string
+    {
+        $type = str_replace('wordpress-', '', $this->type);
+
+        return config('app.packages_vendor_name').'-'.$type.'/'.$this->slug;
+    }
 }

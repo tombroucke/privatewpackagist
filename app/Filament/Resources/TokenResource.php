@@ -40,9 +40,13 @@ class TokenResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('username')
-                    ->searchable(),
+                    ->searchable()
+                    ->copyable()
+                    ->copyMessage('Username copied'),
                 Tables\Columns\TextColumn::make('token')
-                    ->searchable(),
+                    ->searchable()
+                    ->copyable()
+                    ->copyMessage('Token copied'),
                 Tables\Columns\TextColumn::make('last_used_at')
                     ->dateTime()
                     ->sortable(),

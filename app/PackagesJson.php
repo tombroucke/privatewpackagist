@@ -7,24 +7,16 @@ use Illuminate\Support\Facades\Cache;
 
 class PackagesJson
 {
-    public function __construct(private string $packageVendorName) {}
-
-    private function fullPackageName(Package $package): string
-    {
-        $type = str_replace('wordpress-', '', $package->type);
-
-        return $this->packageVendorName.'-'.$type.'/'.$package->slug;
-    }
+    public function __construct() {}
 
     public function regenerate(): array
     {
         $packages = Package::all()
             ->mapWithKeys(function ($package) {
-                $fullPackageName = $this->fullPackageName($package);
                 $releases = $package->releases
-                    ->mapwithKeys(function ($release) use ($package, $fullPackageName) {
+                    ->mapwithKeys(function ($release) use ($package) {
                         return [$release->version => [
-                            'name' => $fullPackageName,
+                            'name' => $package->vendoredName(),
                             'version' => $release->version,
                             'type' => $package->type,
                             'require' => [
@@ -39,7 +31,7 @@ class PackagesJson
                     })
                     ->sortKeysDesc();
 
-                return [$fullPackageName => $releases];
+                return [$package->vendoredName() => $releases];
             })
             ->reject(function ($package) {
                 return $package->isEmpty();
