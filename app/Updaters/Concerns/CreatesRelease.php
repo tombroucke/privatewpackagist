@@ -4,6 +4,7 @@ namespace App\Updaters\Concerns;
 
 use App\Exceptions\CouldNotDownloadPackageException;
 use App\Exceptions\DownloadLinkNotSetException;
+use App\Exceptions\UnableToDownloadFileException;
 use App\Exceptions\VersionNotSetException;
 use App\Models\Release;
 use Illuminate\Support\Facades\Http;
@@ -54,7 +55,7 @@ trait CreatesRelease
         file_put_contents($fullpath, $zip);
 
         if (! file_exists($fullpath)) {
-            return null;
+            throw new UnableToDownloadFileException($link);
         }
 
         return $path;
