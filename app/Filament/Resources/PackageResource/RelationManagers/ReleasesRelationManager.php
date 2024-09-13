@@ -26,7 +26,9 @@ class ReleasesRelationManager extends RelationManager
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('version')
-                    ->searchable(),
+                    ->searchable()
+                    ->badge()
+                    ->color(fn ($record) => $record->isLatest() ? 'success' : 'warning'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Released')
                     ->dateTime(config('app.date_time_format'))
