@@ -7,6 +7,7 @@ use App\Models\Token;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\IconPosition;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -41,10 +42,16 @@ class TokenResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('username')
                     ->searchable()
+                    ->icon('heroicon-o-document-duplicate')
+                    ->iconColor('gray')
+                    ->iconPosition(IconPosition::After)
                     ->copyable()
                     ->copyMessage('Username copied'),
                 Tables\Columns\TextColumn::make('token')
                     ->searchable()
+                    ->icon('heroicon-o-document-duplicate')
+                    ->iconColor('gray')
+                    ->iconPosition(IconPosition::After)
                     ->copyable()
                     ->copyMessage('Token copied'),
                 Tables\Columns\TextColumn::make('last_used_at')
