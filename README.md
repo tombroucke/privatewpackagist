@@ -91,6 +91,586 @@ composer require privatewpackagist-plugin/polylang-pro
 
 The repo is protected with basic authentication. You can create credentials in the admin/tokens screen: https://example.com/tokens
 
+# Package configurations
+
+<details>
+<summary>Woocommerce Product Filters</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-product-filters
+
+```
+{
+	slug: woocommerce-product-filters
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Eu Vat Number</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-eu-vat-number
+
+```
+{
+	slug: woocommerce-eu-vat-number
+}
+```
+
+</details>
+
+<details>
+<summary>Advanced Custom Fields Multilingual</summary>
+
+**type:** wpml\
+**slug:** acfml
+
+```
+{
+	slug: acfml
+}
+```
+
+</details>
+
+<details>
+<summary>Advanced Custom Fields Pro</summary>
+
+**type:** acf\
+**slug:** advanced-custom-fields-pro
+
+</details>
+
+<details>
+<summary>Advanced Order Export For WooCommerce (Pro)</summary>
+
+**type:** edd\
+**slug:** woocommerce-order-export
+
+```
+{
+	slug: Advanced Order Export For WooCommerce (Pro),
+	source_url: https://example.com,
+	endpoint_url: https://algolplus.com/plugins/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Product Sales Report Pro for WooCommerce</summary>
+
+**type:** edd\
+**slug:** hm-product-sales-report-pro
+
+```
+{
+	slug: Product Sales Report Pro for WooCommerce,
+	source_url: https://example.com,
+	endpoint_url: https://wpzone.co/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Product Feeds</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-product-feeds
+
+```
+{
+	slug: woocommerce-product-feeds
+}
+```
+
+</details>
+
+<details>
+<summary>PDF Invoices & Packing Slips for WooCommerce - Professional</summary>
+
+**type:** edd\
+**slug:** woocommerce-pdf-ips-pro
+
+```
+{
+	slug: PDF Invoices & Packing Slips for WooCommerce - Professional,
+	source_url: https://example.com,
+	endpoint_url: https://wpovernight.com/license-api,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Subscriptions</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-subscriptions
+
+```
+{
+	slug: woocommerce-subscriptions
+}
+```
+
+</details>
+
+<details>
+<summary>WPML Multilingual CMS</summary>
+
+**type:** wpml\
+**slug:** sitepress-multilingual-cms
+
+```
+{
+	slug: sitepress-multilingual-cms
+}
+```
+
+</details>
+
+<details>
+<summary>Gravity Forms Image Choices</summary>
+
+**type:** edd\
+**slug:** gf-image-choices
+
+```
+{
+	slug: Gravity Forms Image Choices,
+	source_url: https://example.com,
+	endpoint_url: https://jetsloth.com,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>WooCommerce Multilingual & Multicurrency</summary>
+
+**type:** wpml\
+**slug:** woocommerce-multilingual
+
+```
+{
+	slug: woocommerce-multilingual
+}
+```
+
+</details>
+
+<details>
+<summary>Gravity Forms Multilingual</summary>
+
+**type:** wpml\
+**slug:** gravityforms-multilingual
+
+```
+{
+	slug: gravityforms-multilingual
+}
+```
+
+</details>
+
+<details>
+<summary>WPML SEO</summary>
+
+**type:** wpml\
+**slug:** wp-seo-multilingual
+
+```
+{
+	slug: wp-seo-multilingual
+}
+```
+
+</details>
+
+<details>
+<summary>Media Translation</summary>
+
+**type:** wpml\
+**slug:** wpml-media-translation
+
+```
+{
+	slug: wpml-media-translation
+}
+```
+
+</details>
+
+<details>
+<summary>String Translation</summary>
+
+**type:** wpml\
+**slug:** wpml-string-translation
+
+```
+{
+	slug: wpml-string-translation
+}
+```
+
+</details>
+
+<details>
+<summary>Gravityforms</summary>
+
+**type:** gravity_form\s
+**slug:** gravityforms
+
+```
+{
+	slug: gravityforms
+}
+```
+
+</details>
+
+<details>
+<summary>Advanced Permissions</summary>
+
+**type:** edd\
+**slug:** forgravity-advancedpermissions
+
+```
+{
+	slug: Advanced Permissions,
+	source_url: https://example.com,
+	endpoint_url: https://cosmicgiant.com,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>AffiliateWP</summary>
+
+**type:** edd\
+**slug:** affiliate-wp
+
+```
+{
+	slug: AffiliateWP,
+	source_url: https://example.com/,
+	endpoint_url: https://affiliatewp.com,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Gravityformsmailchimp</summary>
+
+**type:** gravity_forms\
+**slug:** gravityformsmailchimp
+
+```
+{
+	slug: gravityformsmailchimp
+}
+```
+
+</details>
+
+<details>
+<summary>Gravityformszapier</summary>
+
+**type:** gravity_forms\
+**slug:** gravityformszapier
+
+```
+{
+	slug: gravityformszapier
+}
+```
+
+</details>
+
+<details>
+<summary>Gravityformsrecaptcha</summary>
+
+**type:** gravity_forms\
+**slug:** gravityformsrecaptcha
+
+```
+{
+	slug: gravityformsrecaptcha
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Gateway Ogone</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-gateway-ogone
+
+```
+{
+	slug: woocommerce-gateway-ogone
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Product Bundles</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-product-bundles
+
+```
+{
+	slug: woocommerce-product-bundles
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Product Addons</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-product-addons
+
+```
+{
+	slug: woocommerce-product-addons
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Sequential Order Numbers Pro</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-sequential-order-numbers-pro
+
+```
+{
+	slug: woocommerce-sequential-order-numbers-pro
+}
+```
+
+</details>
+
+<details>
+<summary>WooCommerce Next Order Coupon</summary>
+
+**type:** edd\
+**slug:** woocommerce-next-order-coupon
+
+```
+{
+	slug: WooCommerce Next Order Coupon,
+	source_url: https://example.com,
+	endpoint_url: https://wpovernight.com/license-api/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Wp Rocket</summary>
+
+**type:** wp_rocket\
+**slug:** wp-rocket
+
+</details>
+
+<details>
+<summary>Woo Discount Rules Pro</summary>
+
+**type:** puc\
+**slug:** woo-discount-rules-pro
+
+```
+{
+	slug: discount-rules-v2-pro,
+	source_url: https://example.com,
+	endpoint_url: https://my.flycart.org/
+}
+```
+
+</details>
+
+<details>
+<summary>Ultimate WooCommerce Auction Pro</summary>
+
+**type:** edd\
+**slug:** ultimate-woocommerce-auction-pro
+
+```
+{
+	slug: Ultimate WooCommerce Auction Pro,
+	source_url: https://example.com,
+	endpoint_url: https://auctionplugin.net/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>WP All Import</summary>
+
+**type:** edd\
+**slug:** wp-all-import-pro
+
+```
+{
+	slug: WP All Import,
+	source_url: https://example.com,
+	endpoint_url: https://update.wpallimport.com/check_version,
+	method: GET,
+	skip_license_check: true
+}
+```
+
+</details>
+
+<details>
+<summary>WP All Export</summary>
+
+**type:** edd\
+**slug:** wp-all-export-pro
+
+```
+{
+	slug: WP All Export,
+	source_url: https://example.com,
+	endpoint_url: https://update.wpallimport.com/check_version,
+	method: GET,
+	skip_license_check: true
+}
+```
+
+</details>
+
+<details>
+<summary>ACF Export Add-On Pro</summary>
+
+**type:** edd\
+**slug:** wpae-acf-add-on
+
+```
+{
+	slug: ACF Export Add-On Pro,
+	source_url: https://example.com,
+	endpoint_url: https://update.wpallimport.com/check_version,
+	method: GET,
+	skip_license_check: true
+}
+```
+
+</details>
+
+<details>
+<summary>ACF Add-On</summary>
+
+**type:** edd\
+**slug:** wpai-acf-add-on
+
+```
+{
+	slug: ACF Add-On,
+	source_url: https://example.com,
+	endpoint_url: https://update.wpallimport.com/check_version,
+	method: GET,
+	skip_license_check: true
+}
+```
+
+</details>
+
+<details>
+<summary>Link Cloaking Add-On</summary>
+
+**type:** edd\
+**slug:** wpai-linkcloak-add-on
+
+```
+{
+	slug: Link Cloaking Add-On,
+	source_url: https://example.com,
+	endpoint_url: https://update.wpallimport.com/check_version,
+	method: GET,
+	skip_license_check: true
+}
+```
+
+</details>
+
+<details>
+<summary>User Import Add-On</summary>
+
+**type:** edd\
+**slug:** wpai-user-add-on
+
+```
+{
+	slug: User Import Add-On,
+	source_url: https://example.com,
+	endpoint_url: https://update.wpallimport.com/check_version,
+	method: GET,
+	skip_license_check: true
+}
+```
+
+</details>
+
+<details>
+<summary>WooCommerce Add-On</summary>
+
+**type:** edd\
+**slug:** wpai-woocommerce-add-on
+
+```
+{
+	slug: WooCommerce Add-On,
+	source_url: https://example.com,
+	endpoint_url: https://update.wpallimport.com/check_version,
+	method: GET,
+	skip_license_check: true
+}
+```
+
+</details>
+
+<details>
+<summary>WooCommerce Export Add-On Pro</summary>
+
+**type:** edd\
+**slug:** wpae-woocommerce-add-on
+
+```
+{
+	slug: WooCommerce Export Add-On Pro,
+	source_url: https://example.com,
+	endpoint_url: https://update.wpallimport.com/check_version,
+	method: GET,
+	skip_license_check: true
+}
+```
+
+</details>
+
 # TODO
 
 -   Add more updaters (NF_Extension_Updater etc.)
