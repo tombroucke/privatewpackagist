@@ -4,22 +4,12 @@ namespace App\Updaters;
 
 use App\Exceptions\WpRocketInvalidRequestException;
 use App\Exceptions\WpRocketUnexpectedResponseException;
-use App\Models\Package;
-use App\Models\Release;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class WpRocket implements Contracts\Updater
+class WpRocket extends Abstracts\Updater implements Contracts\Updater
 {
-    use Concerns\CreatesRelease;
-    use Concerns\ExtractsChangelog;
-
-    const ENV_VARIABLES = [
-    ];
-
-    public function __construct(private Package $package) {}
-
     public function fetchTitle(): string
     {
         return Str::of($this->package->slug)
@@ -33,15 +23,15 @@ class WpRocket implements Contracts\Updater
         $errors = new Collection;
 
         if (! env('WP_ROCKET_KEY')) {
-            $errors->push('WP_ROCKET_KEY is required');
+            $errors->push('Env. variable WP_ROCKET_KEY is required');
         }
 
         if (! env('WP_ROCKET_EMAIL')) {
-            $errors->push('WP_ROCKET_EMAIL is required');
+            $errors->push('Env. variable WP_ROCKET_EMAIL is required');
         }
 
         if (! env('WP_ROCKET_URL')) {
-            $errors->push('WP_ROCKET_URL is required');
+            $errors->push('Env. variable WP_ROCKET_URL is required');
         }
 
         return $errors;
@@ -56,7 +46,12 @@ class WpRocket implements Contracts\Updater
         );
     }
 
-    public function update(): ?Release
+    public function fetchZip(string $link): string
+    {
+        return Http::withUserAgent($this->userAgent())->get($link)->body();
+    }
+
+    protected function packageInformation(): array
     {
 
         $response = Http::withUserAgent($this->userAgent())->get('https://api.wp-rocket.me/check_update.php');
@@ -79,11 +74,6 @@ class WpRocket implements Contracts\Updater
             $version,
         );
 
-        return $this->createRelease($version, $downloadLink, '');
-    }
-
-    public function fetchZip(string $link): string
-    {
-        return Http::withUserAgent($this->userAgent())->get($link)->body();
+        return [$version, '', $downloadLink];
     }
 }

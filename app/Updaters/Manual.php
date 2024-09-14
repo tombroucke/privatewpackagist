@@ -36,4 +36,24 @@ class Manual implements Contracts\Updater
     {
         throw new ManualUpdaterCanNotUpdatePackages($this->package->slug);
     }
+
+    public function testDownload(): bool
+    {
+        return true;
+    }
+
+    public function version(): ?string
+    {
+        return null;
+    }
+
+    public function downloadLink(): ?string
+    {
+        return null;
+    }
+
+    public function changelog(): ?string
+    {
+        return null;
+    }
 }

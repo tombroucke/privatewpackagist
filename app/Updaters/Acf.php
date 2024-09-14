@@ -3,22 +3,12 @@
 namespace App\Updaters;
 
 use App\Exceptions\AcfFailedToGetLatestVersionException;
-use App\Models\Package;
-use App\Models\Release;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class Acf implements Contracts\Updater
+class Acf extends Abstracts\Updater implements Contracts\Updater
 {
-    use Concerns\CreatesRelease;
-    use Concerns\ExtractsChangelog;
-
-    const ENV_VARIABLES = [
-    ];
-
-    public function __construct(private Package $package) {}
-
     public function fetchTitle(): string
     {
         return Str::of($this->package->slug)
@@ -32,13 +22,13 @@ class Acf implements Contracts\Updater
         $errors = new Collection;
 
         if (! env('ACF_LICENSE_KEY')) {
-            $errors->push('ACF_LICENSE_KEY is required');
+            $errors->push('Env. variable ACF_LICENSE_KEY is required');
         }
 
         return $errors;
     }
 
-    public function update(): ?Release
+    protected function packageInformation(): array
     {
         $version = $this->getLatestVersion();
 
@@ -53,7 +43,7 @@ class Acf implements Contracts\Updater
             getenv('ACF_LICENSE_KEY'),
         );
 
-        return $this->createRelease($version, $downloadLink, $changelog);
+        return [$version, $changelog, $downloadLink];
     }
 
     private function getLatestVersion()

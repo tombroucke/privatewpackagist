@@ -5,24 +5,24 @@ namespace App\Updaters;
 use App\Exceptions\EddLicenseCheckFailedException;
 use App\Models\Package;
 use App\Models\Release;
+use App\PackageDownloader;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class Edd implements Contracts\Updater
+class Edd extends Abstracts\Updater implements Contracts\Updater
 {
-    use Concerns\CreatesRelease;
-    use Concerns\ExtractsChangelog;
-
     const ENV_VARIABLES = [
         'LICENSE_KEY',
     ];
 
     private bool $skipLicenseCheck = false;
 
-    public function __construct(private Package $package)
+    public function __construct(protected Package $package)
     {
         $this->skipLicenseCheck = isset($this->package->settings['skip_license_check']) && $this->package->settings['skip_license_check'];
+
+        parent::__construct($package);
     }
 
     public function fetchTitle(): string
@@ -82,6 +82,27 @@ class Edd implements Contracts\Updater
 
     public function update(): ?Release
     {
+        $this->setPackageInformation();
+
+        return parent::update();
+
+    }
+
+    public function testDownload(): bool
+    {
+        $this->setPackageInformation();
+
+        return (new PackageDownloader($this))
+            ->test();
+    }
+
+    protected function packageInformation(): array
+    {
+        return [null, '', null];
+    }
+
+    private function setPackageInformation(): void
+    {
         if (! $this->skipLicenseCheck && ! $this->checkLicense()) {
             throw new EddLicenseCheckFailedException;
         }
@@ -93,9 +114,8 @@ class Edd implements Contracts\Updater
 
         $pattern = $this->package->settings['changelog_extract'] ?? '\*\*(\d+\.\d+\.\d+) \((.*?)\)\*\*\n(.*?)\n\n';
 
-        $changelog = $this->extractLatestChangelog($sections['changelog'] ?? '', $pattern);
-        $downloadLink = $response['download_link'];
-
-        return $this->createRelease($version, $downloadLink, $changelog);
+        $this->changelog = $this->extractLatestChangelog($sections['changelog'] ?? '', $pattern);
+        $this->downloadLink = $response['download_link'];
+        $this->version = $version;
     }
 }

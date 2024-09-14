@@ -4,22 +4,15 @@ namespace App\Updaters;
 
 use App\Exceptions\PucLicenceCheckFailed;
 use App\Exceptions\PucNoDownloadLinkException;
-use App\Models\Package;
-use App\Models\Release;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class Puc implements Contracts\Updater
+class Puc extends Abstracts\Updater implements Contracts\Updater
 {
-    use Concerns\CreatesRelease;
-    use Concerns\ExtractsChangelog;
-
     const ENV_VARIABLES = [
         'LICENSE_KEY',
     ];
-
-    public function __construct(private Package $package) {}
 
     public function fetchTitle(): string
     {
@@ -48,7 +41,18 @@ class Puc implements Contracts\Updater
         return $this->package->environmentVariable('LICENSE_KEY');
     }
 
-    public function update(): ?Release
+    public function doWpAction(string $action)
+    {
+        $response = Http::withUserAgent($this->userAgent())->get($this->package->settings['endpoint_url'], [
+            'wpaction' => $action,
+            'dlid' => $this->licenseKey(),
+            'wpslug' => $this->package->settings['slug'],
+        ]);
+
+        return $response->json();
+    }
+
+    protected function packageInformation(): array
     {
         $licenseCheck = $this->doWpAction('licensecheck');
 
@@ -65,17 +69,6 @@ class Puc implements Contracts\Updater
         $version = $packageInformation['version'];
         $downloadLink = $packageInformation['download_url'];
 
-        return $this->createRelease($version, $downloadLink, '');
-    }
-
-    public function doWpAction(string $action)
-    {
-        $response = Http::withUserAgent($this->userAgent())->get($this->package->settings['endpoint_url'], [
-            'wpaction' => $action,
-            'dlid' => $this->licenseKey(),
-            'wpslug' => $this->package->settings['slug'],
-        ]);
-
-        return $response->json();
+        return [$version, '', $downloadLink];
     }
 }

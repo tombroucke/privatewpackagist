@@ -6,8 +6,9 @@ use Exception;
 
 class WpmlProductNotFoundException extends Exception
 {
-    public function __construct($message = 'WPML product not found')
+    public function __construct($product)
     {
+        $message = "Product with slug {$product} not found";
         parent::__construct($message);
     }
 }

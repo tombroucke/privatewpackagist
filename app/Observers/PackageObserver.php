@@ -9,7 +9,6 @@ class PackageObserver
     public function creating(Package $package): void
     {
         $package->name = $package->updater()->fetchTitle();
-        $this->validate($package);
     }
 
     /**
@@ -26,30 +25,21 @@ class PackageObserver
     public function updating(Package $package): void
     {
         $package->name = $package->updater()->fetchTitle();
-        $this->validate($package);
     }
 
-    public function validate(Package $package)
-    {
-        $errors = collect();
-        $updater = $package->updater();
+    // private function createRelease(Package $package): void
+    // {
+    //     try {
+    //         $release = $package->updater()->update();
+    //     } catch (\Exception $e) {
+    //         abort(403, "Failed to create release for {$package->slug}: {$e->getMessage()}");
+    //     }
 
-        $package
-            ->environmentVariables()
-            ->each(function ($value, $key) use ($errors, $package) {
-                if (empty($value)) {
-                    $errors->push("{$package->prefixedEnvironmentVariable($key)} is required");
-                }
-            });
+    //     if (! $release) {
+    //         abort(403, "Failed to create release for {$package->slug}");
+    //     }
 
-        if ($updater->validationErrors()->isNotEmpty()) {
-            $errors = $errors->merge($updater->validationErrors());
-        }
-
-        if ($errors->isNotEmpty()) {
-            abort(403, $errors->first());
-        }
-    }
+    // }
 
     /**
      * Handle the Package "updated" event.

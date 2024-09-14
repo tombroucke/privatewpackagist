@@ -4,29 +4,28 @@ namespace App\Updaters;
 
 use App\Exceptions\WpmlProductNotFoundException;
 use App\Models\Package;
-use App\Models\Release;
+use App\Updaters\Abstracts\Updater;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class Wpml implements Contracts\Updater
+class Wpml extends Updater implements Contracts\Updater
 {
-    use Concerns\CreatesRelease;
-    use Concerns\ExtractsChangelog;
-
-    const ENV_VARIABLES = [
-    ];
-
-    public function __construct(private Package $package) {}
+    public function __construct(protected Package $package)
+    {
+        [$this->version, $this->changelog, $this->downloadLink] = $this->packageInformation();
+    }
 
     public function fetchTitle(): string
     {
         $product = $this->getProduct($this->package->slug);
 
-        return strip_tags($product['name']) ?? Str::of($this->package->slug)
+        $name = $product['name'] ?? Str::of($this->package->slug)
             ->title()
             ->replace('-', ' ')
             ->__toString();
+
+        return strip_tags($name);
     }
 
     public function validationErrors(): Collection
@@ -34,33 +33,14 @@ class Wpml implements Contracts\Updater
         $errors = new Collection;
 
         if (! env('WPML_USER_ID')) {
-            $errors->push('WPML_USER_ID is required');
+            $errors->push('Env. variable WPML_USER_ID is required');
         }
 
         if (! env('WPML_LICENSE_KEY')) {
-            $errors->push('WPML_LICENSE_KEY is required');
+            $errors->push('Env. variable WPML_LICENSE_KEY is required');
         }
 
         return $errors;
-    }
-
-    public function update(): ?Release
-    {
-        $product = $this->getProduct($this->package->slug);
-
-        if (! $product) {
-            throw new WpmlProductNotFoundException;
-        }
-
-        $version = $product['version'];
-        $changelog = $this->extractLatestChangelog($product['changelog'] ?? '', '#### (\d+\.\d+\.\d+)(?:\s*\n\n)?(.*?)(?=\n\n#### \d+\.\d+\.\d+|$)');
-        $downloadLink = sprintf(
-            $product['url'].'&user_id=%s&subscription_key=%s',
-            getenv('WPML_USER_ID'),
-            getenv('WPML_LICENSE_KEY'),
-        );
-
-        return $this->createRelease($version, $downloadLink, $changelog);
     }
 
     private function getProduct($slug)
@@ -74,5 +54,23 @@ class Wpml implements Contracts\Updater
         }
 
         return collect($products['downloads']['plugins'])->firstWhere('slug', $slug);
+    }
+
+    protected function packageInformation(): array
+    {
+        $product = $this->getProduct($this->package->settings['slug']);
+        if (! $product) {
+            throw new WpmlProductNotFoundException($this->package->settings['slug']);
+        }
+
+        $version = $product['version'];
+        $changelog = $this->extractLatestChangelog($product['changelog'] ?? '', '#### (\d+\.\d+\.\d+)(?:\s*\n\n)?(.*?)(?=\n\n#### \d+\.\d+\.\d+|$)');
+        $downloadLink = sprintf(
+            $product['url'].'&user_id=%s&subscription_key=%s',
+            getenv('WPML_USER_ID'),
+            getenv('WPML_LICENSE_KEY'),
+        );
+
+        return [$version, $changelog, $downloadLink];
     }
 }

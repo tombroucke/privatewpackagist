@@ -19,13 +19,19 @@ class Package extends Model
         'settings' => 'json',
     ];
 
+    private ?Updater $instantiatedUpdater = null;
+
     public function updater(): Updater
     {
-        $updater = $this->updater;
-        $pascalCaseUpdater = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $updater)));
-        $updaterClass = "App\\Updaters\\{$pascalCaseUpdater}";
+        if (! $this->instantiatedUpdater) {
+            $updater = $this->updater;
+            $pascalCaseUpdater = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $updater)));
+            $updaterClass = "App\\Updaters\\{$pascalCaseUpdater}";
 
-        return new $updaterClass($this);
+            $this->instantiatedUpdater = new $updaterClass($this);
+        }
+
+        return $this->instantiatedUpdater;
     }
 
     public function releases()
@@ -59,9 +65,11 @@ class Package extends Model
 
     public function environmentVariables(): Collection
     {
-        $updater = $this->updater();
+        $updater = $this->updater;
+        $pascalCaseUpdater = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $updater)));
+        $updaterClass = "App\\Updaters\\{$pascalCaseUpdater}";
 
-        return collect($updater::ENV_VARIABLES)
+        return collect($updaterClass::ENV_VARIABLES)
             ->mapWithKeys(fn ($variable) => ["{$variable}" => getenv($this->prefixedEnvironmentVariable($variable))]);
     }
 
@@ -90,5 +98,46 @@ class Package extends Model
         $type = str_replace('wordpress-', '', $this->type);
 
         return config('app.packages_vendor_name').'-'.$type.'/'.$this->slug;
+    }
+
+    public function validationErrors()
+    {
+        $errors = collect();
+
+        try {
+            $updater = $this->updater();
+        } catch (\Exception $e) {
+            $errors->push($e->getMessage());
+
+            return $errors;
+        }
+
+        $this
+            ->environmentVariables()
+            ->each(function ($value, $key) use ($errors) {
+                if (empty($value)) {
+                    $errors->push("Env. variable {$this->prefixedEnvironmentVariable($key)} is required");
+                }
+            });
+
+        if ($errors->isNotEmpty()) {
+
+            return $errors;
+        }
+
+        $validationErrors = $updater->validationErrors();
+        if ($validationErrors->isNotEmpty()) {
+            return $validationErrors;
+        }
+
+        try {
+            if (! $this->updater()->testDownload()) {
+                $errors->push("Failed to download package for {$this->slug}");
+            }
+        } catch (\Exception $e) {
+            $errors->push("Failed to download package for {$this->slug}: {$e->getMessage()}");
+        }
+
+        return $errors;
     }
 }
