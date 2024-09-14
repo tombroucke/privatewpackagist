@@ -2,6 +2,7 @@
 
 namespace App\Updaters;
 
+use App\Exceptions\ManualUpdaterCanNotUpdatePackages;
 use App\Models\Package;
 use App\Models\Release;
 use Illuminate\Support\Collection;
@@ -33,6 +34,6 @@ class Manual implements Contracts\Updater
 
     public function update(): ?Release
     {
-        return null;
+        throw new ManualUpdaterCanNotUpdatePackages($this->package->slug);
     }
 }
