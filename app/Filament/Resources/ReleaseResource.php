@@ -25,19 +25,16 @@ class ReleaseResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('package_id')
-                    ->default(40)
                     ->relationship('package', 'name')
                     ->label('Package')
                     ->required()
                     ->native(false)
                     ->searchable(),
                 Forms\Components\TextInput::make('version')
-                    ->default('1.0.0')
                     ->label('Version')
                     ->required()
                     ->helperText('E.g. 3.2.2'),
                 Forms\Components\Textarea::make('changelog')
-                    ->default('1.0.0')
                     ->label('Changelog')
                     ->required(),
                 Forms\Components\FileUpload::make('path')
