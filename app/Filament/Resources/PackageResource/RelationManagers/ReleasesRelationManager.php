@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PackageResource\RelationManagers;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 
 class ReleasesRelationManager extends RelationManager
@@ -41,6 +42,9 @@ class ReleasesRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
+                Action::make('Download')
+                    ->url(fn ($record) => asset('repo/'.$record->path))
+                    ->icon('heroicon-o-arrow-down-tray'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

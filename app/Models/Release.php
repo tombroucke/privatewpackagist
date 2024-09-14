@@ -9,7 +9,7 @@ class Release extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['version', 'changelog', 'path'];
+    protected $fillable = ['package_id', 'version', 'changelog', 'path'];
 
     public function package()
     {

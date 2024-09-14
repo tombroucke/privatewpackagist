@@ -9,6 +9,8 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 
 class PackageResource extends Resource
@@ -204,8 +206,18 @@ class PackageResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                    Action::make('Download')
+                        ->url(function ($record) {
+                            return $record->getLatestRelease() ? asset('repo/'.$record->getLatestRelease()->path) : null;
+                        })
+                        ->visible(function ($record) {
+                            return $record->getLatestRelease() !== null;
+                        })
+                        ->icon('heroicon-o-arrow-down-tray'),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

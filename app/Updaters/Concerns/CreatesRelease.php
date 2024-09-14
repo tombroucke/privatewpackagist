@@ -44,9 +44,8 @@ trait CreatesRelease
     {
         $zip = $this->fetchZip($link);
 
-        $type = str_replace('wordpress-', '', $this->package->type);
+        $path = $this->package->generateReleasePath($version);
 
-        $path = "{$type}/{$this->package->slug}/{$this->package->slug}-{$version}.zip";
         $fullpath = storage_path('app/packages/'.$path);
 
         if (! file_exists(dirname($fullpath))) {

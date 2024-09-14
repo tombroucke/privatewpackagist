@@ -4,9 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReleaseResource\Pages;
 use App\Models\Release;
+use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 
 class ReleaseResource extends Resource
@@ -21,7 +24,30 @@ class ReleaseResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Select::make('package_id')
+                    ->default(40)
+                    ->relationship('package', 'name')
+                    ->label('Package')
+                    ->required()
+                    ->native(false)
+                    ->searchable(),
+                Forms\Components\TextInput::make('version')
+                    ->default('1.0.0')
+                    ->label('Version')
+                    ->required()
+                    ->helperText('E.g. 3.2.2'),
+                Forms\Components\Textarea::make('changelog')
+                    ->default('1.0.0')
+                    ->label('Changelog')
+                    ->required(),
+                Forms\Components\FileUpload::make('path')
+                    ->label('File')
+                    ->disk('local')
+                    ->storeFiles(false)
+                    ->acceptedFileTypes([
+                        'application/zip',
+                        'x-zip-compressed',
+                    ]),
             ]);
     }
 
@@ -58,7 +84,12 @@ class ReleaseResource extends Resource
                     ->label('Package'),
             ])
             ->actions([
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                    Action::make('Download')
+                        ->url(fn ($record) => asset('repo/'.$record->path))
+                        ->icon('heroicon-o-arrow-down-tray'),
+                    Tables\Actions\DeleteAction::make(),
+                ])->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

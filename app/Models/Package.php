@@ -45,6 +45,13 @@ class Package extends Model
         return str_replace('-', '_', strtoupper($this->slug)).'_';
     }
 
+    public function generateReleasePath(string $version): string
+    {
+        $type = str_replace('wordpress-', '', $this->type);
+
+        return "{$type}/{$this->slug}/{$this->slug}-{$version}.zip";
+    }
+
     public function prefixedEnvironmentVariable($variable): string
     {
         return $this->prefix().$variable;
