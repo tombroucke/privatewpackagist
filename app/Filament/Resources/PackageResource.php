@@ -37,6 +37,7 @@ class PackageResource extends Resource
                         'wp_rocket' => 'WP Rocket',
                         'puc' => 'YahnisElsts Plugin Update Checker',
                         'direct' => 'Direct',
+                        'manual' => 'Manual',
                     ])
                     ->reactive()
                     ->afterStateUpdated(function (callable $set, $state) {
@@ -199,6 +200,7 @@ class PackageResource extends Resource
                         'wp_rocket' => 'WP Rocket',
                         'puc' => 'YahnisElsts Plugin Update Checker',
                         'direct' => 'Direct',
+                        'manual' => 'Manual',
                     ]),
             ])
             ->actions([
