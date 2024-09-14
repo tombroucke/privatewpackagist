@@ -58,7 +58,6 @@ class Direct implements Contracts\Updater
 
         return array_map(function ($match) {
             $match = preg_replace('/^'.$this->package->prefix().'/', '', $match);
-            ray($match);
 
             return $this->package->prefixedEnvironmentVariable($match);
         }, $matches[1]);
