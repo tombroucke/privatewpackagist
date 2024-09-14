@@ -1,3 +1,7 @@
+> [!WARNING]  
+> I haven't tagged a release yet, but the application should work just fine. If you encounter a bug, fetch the latest changes and see if this fixes the issue. if it doesn't, please [create an issue](https://github.com/tombroucke/privatewpackagist/issues/new)\
+> As the application is still in an early stage, I am open to suggestions and improvements. [start a discussing](https://github.com/tombroucke/privatewpackagist/discussions/new/choose)
+
 This application allows you to maintain a composer repository with all your premium WordPress plugins. It is highly inspired by https://github.com/generoi/github-action-update-plugins, You can use the same recipes mentioned in their README file.
 
 # Installation
