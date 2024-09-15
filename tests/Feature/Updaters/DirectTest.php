@@ -27,7 +27,6 @@ class DirectTest extends TestCase
 
     public function test_validation_errors(): void
     {
-        ray($this->direct->validationErrors()->all());
         $this->assertEmpty($this->direct->validationErrors()->all());
 
         putenv('JS_COMPOSER_SITE_URL');
