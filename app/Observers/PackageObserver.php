@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Package;
+use App\PackagesJson;
 
 class PackageObserver
 {
@@ -27,26 +28,12 @@ class PackageObserver
         $package->name = $package->updater()->fetchTitle();
     }
 
-    // private function createRelease(Package $package): void
-    // {
-    //     try {
-    //         $release = $package->updater()->update();
-    //     } catch (\Exception $e) {
-    //         abort(403, "Failed to create release for {$package->slug}: {$e->getMessage()}");
-    //     }
-
-    //     if (! $release) {
-    //         abort(403, "Failed to create release for {$package->slug}");
-    //     }
-
-    // }
-
     /**
      * Handle the Package "updated" event.
      */
     public function updated(Package $package): void
     {
-        //
+        app()->make(PackagesJson::class)->regenerate();
     }
 
     /**

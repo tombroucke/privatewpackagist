@@ -96,6 +96,7 @@ class Package extends Model
     public function vendoredName(): string
     {
         $type = str_replace('wordpress-', '', $this->type);
+        $type = str_replace('muplugin', 'plugin', $type);
 
         return config('app.packages_vendor_name').'-'.$type.'/'.$this->slug;
     }

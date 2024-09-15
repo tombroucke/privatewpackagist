@@ -49,6 +49,7 @@ class PackageResource extends Resource
                     ->required()
                     ->options([
                         'wordpress-plugin' => 'WordPress Plugin',
+                        'wordpress-muplugin' => 'WordPress MU Plugin',
                         'wordpress-theme' => 'WordPress Theme',
                     ])
                     ->default('wordpress-plugin'),
