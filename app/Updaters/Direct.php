@@ -9,8 +9,6 @@ use Illuminate\Support\Str;
 
 class Direct extends Abstracts\Updater implements Contracts\Updater
 {
-    private array $packageInformation;
-
     public function fetchTitle(): string
     {
 
@@ -141,16 +139,7 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
         return null;
     }
 
-    private function getPackageInformation(string $key): ?string
-    {
-        if (! isset($this->packageInformation)) {
-            $this->packageInformation = $this->fetchPackageInformation();
-        }
-
-        return $this->packageInformation[$key] ?? null;
-    }
-
-    private function fetchPackageInformation(): array
+    protected function fetchPackageInformation(): array
     {
         $replacements = [];
         $environmentVariables = $this->environmentVariables();
@@ -205,20 +194,5 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
             'changelog' => '',
             'downloadLink' => $downloadLink,
         ];
-    }
-
-    public function version(): ?string
-    {
-        return $this->getPackageInformation('version');
-    }
-
-    public function downloadLink(): ?string
-    {
-        return $this->getPackageInformation('downloadLink');
-    }
-
-    public function changelog(): ?string
-    {
-        return $this->getPackageInformation('changelog');
     }
 }

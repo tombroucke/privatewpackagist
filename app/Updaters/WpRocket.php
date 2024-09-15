@@ -10,8 +10,6 @@ use Illuminate\Support\Str;
 
 class WpRocket extends Abstracts\Updater implements Contracts\Updater
 {
-    private array $packageInformation;
-
     public function fetchTitle(): string
     {
         return Str::of($this->package->slug)
@@ -24,15 +22,15 @@ class WpRocket extends Abstracts\Updater implements Contracts\Updater
     {
         $errors = new Collection;
 
-        if (! env('WP_ROCKET_KEY')) {
+        if (! getenv('WP_ROCKET_KEY') !== false) {
             $errors->push('Env. variable WP_ROCKET_KEY is required');
         }
 
-        if (! env('WP_ROCKET_EMAIL')) {
+        if (! getenv('WP_ROCKET_EMAIL') !== false) {
             $errors->push('Env. variable WP_ROCKET_EMAIL is required');
         }
 
-        if (! env('WP_ROCKET_URL')) {
+        if (! getenv('WP_ROCKET_URL') !== false) {
             $errors->push('Env. variable WP_ROCKET_URL is required');
         }
 
@@ -41,7 +39,7 @@ class WpRocket extends Abstracts\Updater implements Contracts\Updater
 
     public function userAgent(): string
     {
-        return sprintf('%s; %1$s;WP-Rocket|3.6.3|%2$s|%3$s|%1$s|8.2;',
+        return sprintf('%1$s; %2$s;WP-Rocket|3.6.3|%3$s|%4$s|%2$s|8.2;',
             config('app.wp_user_agent'),
             getenv('WP_ROCKET_URL'),
             getenv('WP_ROCKET_KEY'),
@@ -49,26 +47,13 @@ class WpRocket extends Abstracts\Updater implements Contracts\Updater
         );
     }
 
-    public function fetchZip(string $link): string
-    {
-        return Http::withUserAgent($this->userAgent())->get($link)->body();
-    }
-
-    private function getPackageInformation(string $key): ?string
-    {
-        if (! isset($this->packageInformation)) {
-            $this->packageInformation = $this->fetchPackageInformation();
-        }
-
-        return $this->packageInformation[$key] ?? null;
-    }
-
-    private function fetchPackageInformation(): array
+    protected function fetchPackageInformation(): array
     {
         $response = Http::withUserAgent($this->userAgent())->get('https://api.wp-rocket.me/check_update.php');
         $body = $response->body();
 
         $jsonResponse = $response->json();
+
         if (is_array($jsonResponse) && $jsonResponse['success'] === false) {
             throw new WpRocketInvalidRequestException($jsonResponse['data']['reason']);
         }
@@ -90,20 +75,5 @@ class WpRocket extends Abstracts\Updater implements Contracts\Updater
             'changelog' => '',
             'downloadLink' => $downloadLink,
         ];
-    }
-
-    public function version(): ?string
-    {
-        return $this->getPackageInformation('version');
-    }
-
-    public function downloadLink(): ?string
-    {
-        return $this->getPackageInformation('downloadLink');
-    }
-
-    public function changelog(): ?string
-    {
-        return $this->getPackageInformation('changelog');
     }
 }

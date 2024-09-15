@@ -10,8 +10,6 @@ use Illuminate\Support\Str;
 
 class Puc extends Abstracts\Updater implements Contracts\Updater
 {
-    private array $packageInformation;
-
     const ENV_VARIABLES = [
         'LICENSE_KEY',
     ];
@@ -55,16 +53,7 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
         return $response->json();
     }
 
-    private function getPackageInformation(string $key): ?string
-    {
-        if (! isset($this->packageInformation)) {
-            $this->packageInformation = $this->fetchPackageInformation();
-        }
-
-        return $this->packageInformation[$key] ?? null;
-    }
-
-    private function fetchPackageInformation(): array
+    protected function fetchPackageInformation(): array
     {
         $licenseCheck = $this->doWpAction('licensecheck');
 
@@ -86,20 +75,5 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
             'changelog' => '',
             'downloadLink' => $downloadLink,
         ];
-    }
-
-    public function version(): ?string
-    {
-        return $this->getPackageInformation('version');
-    }
-
-    public function downloadLink(): ?string
-    {
-        return $this->getPackageInformation('downloadLink');
-    }
-
-    public function changelog(): ?string
-    {
-        return $this->getPackageInformation('changelog');
     }
 }

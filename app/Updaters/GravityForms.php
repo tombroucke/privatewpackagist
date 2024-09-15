@@ -9,8 +9,6 @@ use Illuminate\Support\Str;
 
 class GravityForms extends Abstracts\Updater implements Contracts\Updater
 {
-    private array $packageInformation;
-
     public function fetchTitle(): string
     {
         return Str::of($this->package->slug)
@@ -23,23 +21,14 @@ class GravityForms extends Abstracts\Updater implements Contracts\Updater
     {
         $errors = new Collection;
 
-        if (! env('GRAVITYFORMS_LICENSE_KEY')) {
+        if (! getenv('GRAVITYFORMS_LICENSE_KEY') !== false) {
             $errors->push('Env. variable GRAVITYFORMS_LICENSE_KEY is required');
         }
 
         return $errors;
     }
 
-    private function getPackageInformation(string $key): ?string
-    {
-        if (! isset($this->packageInformation)) {
-            $this->packageInformation = $this->fetchPackageInformation();
-        }
-
-        return $this->packageInformation[$key] ?? null;
-    }
-
-    private function fetchPackageInformation(): array
+    protected function fetchPackageInformation(): array
     {
         $url = sprintf(
             'https://gravityapi.com/wp-content/plugins/gravitymanager/api.php?op=get_plugin&slug=%s&key=%s',
@@ -65,20 +54,5 @@ class GravityForms extends Abstracts\Updater implements Contracts\Updater
             'changelog' => $changelog,
             'downloadLink' => $downloadLink,
         ];
-    }
-
-    public function version(): ?string
-    {
-        return $this->getPackageInformation('version');
-    }
-
-    public function downloadLink(): ?string
-    {
-        return $this->getPackageInformation('downloadLink');
-    }
-
-    public function changelog(): ?string
-    {
-        return $this->getPackageInformation('changelog');
     }
 }

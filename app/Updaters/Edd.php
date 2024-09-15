@@ -14,8 +14,6 @@ class Edd extends Abstracts\Updater implements Contracts\Updater
         'LICENSE_KEY',
     ];
 
-    private array $packageInformation;
-
     private bool $skipLicenseCheck = false;
 
     public function __construct(protected Package $package)
@@ -80,16 +78,7 @@ class Edd extends Abstracts\Updater implements Contracts\Updater
         return json_decode($body, true);
     }
 
-    private function getPackageInformation(string $key): ?string
-    {
-        if (! isset($this->packageInformation)) {
-            $this->packageInformation = $this->fetchPackageInformation();
-        }
-
-        return $this->packageInformation[$key] ?? null;
-    }
-
-    private function fetchPackageInformation(): array
+    protected function fetchPackageInformation(): array
     {
 
         if (! $this->skipLicenseCheck && ! $this->checkLicense()) {
@@ -108,20 +97,5 @@ class Edd extends Abstracts\Updater implements Contracts\Updater
             'changelog' => $this->extractLatestChangelog($sections['changelog'] ?? '', $pattern),
             'downloadLink' => $response['download_link'],
         ];
-    }
-
-    public function version(): ?string
-    {
-        return $this->getPackageInformation('version');
-    }
-
-    public function downloadLink(): ?string
-    {
-        return $this->getPackageInformation('downloadLink');
-    }
-
-    public function changelog(): ?string
-    {
-        return $this->getPackageInformation('changelog');
     }
 }

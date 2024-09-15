@@ -10,8 +10,6 @@ use Illuminate\Support\Str;
 
 class Wpml extends Updater implements Contracts\Updater
 {
-    private array $packageInformation;
-
     public function fetchTitle(): string
     {
         $product = $this->getProduct($this->package->slug);
@@ -28,11 +26,11 @@ class Wpml extends Updater implements Contracts\Updater
     {
         $errors = new Collection;
 
-        if (! env('WPML_USER_ID')) {
+        if (! getenv('WPML_USER_ID') !== false) {
             $errors->push('Env. variable WPML_USER_ID is required');
         }
 
-        if (! env('WPML_LICENSE_KEY')) {
+        if (! getenv('WPML_LICENSE_KEY') !== false) {
             $errors->push('Env. variable WPML_LICENSE_KEY is required');
         }
 
@@ -52,16 +50,7 @@ class Wpml extends Updater implements Contracts\Updater
         return collect($products['downloads']['plugins'])->firstWhere('slug', $slug);
     }
 
-    private function getPackageInformation(string $key): ?string
-    {
-        if (! isset($this->packageInformation)) {
-            $this->packageInformation = $this->fetchPackageInformation();
-        }
-
-        return $this->packageInformation[$key] ?? null;
-    }
-
-    private function fetchPackageInformation(): array
+    protected function fetchPackageInformation(): array
     {
         $product = $this->getProduct($this->package->settings['slug']);
         if (! $product) {
@@ -81,20 +70,5 @@ class Wpml extends Updater implements Contracts\Updater
             'changelog' => $changelog,
             'downloadLink' => $downloadLink,
         ];
-    }
-
-    public function version(): ?string
-    {
-        return $this->getPackageInformation('version');
-    }
-
-    public function downloadLink(): ?string
-    {
-        return $this->getPackageInformation('downloadLink');
-    }
-
-    public function changelog(): ?string
-    {
-        return $this->getPackageInformation('changelog');
     }
 }

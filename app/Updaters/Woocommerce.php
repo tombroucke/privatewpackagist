@@ -12,8 +12,6 @@ use Illuminate\Support\Str;
 
 class Woocommerce extends Abstracts\Updater implements Contracts\Updater
 {
-    private array $packageInformation;
-
     public function fetchTitle(): string
     {
         return Str::of($this->package->slug)
@@ -26,11 +24,11 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
     {
         $errors = new Collection;
 
-        if (! env('WOOCOMMERCE_ACCESS_TOKEN')) {
+        if (! getenv('WOOCOMMERCE_ACCESS_TOKEN') !== false) {
             $errors->push('Env. variable WOOCOMMERCE_ACCESS_TOKEN is required');
         }
 
-        if (! env('WOOCOMMERCE_ACCESS_TOKEN_SECRET')) {
+        if (! getenv('WOOCOMMERCE_ACCESS_TOKEN_SECRET') !== false) {
             $errors->push('Env. variable WOOCOMMERCE_ACCESS_TOKEN_SECRET is required');
         }
 
@@ -66,16 +64,7 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
         return json_decode($response, true);
     }
 
-    private function getPackageInformation(string $key): ?string
-    {
-        if (! isset($this->packageInformation)) {
-            $this->packageInformation = $this->fetchPackageInformation();
-        }
-
-        return $this->packageInformation[$key] ?? null;
-    }
-
-    private function fetchPackageInformation(): array
+    protected function fetchPackageInformation(): array
     {
 
         $subscriptions = collect($this->doRequest(
@@ -141,20 +130,5 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
             'changelog' => '',
             'downloadLink' => $product['package'],
         ];
-    }
-
-    public function version(): ?string
-    {
-        return $this->getPackageInformation('version');
-    }
-
-    public function downloadLink(): ?string
-    {
-        return $this->getPackageInformation('downloadLink');
-    }
-
-    public function changelog(): ?string
-    {
-        return $this->getPackageInformation('changelog');
     }
 }

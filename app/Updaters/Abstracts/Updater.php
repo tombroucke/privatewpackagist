@@ -11,6 +11,8 @@ use League\HTMLToMarkdown\HtmlConverter;
 
 abstract class Updater implements UpdaterContract
 {
+    protected array $packageInformation;
+
     const ENV_VARIABLES = [
     ];
 
@@ -43,5 +45,36 @@ abstract class Updater implements UpdaterContract
     {
         return (new PackageDownloader($this))
             ->test();
+    }
+
+    /**
+     * Fetch the package information from the source
+     *
+     * @return array{version: string, changelog: string, downloadLink: string}
+     */
+    abstract protected function fetchPackageInformation(): array;
+
+    private function getPackageInformation(string $key): ?string
+    {
+        if (! isset($this->packageInformation)) {
+            $this->packageInformation = $this->fetchPackageInformation();
+        }
+
+        return $this->packageInformation[$key] ?? null;
+    }
+
+    public function version(): ?string
+    {
+        return $this->getPackageInformation('version');
+    }
+
+    public function downloadLink(): ?string
+    {
+        return $this->getPackageInformation('downloadLink');
+    }
+
+    public function changelog(): ?string
+    {
+        return $this->getPackageInformation('changelog');
     }
 }
