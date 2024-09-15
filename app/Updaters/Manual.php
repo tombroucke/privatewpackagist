@@ -37,6 +37,11 @@ class Manual implements Contracts\Updater
         throw new ManualUpdaterCanNotUpdatePackages($this->package->slug);
     }
 
+    public function userAgent(): string
+    {
+        return sprintf(config('app.wp_user_agent'));
+    }
+
     public function testDownload(): bool
     {
         return true;

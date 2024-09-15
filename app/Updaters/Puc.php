@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 
 class Puc extends Abstracts\Updater implements Contracts\Updater
 {
+    private array $packageInformation;
+
     const ENV_VARIABLES = [
         'LICENSE_KEY',
     ];
@@ -29,9 +31,10 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
         return $errors;
     }
 
-    private function userAgent()
+    public function userAgent(): string
     {
-        return sprintf('WordPress/6.6.2; %s',
+        return sprintf('%s; %s',
+            config('app.wp_user_agent'),
             $this->package->settings['source_url'],
         );
     }
@@ -52,7 +55,16 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
         return $response->json();
     }
 
-    protected function packageInformation(): array
+    private function getPackageInformation(string $key): ?string
+    {
+        if (! isset($this->packageInformation)) {
+            $this->packageInformation = $this->fetchPackageInformation();
+        }
+
+        return $this->packageInformation[$key] ?? null;
+    }
+
+    private function fetchPackageInformation(): array
     {
         $licenseCheck = $this->doWpAction('licensecheck');
 
@@ -69,6 +81,25 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
         $version = $packageInformation['version'];
         $downloadLink = $packageInformation['download_url'];
 
-        return [$version, '', $downloadLink];
+        return [
+            'version' => $version,
+            'changelog' => '',
+            'downloadLink' => $downloadLink,
+        ];
+    }
+
+    public function version(): ?string
+    {
+        return $this->getPackageInformation('version');
+    }
+
+    public function downloadLink(): ?string
+    {
+        return $this->getPackageInformation('downloadLink');
+    }
+
+    public function changelog(): ?string
+    {
+        return $this->getPackageInformation('changelog');
     }
 }

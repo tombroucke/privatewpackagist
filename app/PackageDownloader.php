@@ -53,6 +53,6 @@ class PackageDownloader
 
     public function fetchZip(string $link): string
     {
-        return Http::get($link)->body();
+        return Http::withUserAgent($this->updater->userAgent())->get($link)->body();
     }
 }

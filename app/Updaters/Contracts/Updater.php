@@ -20,4 +20,6 @@ interface Updater
     public function downloadLink(): ?string;
 
     public function changelog(): ?string;
+
+    public function userAgent(): ?string;
 }

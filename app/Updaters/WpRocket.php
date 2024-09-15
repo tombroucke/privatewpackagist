@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 
 class WpRocket extends Abstracts\Updater implements Contracts\Updater
 {
+    private array $packageInformation;
+
     public function fetchTitle(): string
     {
         return Str::of($this->package->slug)
@@ -37,9 +39,10 @@ class WpRocket extends Abstracts\Updater implements Contracts\Updater
         return $errors;
     }
 
-    private function userAgent()
+    public function userAgent(): string
     {
-        return sprintf('WordPress/6.6.2; %1$s;WP-Rocket|3.6.3|%2$s|%3$s|%1$s|8.2;',
+        return sprintf('%s; %1$s;WP-Rocket|3.6.3|%2$s|%3$s|%1$s|8.2;',
+            config('app.wp_user_agent'),
             getenv('WP_ROCKET_URL'),
             getenv('WP_ROCKET_KEY'),
             getenv('WP_ROCKET_EMAIL'),
@@ -51,9 +54,17 @@ class WpRocket extends Abstracts\Updater implements Contracts\Updater
         return Http::withUserAgent($this->userAgent())->get($link)->body();
     }
 
-    protected function packageInformation(): array
+    private function getPackageInformation(string $key): ?string
     {
+        if (! isset($this->packageInformation)) {
+            $this->packageInformation = $this->fetchPackageInformation();
+        }
 
+        return $this->packageInformation[$key] ?? null;
+    }
+
+    private function fetchPackageInformation(): array
+    {
         $response = Http::withUserAgent($this->userAgent())->get('https://api.wp-rocket.me/check_update.php');
         $body = $response->body();
 
@@ -74,6 +85,25 @@ class WpRocket extends Abstracts\Updater implements Contracts\Updater
             $version,
         );
 
-        return [$version, '', $downloadLink];
+        return [
+            'version' => $version,
+            'changelog' => '',
+            'downloadLink' => $downloadLink,
+        ];
+    }
+
+    public function version(): ?string
+    {
+        return $this->getPackageInformation('version');
+    }
+
+    public function downloadLink(): ?string
+    {
+        return $this->getPackageInformation('downloadLink');
+    }
+
+    public function changelog(): ?string
+    {
+        return $this->getPackageInformation('changelog');
     }
 }

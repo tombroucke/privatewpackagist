@@ -6,38 +6,15 @@ use App\Models\Package;
 use App\Models\Release;
 use App\PackageDownloader;
 use App\ReleaseCreator;
+use App\Updaters\Contracts\Updater as UpdaterContract;
 use League\HTMLToMarkdown\HtmlConverter;
 
-abstract class Updater
+abstract class Updater implements UpdaterContract
 {
     const ENV_VARIABLES = [
     ];
 
-    protected ?string $version = null;
-
-    protected ?string $changelog = '';
-
-    protected ?string $downloadLink = null;
-
-    public function __construct(protected Package $package)
-    {
-        [$this->version, $this->changelog, $this->downloadLink] = $this->packageInformation();
-    }
-
-    public function version(): ?string
-    {
-        return $this->version;
-    }
-
-    public function downloadLink(): ?string
-    {
-        return $this->downloadLink;
-    }
-
-    public function changelog(): ?string
-    {
-        return $this->changelog;
-    }
+    public function __construct(protected Package $package) {}
 
     public function update(): ?Release
     {
@@ -46,6 +23,11 @@ abstract class Updater
 
         return (new ReleaseCreator($this, $this->package))
             ->release($downloadPath);
+    }
+
+    public function userAgent(): string
+    {
+        return config('app.wp_user_agent');
     }
 
     public function extractLatestChangelog(string $changelog, string $pattern): string
@@ -62,6 +44,4 @@ abstract class Updater
         return (new PackageDownloader($this))
             ->test();
     }
-
-    abstract protected function packageInformation(): array;
 }

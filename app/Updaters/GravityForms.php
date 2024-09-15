@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 
 class GravityForms extends Abstracts\Updater implements Contracts\Updater
 {
+    private array $packageInformation;
+
     public function fetchTitle(): string
     {
         return Str::of($this->package->slug)
@@ -28,7 +30,16 @@ class GravityForms extends Abstracts\Updater implements Contracts\Updater
         return $errors;
     }
 
-    protected function packageInformation(): array
+    private function getPackageInformation(string $key): ?string
+    {
+        if (! isset($this->packageInformation)) {
+            $this->packageInformation = $this->fetchPackageInformation();
+        }
+
+        return $this->packageInformation[$key] ?? null;
+    }
+
+    private function fetchPackageInformation(): array
     {
         $url = sprintf(
             'https://gravityapi.com/wp-content/plugins/gravitymanager/api.php?op=get_plugin&slug=%s&key=%s',
@@ -49,6 +60,25 @@ class GravityForms extends Abstracts\Updater implements Contracts\Updater
         $downloadLink = $packageInformation['download_url_latest'];
         $changelog = $this->extractLatestChangelog($packageInformation['changelog'], 'Gravity Forms v[\d.]+ Changelog\s*-+\s*((?:-.*\n)+)');
 
-        return [$version, $changelog, $downloadLink];
+        return [
+            'version' => $version,
+            'changelog' => $changelog,
+            'downloadLink' => $downloadLink,
+        ];
+    }
+
+    public function version(): ?string
+    {
+        return $this->getPackageInformation('version');
+    }
+
+    public function downloadLink(): ?string
+    {
+        return $this->getPackageInformation('downloadLink');
+    }
+
+    public function changelog(): ?string
+    {
+        return $this->getPackageInformation('changelog');
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Updaters;
 
 use App\Exceptions\WpmlProductNotFoundException;
-use App\Models\Package;
 use App\Updaters\Abstracts\Updater;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
@@ -11,10 +10,7 @@ use Illuminate\Support\Str;
 
 class Wpml extends Updater implements Contracts\Updater
 {
-    public function __construct(protected Package $package)
-    {
-        [$this->version, $this->changelog, $this->downloadLink] = $this->packageInformation();
-    }
+    private array $packageInformation;
 
     public function fetchTitle(): string
     {
@@ -56,7 +52,16 @@ class Wpml extends Updater implements Contracts\Updater
         return collect($products['downloads']['plugins'])->firstWhere('slug', $slug);
     }
 
-    protected function packageInformation(): array
+    private function getPackageInformation(string $key): ?string
+    {
+        if (! isset($this->packageInformation)) {
+            $this->packageInformation = $this->fetchPackageInformation();
+        }
+
+        return $this->packageInformation[$key] ?? null;
+    }
+
+    private function fetchPackageInformation(): array
     {
         $product = $this->getProduct($this->package->settings['slug']);
         if (! $product) {
@@ -71,6 +76,25 @@ class Wpml extends Updater implements Contracts\Updater
             getenv('WPML_LICENSE_KEY'),
         );
 
-        return [$version, $changelog, $downloadLink];
+        return [
+            'version' => $version,
+            'changelog' => $changelog,
+            'downloadLink' => $downloadLink,
+        ];
+    }
+
+    public function version(): ?string
+    {
+        return $this->getPackageInformation('version');
+    }
+
+    public function downloadLink(): ?string
+    {
+        return $this->getPackageInformation('downloadLink');
+    }
+
+    public function changelog(): ?string
+    {
+        return $this->getPackageInformation('changelog');
     }
 }

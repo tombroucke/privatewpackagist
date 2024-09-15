@@ -3,14 +3,14 @@
 namespace App\Updaters;
 
 use App\Exceptions\DownloadLinkNotSetException;
-use App\Models\Release;
-use App\PackageDownloader;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class Direct extends Abstracts\Updater implements Contracts\Updater
 {
+    private array $packageInformation;
+
     public function fetchTitle(): string
     {
 
@@ -58,14 +58,6 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
     private function cleanUrl(): string
     {
         return str_replace(' ', '', $this->package->settings['url']);
-    }
-
-    public function update(): ?Release
-    {
-        $this->setDirectPackageInformation();
-
-        return parent::update();
-
     }
 
     private function downloadPackageFromJson($json): ?array
@@ -149,22 +141,17 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
         return null;
     }
 
-    public function testDownload(): bool
+    private function getPackageInformation(string $key): ?string
     {
-        $this->setDirectPackageInformation();
+        if (! isset($this->packageInformation)) {
+            $this->packageInformation = $this->fetchPackageInformation();
+        }
 
-        return (new PackageDownloader($this))
-            ->test();
+        return $this->packageInformation[$key] ?? null;
     }
 
-    protected function packageInformation(): array
+    private function fetchPackageInformation(): array
     {
-        return [null, null, ''];
-    }
-
-    private function setDirectPackageInformation(): void
-    {
-
         $replacements = [];
         $environmentVariables = $this->environmentVariables();
 
@@ -213,8 +200,25 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
         $tempPluginDirectory = $tempPackageDirectory.DIRECTORY_SEPARATOR.$tempPluginDirectoryName;
         unlink($tempFileName);
 
-        $this->version = $this->extractVersionFromPlugin($tempPluginDirectory);
-        $this->downloadLink = $downloadLink;
-        $this->changelog = '';
+        return [
+            'version' => $this->extractVersionFromPlugin($tempPluginDirectory),
+            'changelog' => '',
+            'downloadLink' => $downloadLink,
+        ];
+    }
+
+    public function version(): ?string
+    {
+        return $this->getPackageInformation('version');
+    }
+
+    public function downloadLink(): ?string
+    {
+        return $this->getPackageInformation('downloadLink');
+    }
+
+    public function changelog(): ?string
+    {
+        return $this->getPackageInformation('changelog');
     }
 }

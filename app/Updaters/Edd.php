@@ -4,8 +4,6 @@ namespace App\Updaters;
 
 use App\Exceptions\EddLicenseCheckFailedException;
 use App\Models\Package;
-use App\Models\Release;
-use App\PackageDownloader;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -15,6 +13,8 @@ class Edd extends Abstracts\Updater implements Contracts\Updater
     const ENV_VARIABLES = [
         'LICENSE_KEY',
     ];
+
+    private array $packageInformation;
 
     private bool $skipLicenseCheck = false;
 
@@ -80,29 +80,18 @@ class Edd extends Abstracts\Updater implements Contracts\Updater
         return json_decode($body, true);
     }
 
-    public function update(): ?Release
+    private function getPackageInformation(string $key): ?string
     {
-        $this->setPackageInformation();
+        if (! isset($this->packageInformation)) {
+            $this->packageInformation = $this->fetchPackageInformation();
+        }
 
-        return parent::update();
-
+        return $this->packageInformation[$key] ?? null;
     }
 
-    public function testDownload(): bool
+    private function fetchPackageInformation(): array
     {
-        $this->setPackageInformation();
 
-        return (new PackageDownloader($this))
-            ->test();
-    }
-
-    protected function packageInformation(): array
-    {
-        return [null, '', null];
-    }
-
-    private function setPackageInformation(): void
-    {
         if (! $this->skipLicenseCheck && ! $this->checkLicense()) {
             throw new EddLicenseCheckFailedException;
         }
@@ -114,8 +103,25 @@ class Edd extends Abstracts\Updater implements Contracts\Updater
 
         $pattern = $this->package->settings['changelog_extract'] ?? '\*\*(\d+\.\d+\.\d+) \((.*?)\)\*\*\n(.*?)\n\n';
 
-        $this->changelog = $this->extractLatestChangelog($sections['changelog'] ?? '', $pattern);
-        $this->downloadLink = $response['download_link'];
-        $this->version = $version;
+        return [
+            'version' => $version,
+            'changelog' => $this->extractLatestChangelog($sections['changelog'] ?? '', $pattern),
+            'downloadLink' => $response['download_link'],
+        ];
+    }
+
+    public function version(): ?string
+    {
+        return $this->getPackageInformation('version');
+    }
+
+    public function downloadLink(): ?string
+    {
+        return $this->getPackageInformation('downloadLink');
+    }
+
+    public function changelog(): ?string
+    {
+        return $this->getPackageInformation('changelog');
     }
 }

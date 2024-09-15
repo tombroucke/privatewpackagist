@@ -7,13 +7,13 @@ use App\Exceptions\WoocommerceApiNotRespondingException;
 use App\Exceptions\WoocommerceApiRestLimitReachedException;
 use App\Exceptions\WoocommerceProductNotFoundException;
 use App\Exceptions\WoocommerceSubscriptionNotFoundException;
-use App\Models\Release;
-use App\PackageDownloader;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class Woocommerce extends Abstracts\Updater implements Contracts\Updater
 {
+    private array $packageInformation;
+
     public function fetchTitle(): string
     {
         return Str::of($this->package->slug)
@@ -35,27 +35,6 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
         }
 
         return $errors;
-    }
-
-    public function update(): ?Release
-    {
-        $this->setWoocommercePackageInformation();
-
-        return parent::update();
-    }
-
-    public function testDownload(): bool
-    {
-        $this->setWoocommercePackageInformation();
-
-        return (new PackageDownloader($this))
-            ->test();
-    }
-
-    protected function packageInformation(): array
-    {
-
-        return [null, null, ''];
     }
 
     public function doRequest(string $endpoint, string $method = 'GET', ?string $body = null)
@@ -87,7 +66,16 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
         return json_decode($response, true);
     }
 
-    public function setWoocommercePackageInformation(): void
+    private function getPackageInformation(string $key): ?string
+    {
+        if (! isset($this->packageInformation)) {
+            $this->packageInformation = $this->fetchPackageInformation();
+        }
+
+        return $this->packageInformation[$key] ?? null;
+    }
+
+    private function fetchPackageInformation(): array
     {
 
         $subscriptions = collect($this->doRequest(
@@ -148,8 +136,25 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
             throw new WoocommerceProductNotFoundException;
         }
 
-        $this->version = $product['version'];
-        $this->changelog = '';
-        $this->downloadLink = $product['package'];
+        return [
+            'version' => $product['version'],
+            'changelog' => '',
+            'downloadLink' => $product['package'],
+        ];
+    }
+
+    public function version(): ?string
+    {
+        return $this->getPackageInformation('version');
+    }
+
+    public function downloadLink(): ?string
+    {
+        return $this->getPackageInformation('downloadLink');
+    }
+
+    public function changelog(): ?string
+    {
+        return $this->getPackageInformation('changelog');
     }
 }

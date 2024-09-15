@@ -739,4 +739,5 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 -   Add more updaters
 -   Send notifications after new releases / failed releases
 -   Check mime-type application/zip for downloaded packages before creating release
+-   Refactor updaters so we can validate env variables better
 -   Exhaustive testing

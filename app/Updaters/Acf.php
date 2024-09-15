@@ -7,8 +7,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class Acf extends Abstracts\Updater implements Contracts\Updater
+class Acf extends Abstracts\Updater
 {
+    private array $packageInformation;
+
     public function fetchTitle(): string
     {
         return Str::of($this->package->slug)
@@ -28,7 +30,16 @@ class Acf extends Abstracts\Updater implements Contracts\Updater
         return $errors;
     }
 
-    protected function packageInformation(): array
+    private function getPackageInformation(string $key): ?string
+    {
+        if (! isset($this->packageInformation)) {
+            $this->packageInformation = $this->fetchPackageInformation();
+        }
+
+        return $this->packageInformation[$key] ?? null;
+    }
+
+    private function fetchPackageInformation(): array
     {
         $version = $this->getLatestVersion();
 
@@ -36,14 +47,17 @@ class Acf extends Abstracts\Updater implements Contracts\Updater
             throw new AcfFailedToGetLatestVersionException;
         }
 
-        $changelog = '';
         $downloadLink = sprintf(
             'https://connect.advancedcustomfields.com/v2/plugins/download?t=%s&p=pro&k=%s',
             $version,
             getenv('ACF_LICENSE_KEY'),
         );
 
-        return [$version, $changelog, $downloadLink];
+        return [
+            'version' => $version,
+            'changelog' => '',
+            'downloadLink' => $downloadLink,
+        ];
     }
 
     private function getLatestVersion()
@@ -55,5 +69,20 @@ class Acf extends Abstracts\Updater implements Contracts\Updater
         }
 
         return array_key_first($packages['packages']['wpengine/advanced-custom-fields-pro']);
+    }
+
+    public function version(): ?string
+    {
+        return $this->getPackageInformation('version');
+    }
+
+    public function downloadLink(): ?string
+    {
+        return $this->getPackageInformation('downloadLink');
+    }
+
+    public function changelog(): ?string
+    {
+        return $this->getPackageInformation('changelog');
     }
 }

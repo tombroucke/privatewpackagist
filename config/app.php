@@ -127,4 +127,6 @@ return [
 
     'packages_vendor_name' => env('PACKAGES_VENDOR_NAME', 'privatewpackagist'),
 
+    'wp_user_agent' => env('WP_USER_AGENT', 'WordPress/6.6.2'),
+
 ];
