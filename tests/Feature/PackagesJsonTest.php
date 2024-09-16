@@ -71,10 +71,10 @@ class PackagesJsonTest extends TestCase
     {
         $response = $this->authenticatedRequest('/repo/packages.json');
 
-        $packagesJson = $response->json();
+        $PackagesCache = $response->json();
 
-        $this->assertCount(1, $packagesJson['packages']);
-        $this->assertCount(2, $packagesJson['packages']['privatewpackagist-plugin/woocommerce-product-filters']);
+        $this->assertCount(1, $PackagesCache['packages']);
+        $this->assertCount(2, $PackagesCache['packages']['privatewpackagist-plugin/woocommerce-product-filters']);
 
         $response->assertJsonStructure([
             'packages' => [

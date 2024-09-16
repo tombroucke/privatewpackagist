@@ -8,7 +8,7 @@ use App\Models\Package;
 use App\Models\Release;
 use App\Observers\PackageObserver;
 use App\Observers\ReleaseObserver;
-use App\PackagesJson;
+use App\PackagesCache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,8 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(PackagesJson::class, function ($app) {
-            return new PackagesJson;
+        $this->app->singleton(PackagesCache::class, function ($app) {
+            return new PackagesCache;
         });
 
         $this->app->singleton('updaters', function ($app) {

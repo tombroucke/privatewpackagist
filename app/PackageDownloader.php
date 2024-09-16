@@ -52,8 +52,10 @@ class PackageDownloader
             throw new \Exception($zip);
         }
 
-        if (substr($zip, 0, 2) !== 'PK') {
-            throw new \Exception('The file is not a zip file');
+        $mimeType = finfo_buffer(finfo_open(), $zip, FILEINFO_MIME_TYPE);
+        $zipMimeTypes = ['application/zip', 'application/x-zip-compressed'];
+        if (! in_array($mimeType, $zipMimeTypes)) {
+            throw new \Exception('The downloaded file is not a valid zip file');
         }
     }
 

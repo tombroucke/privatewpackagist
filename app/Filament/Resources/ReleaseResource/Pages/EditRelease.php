@@ -35,6 +35,10 @@ class EditRelease extends EditRecord
 
     private function moveUpload($data)
     {
+        if (! isset($data['path'])) {
+            return $data;
+        }
+
         if ($data['path'] instanceof TemporaryUploadedFile) {
             $package = Package::findOrFail($data['package_id']);
 

@@ -3,7 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Package;
-use App\PackagesJson;
+use App\PackageReleasesCache;
+use App\PackagesCache;
 
 class PackageObserver
 {
@@ -17,7 +18,8 @@ class PackageObserver
      */
     public function created(Package $package): void
     {
-        //
+        (new PackageReleasesCache($package))->forget();
+        app()->make(PackagesCache::class)->forget();
     }
 
     /**
@@ -33,7 +35,8 @@ class PackageObserver
      */
     public function updated(Package $package): void
     {
-        app()->make(PackagesJson::class)->regenerate();
+        (new PackageReleasesCache($package))->forget();
+        app()->make(PackagesCache::class)->forget();
     }
 
     /**
@@ -41,7 +44,7 @@ class PackageObserver
      */
     public function deleted(Package $package): void
     {
-        //
+        app()->make(PackagesCache::class)->forget();
     }
 
     /**
@@ -49,7 +52,7 @@ class PackageObserver
      */
     public function restored(Package $package): void
     {
-        //
+        app()->make(PackagesCache::class)->forget();
     }
 
     /**
@@ -57,6 +60,6 @@ class PackageObserver
      */
     public function forceDeleted(Package $package): void
     {
-        //
+        app()->make(PackagesCache::class)->forget();
     }
 }

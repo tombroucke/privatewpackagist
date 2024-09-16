@@ -2,8 +2,10 @@
 
 namespace App\Observers;
 
+use App\Models\Package;
 use App\Models\Release;
-use App\PackagesJson;
+use App\PackageReleasesCache;
+use App\PackagesCache;
 
 class ReleaseObserver
 {
@@ -12,7 +14,7 @@ class ReleaseObserver
      */
     public function created(Release $release): void
     {
-        $this->regeneratePackagesJson();
+        $this->clearPackageCache($release->package);
     }
 
     /**
@@ -20,7 +22,7 @@ class ReleaseObserver
      */
     public function updated(Release $release): void
     {
-        $this->regeneratePackagesJson();
+        $this->clearPackageCache($release->package);
     }
 
     /**
@@ -28,7 +30,7 @@ class ReleaseObserver
      */
     public function deleted(Release $release): void
     {
-        $this->regeneratePackagesJson();
+        $this->clearPackageCache($release->package);
     }
 
     /**
@@ -36,7 +38,7 @@ class ReleaseObserver
      */
     public function restored(Release $release): void
     {
-        $this->regeneratePackagesJson();
+        $this->clearPackageCache($release->package);
     }
 
     /**
@@ -44,11 +46,12 @@ class ReleaseObserver
      */
     public function forceDeleted(Release $release): void
     {
-        $this->regeneratePackagesJson();
+        $this->clearPackageCache($release->package);
     }
 
-    private function regeneratePackagesJson(): void
+    private function clearPackageCache(Package $package): void
     {
-        app()->make(PackagesJson::class)->regenerate();
+        (new PackageReleasesCache($package))->forget();
+        app()->make(PackagesCache::class)->forget();
     }
 }

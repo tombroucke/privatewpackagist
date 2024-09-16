@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\PackagesJson;
-use Illuminate\Support\Facades\Cache;
+use App\PackagesCache;
 
 class PackagesJsonController extends Controller
 {
     public function show()
     {
-        $json = Cache::get('packages.json');
-        if (! $json) {
-            $json = app()->make(PackagesJson::class)->regenerate();
-        }
+        $json = app()->make(PackagesCache::class)->get();
 
         return response()
             ->json($json)

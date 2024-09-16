@@ -6,23 +6,23 @@ use App\Models\Package;
 use App\Updaters\Puc;
 use Tests\TestCase;
 
-class PucTest extends TestCase
+class PucFileBirdTest extends TestCase
 {
     private Puc $puc;
 
-    private $sourceUrl = 'https://tombroucke.be';
+    private $sourceUrl = 'https://satispress.tombroucke.be';
 
     public function setUp(): void
     {
         parent::setUp();
 
         $package = new Package([
-            'slug' => 'woo-discount-rules-pro',
+            'slug' => 'filebird-pro',
             'updater' => 'puc',
             'settings' => [
-                'slug' => 'discount-rules-v2-pro',
+                'slug' => 'filebird_pro',
                 'source_url' => $this->sourceUrl,
-                'endpoint_url' => 'https://my.flycart.org/',
+                'meta_data_url' => 'https://active.ninjateam.org/json/filebird.json',
             ],
         ]);
 
@@ -36,7 +36,7 @@ class PucTest extends TestCase
 
     public function test_fetch_title(): void
     {
-        $this->assertEquals('Woo Discount Rules Pro', $this->puc->fetchPackageTitle());
+        $this->assertEquals('Filebird Pro', $this->puc->fetchPackageTitle());
     }
 
     public function test_version_is_set(): void

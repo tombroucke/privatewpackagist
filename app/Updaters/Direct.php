@@ -46,7 +46,7 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
 
     public function validationErrors(): Collection
     {
-        return $this->environmentVariablesValidationErrors($this->package->settings['meta_data_url']);
+        return $this->environmentVariablesValidationErrors($this->package->settings['url']);
     }
 
     private function downloadPackageFromJson($json): ?array
