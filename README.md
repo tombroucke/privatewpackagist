@@ -734,6 +734,156 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 
 </details>
 
+<details>
+<summary>Ninja Forms - Campaign Monitor</summary>
+
+**type:** edd\
+**slug:** ninja-forms-campaign-monitor
+
+```
+{
+	slug: Campaign Monitor,
+	source_url: https://example.com,
+	endpoint_url: https://ninjaforms.com/update-check/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Ninja Forms - Conditional Logic</summary>
+
+**type:** edd\
+**slug:** ninja-forms-conditionals
+
+```
+{
+	slug: Conditional Logic,
+	source_url: https://example.com,
+	endpoint_url: https://ninjaforms.com/update-check/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Ninja Forms - Constant Contact</summary>
+
+**type:** edd\
+**slug:** ninja-forms-constant-contact
+
+```
+{
+	slug: Constant Contact,
+	source_url: https://example.com,
+	endpoint_url: https://ninjaforms.com/update-check/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Ninja Forms - Convertkit</summary>
+
+**type:** edd\
+**slug:** ninja-forms-convertkit
+
+```
+{
+	slug: Convertkit,
+	source_url: https://example.com,
+	endpoint_url: https://ninjaforms.com/update-check/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Ninja Forms - EmailOctopus</summary>
+
+**type:** edd\
+**slug:** ninja-forms-emailoctopus
+
+```
+{
+	slug: EmailOctopus,
+	source_url: https://example.com,
+	endpoint_url: https://ninjaforms.com/update-check/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Ninja Forms - Emma</summary>
+
+**type:** edd\
+**slug:** ninja-forms-emma
+
+```
+{
+	slug: Emma,
+	source_url: https://example.com,
+	endpoint_url: https://ninjaforms.com/update-check/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Ninja Forms - File Uploads</summary>
+
+**type:** edd\
+**slug:** ninja-forms-uploads
+
+```
+{
+	slug: File Uploads,
+	source_url: https://example.com,
+	endpoint_url: https://ninjaforms.com/update-check/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Ninja Forms - Layout and Styles</summary>
+
+**type:** edd\
+**slug:** ninja-forms-style
+
+```
+{
+	slug: Layout and Styles,
+	source_url: https://example.com,
+	endpoint_url: https://ninjaforms.com/update-check/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Admin Columns Pro</summary>
+
+**type:** direct\
+**slug:** admin-columns-pro
+
+```
+{
+	url: https://www.admincolumns.com/?command=download&product_key=admin-columns-pro&subscription_key=${{ ADMIN_COLUMNS_PRO_SUBSCRIPTION_KEY }}
+}
+```
+
+</details>
+
 # TODO
 
 -   Calculate checksum after download instead of when packages.json is generated, and store it in the DB.
@@ -742,3 +892,4 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 -   Check mime-type application/zip for downloaded packages before creating release
 -   Exhaustive testing
 -   Add more updaters
+-   Create dedicated updater for Admin columns pro + products
