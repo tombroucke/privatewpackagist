@@ -25,14 +25,25 @@ class ReleaseResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('package_id')
-                    ->relationship('package', 'name')
+                    ->relationship('package', 'name', function ($query, $record) {
+                        // only with updater=manual
+                        if (! $record || ($record->exists && $record->package->updater === 'manual')) {
+                            $query->where('updater', 'manual');
+                        }
+                        $query->orderBy('name');
+
+                        return $query;
+                    })
                     ->label('Package')
                     ->required()
                     ->native(false)
+                    ->preload()
+                    ->disabled(fn ($record) => $record && $record->exists && $record->package->updater !== 'manual')
                     ->searchable(),
                 Forms\Components\TextInput::make('version')
                     ->label('Version')
                     ->required()
+                    ->disabled(fn ($record) => $record && $record->exists && $record->package->updater !== 'manual')
                     ->helperText('E.g. 3.2.2'),
                 Forms\Components\Textarea::make('changelog')
                     ->label('Changelog')
@@ -40,6 +51,7 @@ class ReleaseResource extends Resource
                 Forms\Components\FileUpload::make('path')
                     ->label('File')
                     ->disk('local')
+                    ->disabled(fn ($record) => $record && $record->exists && $record->package->updater !== 'manual')
                     ->storeFiles(false)
                     ->acceptedFileTypes([
                         'application/zip',
