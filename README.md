@@ -1098,6 +1098,6 @@ Filebird needs an emailaddres (the e-mailadres you purchased filebird-pro with),
 # TODO
 
 -   Calculate checksum after download instead of when packages.json is generated, and store it in the DB.
--   Send notifications after new releases / failed releases
+-   Add failed releases in notification email
 -   Check mime-type application/zip for downloaded packages before creating release
 -   Exhaustive testing
