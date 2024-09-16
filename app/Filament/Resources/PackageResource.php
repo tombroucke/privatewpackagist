@@ -30,7 +30,7 @@ class PackageResource extends Resource
                 ->maxLength(255),
             Forms\Components\Select::make('updater')
                 ->required()
-                ->options($updaters->map(fn ($updater) => $updater['name']))
+                ->options($updaters->map(fn ($updater) => $updater::name()))
                 ->reactive()
                 ->native(false)
                 ->searchable()
@@ -50,7 +50,7 @@ class PackageResource extends Resource
         ];
 
         $updaters->each(function ($updater) use (&$schema) {
-            $updaterClass = $updater['class'];
+            $updaterClass = $updater;
             $updaterSchema = $updaterClass::formSchema();
             if ($updaterSchema) {
                 $schema[] = $updaterSchema;
@@ -96,7 +96,7 @@ class PackageResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('updater')
-                    ->options(app()->make('updaters')->map(fn ($updater) => $updater['name'])),
+                    ->options(app()->make('updaters')->map(fn ($updater) => $updater::name())),
             ])
             ->actions([
                 ActionGroup::make([

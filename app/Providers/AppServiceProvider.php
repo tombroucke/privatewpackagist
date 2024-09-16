@@ -26,12 +26,8 @@ class AppServiceProvider extends ServiceProvider
 
             return collect($updaters)->mapWithKeys(function ($updater) {
                 $className = 'App\\Updaters\\'.basename($updater, '.php');
-                $slug = basename($updater);
 
-                return [($className)::slug() => [
-                    'class' => $className,
-                    'name' => ($className)::name(),
-                ]];
+                return [($className)::slug() => $className];
             });
         });
     }
