@@ -40,6 +40,7 @@ class PackageResource extends Resource
                         'puc' => 'YahnisElsts Plugin Update Checker',
                         'direct' => 'Direct',
                         'manual' => 'Manual',
+                        'admin_columns_pro' => 'Admin Columns Pro',
                     ])
                     ->reactive()
                     ->afterStateUpdated(function (callable $set, $state) {
@@ -143,7 +144,7 @@ class PackageResource extends Resource
                             ->required(),
                     ]),
 
-                // Conditionally display fields for Gravity forms
+                // Conditionally display fields for Direct
                 Forms\Components\Section::make('Direct Details')
                     ->statePath('settings')
                     ->visible(function ($get) {
@@ -154,6 +155,18 @@ class PackageResource extends Resource
                             ->label('Url')
                             ->required()
                             ->helperText('The direct link to the package. You can use ${{ YOUR_VAR }} as a placeholder for environment variables. Note that the environment variables must be prefixed with the package prefix.'),
+                    ]),
+
+                // Conditionally display fields for Admin Columns Pro
+                Forms\Components\Section::make('Woocommerce Details')
+                    ->statePath('settings')
+                    ->visible(function ($get) {
+                        return $get('updater') === 'admin_columns_pro';
+                    })
+                    ->schema([
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug')
+                            ->required(),
                     ]),
             ]);
     }

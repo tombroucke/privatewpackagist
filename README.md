@@ -138,21 +138,166 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 
 </details>
 
-## Direct
+## Admin Columns Pro
 
 <details>
 <summary>Admin Columns Pro</summary>
 
-**type:** direct\
+**type:** admin_columns_pro\
 **slug:** admin-columns-pro
 
 ```
 {
-	url: https://www.admincolumns.com/?command=download&product_key=admin-columns-pro&subscription_key=${{ ADMIN_COLUMNS_PRO_SUBSCRIPTION_KEY }}
+	slug: admin-columns-pro
 }
 ```
 
 </details>
+<details>
+<summary>Addon - Advanced Custom Fields</summary>
+
+**type:** admin_columns_pro\
+**slug:** ac-addon-acf
+
+```
+{
+	slug: ac-addon-acf
+}
+```
+
+</details>
+<details>
+<summary>Addon - BuddyPress</summary>
+
+**type:** admin_columns_pro\
+**slug:** ac-addon-buddypress
+
+```
+{
+	slug: ac-addon-buddypress
+}
+```
+
+</details>
+<details>
+<summary>Addon - Events Calendar</summary>
+
+**type:** admin_columns_pro\
+**slug:** ac-addon-events-calendar
+
+```
+{
+	slug: ac-addon-events-calendar
+}
+```
+
+</details>
+<details>
+<summary>Addon - Gravity Forms</summary>
+
+**type:** admin_columns_pro\
+**slug:** ac-addon-gravityforms
+
+```
+{
+	slug: ac-addon-gravityforms
+}
+```
+
+</details>
+<details>
+<summary>Addon - JetEngine</summary>
+
+**type:** admin_columns_pro\
+**slug:** ac-addon-jetengine
+
+```
+{
+	slug: ac-addon-jetengine
+}
+```
+
+</details>
+<details>
+<summary>Addon - Meta Box</summary>
+
+**type:** admin_columns_pro\
+**slug:** ac-addon-metabox
+
+```
+{
+	slug: ac-addon-metabox
+}
+```
+
+</details>
+<details>
+<summary>Addon - Ninja Forms</summary>
+
+**type:** admin_columns_pro\
+**slug:** ac-addon-ninjaforms
+
+```
+{
+	slug: ac-addon-ninjaforms
+}
+```
+
+</details>
+<details>
+<summary>Addon - Pods</summary>
+
+**type:** admin_columns_pro\
+**slug:** ac-addon-pods
+
+```
+{
+	slug: ac-addon-pods
+}
+```
+
+</details>
+<details>
+<summary>Addon - Toolset Types</summary>
+
+**type:** admin_columns_pro\
+**slug:** ac-addon-types
+
+```
+{
+	slug: ac-addon-types
+}
+```
+
+</details>
+<details>
+<summary>Addon - Woocommerce</summary>
+
+**type:** admin_columns_pro\
+**slug:** ac-addon-woocommerce
+
+```
+{
+	slug: ac-addon-woocommerce
+}
+```
+
+</details>
+<details>
+<summary>Addon - Yoast SEO</summary>
+
+**type:** admin_columns_pro\
+**slug:** ac-addon-yoast-seo
+
+```
+{
+	slug: ac-addon-yoast-seo
+}
+```
+
+</details>
+
+## Direct
 
 <details>
 <summary>Revolution slider</summary>

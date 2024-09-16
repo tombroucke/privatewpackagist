@@ -2,8 +2,8 @@
 
 namespace App\Updaters;
 
+use App\Exceptions\UnexpectedResponseException;
 use App\Exceptions\WpRocketInvalidRequestException;
-use App\Exceptions\WpRocketUnexpectedResponseException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -59,7 +59,7 @@ class WpRocket extends Abstracts\Updater implements Contracts\Updater
         }
 
         if (! preg_match('@^(?<stable_version>\d+(?:\.\d+){1,3}[^|]*)\|(?<package>(?:http.+\.zip)?)\|(?<user_version>\d+(?:\.\d+){1,3}[^|]*)(?:\|+)?$@', $body, $match)) {
-            throw new WpRocketUnexpectedResponseException;
+            throw new UnexpectedResponseException('WP Rocket response does not match expected format');
         }
 
         $version = $match['user_version'];
