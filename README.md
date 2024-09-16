@@ -1064,4 +1064,3 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 -   Send notifications after new releases / failed releases
 -   Check mime-type application/zip for downloaded packages before creating release
 -   Exhaustive testing
--   Add more updaters
