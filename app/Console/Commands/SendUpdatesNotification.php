@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Release;
 use App\Models\User;
 use App\Notifications\UpdatesNotification;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 
 class SendUpdatesNotification extends Command
 {
@@ -27,12 +29,33 @@ class SendUpdatesNotification extends Command
      */
     public function handle()
     {
+
         $users = User::all();
 
+        $from = now()->subDay();
+        $to = now();
+        $packages = $this->getPackagesWithReleases([$from, $to]);
+
         foreach ($users as $user) {
-            $user->notify(new UpdatesNotification);
+            $user->notify(new UpdatesNotification($packages, $from, $to));
         }
 
         $this->info('Updates notification sent to all users');
+    }
+
+    private function getPackagesWithReleases(array $between): Collection
+    {
+        return Release::whereBetween('created_at', $between)->get()
+            ->map(function ($release) {
+                return [
+                    'package' => $release->package,
+                    'version' => $release->version,
+                ];
+            })
+            // group by package
+            ->groupBy(function ($item) {
+                return $item['package']->vendoredName();
+            })
+            ->sortKeys();
     }
 }

@@ -1,7 +1,7 @@
 <x-mail::message>
   <x-mail::panel>
     Some of the packages you are using have new releases available. These were released between
-    {{ $yesterday->format(config('app.date_time_format')) }} and {{ $now->format(config('app.date_time_format')) }}.
+    {{ $from->format(config('app.date_time_format')) }} and {{ $to->format(config('app.date_time_format')) }}.
   </x-mail::panel>
   <x-mail::table>
     <table>

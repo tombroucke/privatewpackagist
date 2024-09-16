@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Models\Release;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -15,7 +15,7 @@ class UpdatesNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(private Collection $packages, private Carbon $from, private Carbon $to)
     {
         //
     }
@@ -35,13 +35,10 @@ class UpdatesNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $now = now();
-        $yesterday = now()->subDay();
-        $packages = $this->getPackagesWithReleases([$yesterday, $now]);
         $message = (new MailMessage)
-            ->markdown('emails.updates', ['packages' => $packages,
-                'yesterday' => $yesterday,
-                'now' => $now,
+            ->markdown('emails.updates', ['packages' => $this->packages,
+                'from' => $this->from,
+                'to' => $this->to,
             ]);
 
         return $message;
@@ -57,21 +54,5 @@ class UpdatesNotification extends Notification
         return [
             //
         ];
-    }
-
-    private function getPackagesWithReleases(array $between): Collection
-    {
-        return Release::whereBetween('created_at', $between)->get()
-            ->map(function ($release) {
-                return [
-                    'package' => $release->package,
-                    'version' => $release->version,
-                ];
-            })
-            // group by package
-            ->groupBy(function ($item) {
-                return $item['package']->vendoredName();
-            })
-            ->sortKeys();
     }
 }
