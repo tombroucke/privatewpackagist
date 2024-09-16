@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 
 class Puc extends Abstracts\Updater implements Contracts\Updater
 {
+    use Concerns\EnvironmentVariablesInUrl;
+
     const ENV_VARIABLES = [
         'LICENSE_KEY',
     ];
@@ -51,40 +53,7 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
 
     public function validationErrors(): Collection
     {
-        $errors = new Collection;
-
-        $environmentVariables = $this->environmentVariables();
-        if ($environmentVariables) {
-            foreach ($environmentVariables as $environmentVariable) {
-                if (! getenv($environmentVariable)) {
-                    $errors->push('Env. variable '.$environmentVariable.' is required');
-                }
-            }
-        }
-
-        return $errors;
-    }
-
-    private function environmentVariables(): ?array
-    {
-        preg_match_all('/\${{([A-Za-z_]+)}}/', str_replace(' ', '', $this->cleanUrl()), $matches);
-
-        if (empty($matches[1])) {
-            return null;
-        }
-
-        return array_map(function ($match) {
-            $match = preg_replace('/^'.$this->package->prefix().'/', '', $match);
-
-            return $this->package->prefixedEnvironmentVariable($match);
-        }, $matches[1]);
-
-        return $matches[1];
-    }
-
-    private function cleanUrl(): string
-    {
-        return str_replace(' ', '', $this->package->settings['meta_data_url']);
+        return $this->environmentVariablesValidationErrors($this->package->settings['meta_data_url']);
     }
 
     public function userAgent(): string
@@ -102,16 +71,7 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
 
     public function doWpAction(string $action)
     {
-        $replacements = [];
-        $environmentVariables = $this->environmentVariables();
-
-        if ($environmentVariables) {
-            foreach ($environmentVariables as $environmentVariable) {
-                $replacements['${{'.$environmentVariable.'}}'] = getenv($environmentVariable);
-            }
-        }
-
-        $metaDataLink = strtr($this->cleanUrl(), $replacements);
+        $metaDataLink = $this->replaceEnvironmentVariables($this->package->settings['meta_data_url']);
 
         $response = Http::withUserAgent($this->userAgent())->get($metaDataLink, [
             'wpaction' => $action,

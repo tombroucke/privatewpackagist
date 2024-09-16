@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 
 class Direct extends Abstracts\Updater implements Contracts\Updater
 {
+    use Concerns\EnvironmentVariablesInUrl;
+
     public static function name(): string
     {
         return 'Direct';
@@ -44,40 +46,7 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
 
     public function validationErrors(): Collection
     {
-        $errors = new Collection;
-
-        $environmentVariables = $this->environmentVariables();
-        if ($environmentVariables) {
-            foreach ($environmentVariables as $environmentVariable) {
-                if (! getenv($environmentVariable)) {
-                    $errors->push('Env. variable '.$environmentVariable.' is required');
-                }
-            }
-        }
-
-        return $errors;
-    }
-
-    private function environmentVariables(): ?array
-    {
-        preg_match_all('/\${{([A-Za-z_]+)}}/', str_replace(' ', '', $this->cleanUrl()), $matches);
-
-        if (empty($matches[1])) {
-            return null;
-        }
-
-        return array_map(function ($match) {
-            $match = preg_replace('/^'.$this->package->prefix().'/', '', $match);
-
-            return $this->package->prefixedEnvironmentVariable($match);
-        }, $matches[1]);
-
-        return $matches[1];
-    }
-
-    private function cleanUrl(): string
-    {
-        return str_replace(' ', '', $this->package->settings['url']);
+        return $this->environmentVariablesValidationErrors($this->package->settings['meta_data_url']);
     }
 
     private function downloadPackageFromJson($json): ?array
@@ -163,16 +132,8 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
 
     protected function fetchPackageInformation(): array
     {
-        $replacements = [];
-        $environmentVariables = $this->environmentVariables();
+        $downloadLink = $this->replaceEnvironmentVariables($this->package->settings['url']);
 
-        if ($environmentVariables) {
-            foreach ($environmentVariables as $environmentVariable) {
-                $replacements['${{'.$environmentVariable.'}}'] = getenv($environmentVariable);
-            }
-        }
-
-        $downloadLink = strtr($this->cleanUrl(), $replacements);
         $response = Http::get($downloadLink);
 
         if (! $response->successful()) {
