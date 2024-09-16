@@ -4,12 +4,54 @@ namespace App\Updaters;
 
 use App\Exceptions\EddLicenseCheckFailedException;
 use App\Models\Package;
+use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class Edd extends Abstracts\Updater implements Contracts\Updater
 {
+    public static function name(): string
+    {
+        return 'Easy Digital Downloads';
+    }
+
+    public static function formSchema(): ?Section
+    {
+        return Forms\Components\Section::make('EDD Details')
+            ->statePath('settings')
+            ->visible(function ($get) {
+                return $get('updater') === 'edd';
+            })
+            ->schema([
+                Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
+                    ->required(),
+                Forms\Components\TextInput::make('source_url')
+                    ->label('Source URL')
+                    ->url()
+                    ->required(),
+                Forms\Components\TextInput::make('endpoint_url')
+                    ->label('Endpoint URL')
+                    ->url()
+                    ->required(),
+                Forms\Components\Select::make('method')
+                    ->label('Method')
+                    ->options([
+                        'GET' => 'GET',
+                        'POST' => 'POST',
+                    ])
+                    ->required(),
+                Forms\Components\TextInput::make('changelog_extract')
+                    ->label('Changelog extract')
+                    ->helperText('Regular expression to extract changelog'),
+                Forms\Components\Checkbox::make('skip_license_check')
+                    ->label('Skip license check')
+                    ->helperText('Some plugins like WP All Import does not return a valid license key. Only tick this box if you get a \'403 Invalid license\' error'),
+            ]);
+    }
+
     const ENV_VARIABLES = [
         'LICENSE_KEY',
     ];
@@ -23,7 +65,7 @@ class Edd extends Abstracts\Updater implements Contracts\Updater
         parent::__construct($package);
     }
 
-    public function fetchTitle(): string
+    public function fetchPackageTitle(): string
     {
         $response = $this->doEddAction('check_license');
 

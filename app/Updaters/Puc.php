@@ -4,6 +4,8 @@ namespace App\Updaters;
 
 use App\Exceptions\PucLicenceCheckFailed;
 use App\Exceptions\PucNoDownloadLinkException;
+use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -14,7 +16,34 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
         'LICENSE_KEY',
     ];
 
-    public function fetchTitle(): string
+    public static function name(): string
+    {
+        return 'YahnisElsts Plugin Update Checker';
+    }
+
+    public static function formSchema(): ?Section
+    {
+        return Forms\Components\Section::make('PuC Details')
+            ->statePath('settings')
+            ->visible(function ($get) {
+                return $get('updater') === 'puc';
+            })
+            ->schema([
+                Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
+                    ->required(),
+                Forms\Components\TextInput::make('source_url')
+                    ->label('Source URL')
+                    ->url()
+                    ->required(),
+                Forms\Components\TextInput::make('endpoint_url')
+                    ->label('Endpoint URL')
+                    ->url()
+                    ->required(),
+            ]);
+    }
+
+    public function fetchPackageTitle(): string
     {
         return Str::of($this->package->slug)
             ->title()

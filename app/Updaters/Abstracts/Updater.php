@@ -7,6 +7,7 @@ use App\Models\Release;
 use App\PackageDownloader;
 use App\ReleaseCreator;
 use App\Updaters\Contracts\Updater as UpdaterContract;
+use Illuminate\Support\Str;
 use League\HTMLToMarkdown\HtmlConverter;
 
 abstract class Updater implements UpdaterContract
@@ -17,6 +18,11 @@ abstract class Updater implements UpdaterContract
     ];
 
     public function __construct(protected Package $package) {}
+
+    final public static function slug(): string
+    {
+        return Str::snake((new \ReflectionClass(static::class))->getShortName());
+    }
 
     public function update(): ?Release
     {

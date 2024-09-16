@@ -19,6 +19,21 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PackagesJson::class, function ($app) {
             return new PackagesJson;
         });
+
+        $this->app->singleton('updaters', function ($app) {
+            // glob() is used to get all the files in the directory
+            $updaters = glob(app_path('Updaters/*.php'));
+
+            return collect($updaters)->mapWithKeys(function ($updater) {
+                $className = 'App\\Updaters\\'.basename($updater, '.php');
+                $slug = basename($updater);
+
+                return [($className)::slug() => [
+                    'class' => $className,
+                    'name' => ($className)::name(),
+                ]];
+            });
+        });
     }
 
     /**

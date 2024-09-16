@@ -35,7 +35,7 @@ class AcfTest extends TestCase
 
     public function test_fetch_title(): void
     {
-        $this->assertEquals('Advanced Custom Fields Pro', $this->acf->fetchTitle());
+        $this->assertEquals('Advanced Custom Fields Pro', $this->acf->fetchPackageTitle());
     }
 
     public function test_version_is_set(): void

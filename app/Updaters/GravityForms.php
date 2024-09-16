@@ -3,13 +3,34 @@
 namespace App\Updaters;
 
 use App\Exceptions\IncorrectApiResponseCodeException;
+use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class GravityForms extends Abstracts\Updater implements Contracts\Updater
 {
-    public function fetchTitle(): string
+    public static function name(): string
+    {
+        return 'Gravity Forms';
+    }
+
+    public static function formSchema(): ?Section
+    {
+        return Forms\Components\Section::make('Gravity Forms Details')
+            ->statePath('settings')
+            ->visible(function ($get) {
+                return $get('updater') === 'gravity_forms';
+            })
+            ->schema([
+                Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
+                    ->required(),
+            ]);
+    }
+
+    public function fetchPackageTitle(): string
     {
         return Str::of($this->package->slug)
             ->title()

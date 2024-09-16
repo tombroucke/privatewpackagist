@@ -37,7 +37,7 @@ class DirectTest extends TestCase
 
     public function test_fetch_title(): void
     {
-        $this->assertEquals('Js Composer', $this->direct->fetchTitle());
+        $this->assertEquals('Js Composer', $this->direct->fetchPackageTitle());
     }
 
     public function test_version_is_set(): void

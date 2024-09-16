@@ -7,12 +7,33 @@ use App\Exceptions\WoocommerceApiNotRespondingException;
 use App\Exceptions\WoocommerceApiRestLimitReachedException;
 use App\Exceptions\WoocommerceProductNotFoundException;
 use App\Exceptions\WoocommerceSubscriptionNotFoundException;
+use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class Woocommerce extends Abstracts\Updater implements Contracts\Updater
 {
-    public function fetchTitle(): string
+    public static function name(): string
+    {
+        return 'Woocommerce';
+    }
+
+    public static function formSchema(): ?Section
+    {
+        return Forms\Components\Section::make('Woocommerce Details')
+            ->statePath('settings')
+            ->visible(function ($get) {
+                return $get('updater') === 'woocommerce';
+            })
+            ->schema([
+                Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
+                    ->required(),
+            ]);
+    }
+
+    public function fetchPackageTitle(): string
     {
         return Str::of($this->package->slug)
             ->title()

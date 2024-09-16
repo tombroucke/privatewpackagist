@@ -35,7 +35,7 @@ class GravityFormsTest extends TestCase
 
     public function test_fetch_title(): void
     {
-        $this->assertEquals('Gravityformszapier', $this->gravityForms->fetchTitle());
+        $this->assertEquals('Gravityformszapier', $this->gravityForms->fetchPackageTitle());
     }
 
     public function test_version_is_set(): void

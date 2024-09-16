@@ -3,13 +3,35 @@
 namespace App\Updaters;
 
 use App\Exceptions\DownloadLinkNotSetException;
+use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class Direct extends Abstracts\Updater implements Contracts\Updater
 {
-    public function fetchTitle(): string
+    public static function name(): string
+    {
+        return 'Direct';
+    }
+
+    public static function formSchema(): ?Section
+    {
+        return Forms\Components\Section::make('Direct Details')
+            ->statePath('settings')
+            ->visible(function ($get) {
+                return $get('updater') === 'direct';
+            })
+            ->schema([
+                Forms\Components\TextInput::make('url')
+                    ->label('Url')
+                    ->required()
+                    ->helperText('The direct link to the package. You can use ${{ YOUR_VAR }} as a placeholder for environment variables. Note that the environment variables must be prefixed with the package prefix.'),
+            ]);
+    }
+
+    public function fetchPackageTitle(): string
     {
 
         $name = Str::of($this->package->slug)

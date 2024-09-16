@@ -3,13 +3,34 @@
 namespace App\Updaters;
 
 use App\Exceptions\UnexpectedResponseException;
+use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class AdminColumnsPro extends Abstracts\Updater
 {
-    public function fetchTitle(): string
+    public static function name(): string
+    {
+        return 'Admin Columns Pro';
+    }
+
+    public static function formSchema(): ?Section
+    {
+        return Forms\Components\Section::make('Admin Columns Pro Details')
+            ->statePath('settings')
+            ->visible(function ($get) {
+                return $get('updater') === 'admin_columns_pro';
+            })
+            ->schema([
+                Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
+                    ->required(),
+            ]);
+    }
+
+    public function fetchPackageTitle(): string
     {
         return Str::of($this->package->slug)
             ->title()

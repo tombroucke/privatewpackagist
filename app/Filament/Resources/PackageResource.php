@@ -23,156 +23,42 @@ class PackageResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $updaters = app()->make('updaters');
+        $schema = [
+            Forms\Components\TextInput::make('slug')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\Select::make('updater')
+                ->required()
+                ->options($updaters->map(fn ($updater) => $updater['name']))
+                ->reactive()
+                ->native(false)
+                ->searchable()
+                ->afterStateUpdated(function (callable $set, $state) {
+                    $set('updater', $state);
+                }),
+            Forms\Components\Select::make('type')
+                ->required()
+                ->options([
+                    'wordpress-plugin' => 'WordPress Plugin',
+                    'wordpress-muplugin' => 'WordPress MU Plugin',
+                    'wordpress-theme' => 'WordPress Theme',
+                ])
+                ->native(false)
+                ->searchable()
+                ->default('wordpress-plugin'),
+        ];
+
+        $updaters->each(function ($updater) use (&$schema) {
+            $updaterClass = $updater['class'];
+            $updaterSchema = $updaterClass::formSchema();
+            if ($updaterSchema) {
+                $schema[] = $updaterSchema;
+            }
+        });
+
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('slug')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('updater')
-                    ->required()
-                    ->options([
-                        'acf' => 'ACF',
-                        'admin_columns_pro' => 'Admin Columns Pro',
-                        'direct' => 'Direct',
-                        'edd' => 'Easy Digital Downloads',
-                        'gravity_forms' => 'Gravity Forms',
-                        'manual' => 'Manual',
-                        'wp_rocket' => 'WP Rocket',
-                        'wpml' => 'WPML',
-                        'woocommerce' => 'WooCommerce',
-                        'puc' => 'YahnisElsts Plugin Update Checker',
-                    ])
-                    ->reactive()
-                    ->native(false)
-                    ->searchable()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        $set('updater', $state);
-                    }),
-                Forms\Components\Select::make('type')
-                    ->required()
-                    ->options([
-                        'wordpress-plugin' => 'WordPress Plugin',
-                        'wordpress-muplugin' => 'WordPress MU Plugin',
-                        'wordpress-theme' => 'WordPress Theme',
-                    ])
-                    ->native(false)
-                    ->searchable()
-                    ->default('wordpress-plugin'),
-
-                // Conditionally display fields for EDD
-                Forms\Components\Section::make('EDD Details')
-                    ->statePath('settings')
-                    ->visible(function ($get) {
-                        return $get('updater') === 'edd';
-                    })
-                    ->schema([
-                        Forms\Components\TextInput::make('slug')
-                            ->label('Slug')
-                            ->required(),
-                        Forms\Components\TextInput::make('source_url')
-                            ->label('Source URL')
-                            ->url()
-                            ->required(),
-                        Forms\Components\TextInput::make('endpoint_url')
-                            ->label('Endpoint URL')
-                            ->url()
-                            ->required(),
-                        Forms\Components\Select::make('method')
-                            ->label('Method')
-                            ->options([
-                                'GET' => 'GET',
-                                'POST' => 'POST',
-                            ])
-                            ->required(),
-                        Forms\Components\TextInput::make('changelog_extract')
-                            ->label('Changelog extract')
-                            ->helperText('Regular expression to extract changelog'),
-                        Forms\Components\Checkbox::make('skip_license_check')
-                            ->label('Skip license check')
-                            ->helperText('Some plugins like WP All Import does not return a valid license key. Only tick this box if you get a \'403 Invalid license\' error'),
-                    ]),
-
-                // Conditionally display fields for WPML
-                Forms\Components\Section::make('WPML Details')
-                    ->statePath('settings')
-                    ->visible(function ($get) {
-                        return $get('updater') === 'wpml';
-                    })
-                    ->schema([
-                        Forms\Components\TextInput::make('slug')
-                            ->label('Slug')
-                            ->required(),
-                    ]),
-
-                // Conditionally display fields for Woocommerce
-                Forms\Components\Section::make('Woocommerce Details')
-                    ->statePath('settings')
-                    ->visible(function ($get) {
-                        return $get('updater') === 'woocommerce';
-                    })
-                    ->schema([
-                        Forms\Components\TextInput::make('slug')
-                            ->label('Slug')
-                            ->required(),
-                    ]),
-
-                // Conditionally display fields for Gravity forms
-                Forms\Components\Section::make('Gravity Forms Details')
-                    ->statePath('settings')
-                    ->visible(function ($get) {
-                        return $get('updater') === 'gravity_forms';
-                    })
-                    ->schema([
-                        Forms\Components\TextInput::make('slug')
-                            ->label('Slug')
-                            ->required(),
-                    ]),
-
-                // Conditionally display fields for PuC
-                Forms\Components\Section::make('PuC Details')
-                    ->statePath('settings')
-                    ->visible(function ($get) {
-                        return $get('updater') === 'puc';
-                    })
-                    ->schema([
-                        Forms\Components\TextInput::make('slug')
-                            ->label('Slug')
-                            ->required(),
-                        Forms\Components\TextInput::make('source_url')
-                            ->label('Source URL')
-                            ->url()
-                            ->required(),
-                        Forms\Components\TextInput::make('endpoint_url')
-                            ->label('Endpoint URL')
-                            ->url()
-                            ->required(),
-                    ]),
-
-                // Conditionally display fields for Direct
-                Forms\Components\Section::make('Direct Details')
-                    ->statePath('settings')
-                    ->visible(function ($get) {
-                        return $get('updater') === 'direct';
-                    })
-                    ->schema([
-                        Forms\Components\TextInput::make('url')
-                            ->label('Url')
-                            ->required()
-                            ->helperText('The direct link to the package. You can use ${{ YOUR_VAR }} as a placeholder for environment variables. Note that the environment variables must be prefixed with the package prefix.'),
-                    ]),
-
-                // Conditionally display fields for Admin Columns Pro
-                Forms\Components\Section::make('Woocommerce Details')
-                    ->statePath('settings')
-                    ->visible(function ($get) {
-                        return $get('updater') === 'admin_columns_pro';
-                    })
-                    ->schema([
-                        Forms\Components\TextInput::make('slug')
-                            ->label('Slug')
-                            ->required(),
-                    ]),
-            ]);
+            ->schema($schema);
     }
 
     public static function table(Table $table): Table
@@ -209,19 +95,8 @@ class PackageResource extends Resource
                     ->color('success'),
             ])
             ->filters([
-                // filter by updater
                 Tables\Filters\SelectFilter::make('updater')
-                    ->options([
-                        'edd' => 'Easy Digital Downloads',
-                        'wpml' => 'WPML',
-                        'woocommerce' => 'WooCommerce',
-                        'acf' => 'ACF',
-                        'gravity_forms' => 'Gravity Forms',
-                        'wp_rocket' => 'WP Rocket',
-                        'puc' => 'YahnisElsts Plugin Update Checker',
-                        'direct' => 'Direct',
-                        'manual' => 'Manual',
-                    ]),
+                    ->options(app()->make('updaters')->map(fn ($updater) => $updater['name'])),
             ])
             ->actions([
                 ActionGroup::make([

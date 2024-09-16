@@ -38,7 +38,7 @@ class WoocommerceTest extends TestCase
 
     public function test_fetch_title(): void
     {
-        $this->assertEquals('Woocommerce Product Filters', $this->woocommerce->fetchTitle());
+        $this->assertEquals('Woocommerce Product Filters', $this->woocommerce->fetchPackageTitle());
     }
 
     public function test_version_is_set(): void

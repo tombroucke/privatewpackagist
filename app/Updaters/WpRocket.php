@@ -4,13 +4,24 @@ namespace App\Updaters;
 
 use App\Exceptions\UnexpectedResponseException;
 use App\Exceptions\WpRocketInvalidRequestException;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class WpRocket extends Abstracts\Updater implements Contracts\Updater
 {
-    public function fetchTitle(): string
+    public static function name(): string
+    {
+        return 'Wp Rocket';
+    }
+
+    public static function formSchema(): ?Section
+    {
+        return null;
+    }
+
+    public function fetchPackageTitle(): string
     {
         return Str::of($this->package->slug)
             ->title()

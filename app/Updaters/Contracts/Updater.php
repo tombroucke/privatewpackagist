@@ -3,13 +3,20 @@
 namespace App\Updaters\Contracts;
 
 use App\Models\Release;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
 
 interface Updater
 {
+    public static function name(): string;
+
+    public static function slug(): string;
+
+    public static function formSchema(): ?Section;
+
     public function validationErrors(): Collection;
 
-    public function fetchTitle(): string;
+    public function fetchPackageTitle(): string;
 
     public function update(): ?Release;
 

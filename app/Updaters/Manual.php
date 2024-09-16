@@ -5,6 +5,7 @@ namespace App\Updaters;
 use App\Exceptions\ManualUpdaterCanNotUpdatePackages;
 use App\Models\Package;
 use App\Models\Release;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -13,9 +14,24 @@ class Manual implements Contracts\Updater
     const ENV_VARIABLES = [
     ];
 
+    public static function name(): string
+    {
+        return 'Manual';
+    }
+
+    public static function slug(): string
+    {
+        return 'manual';
+    }
+
+    public static function formSchema(): ?Section
+    {
+        return null;
+    }
+
     public function __construct(private Package $package) {}
 
-    public function fetchTitle(): string
+    public function fetchPackageTitle(): string
     {
         $name = Str::of($this->package->slug)
             ->title()

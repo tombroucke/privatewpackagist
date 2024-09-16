@@ -38,7 +38,7 @@ class WpRocketTest extends TestCase
 
     public function test_fetch_title(): void
     {
-        $this->assertEquals('Wp Rocket', $this->wpRocket->fetchTitle());
+        $this->assertEquals('Wp Rocket', $this->wpRocket->fetchPackageTitle());
     }
 
     public function test_version_is_set(): void

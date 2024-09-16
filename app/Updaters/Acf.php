@@ -3,13 +3,24 @@
 namespace App\Updaters;
 
 use App\Exceptions\AcfFailedToGetLatestVersionException;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class Acf extends Abstracts\Updater
 {
-    public function fetchTitle(): string
+    public static function name(): string
+    {
+        return 'Advanced Custom Fields Pro';
+    }
+
+    public static function formSchema(): ?Section
+    {
+        return null;
+    }
+
+    public function fetchPackageTitle(): string
     {
         return Str::of($this->package->slug)
             ->title()

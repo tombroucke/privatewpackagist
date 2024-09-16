@@ -35,7 +35,7 @@ class AdminColumnsProTest extends TestCase
 
     public function test_fetch_title(): void
     {
-        $this->assertEquals('Admin Columns Pro', $this->adminColumnsPro->fetchTitle());
+        $this->assertEquals('Admin Columns Pro', $this->adminColumnsPro->fetchPackageTitle());
     }
 
     public function test_version_is_set(): void

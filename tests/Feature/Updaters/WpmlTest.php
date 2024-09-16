@@ -38,7 +38,7 @@ class WpmlTest extends TestCase
 
     public function test_fetch_title(): void
     {
-        $this->assertEquals('Advanced Custom Fields Multilingual', $this->wpml->fetchTitle());
+        $this->assertEquals('Advanced Custom Fields Multilingual', $this->wpml->fetchPackageTitle());
     }
 
     public function test_version_is_set(): void

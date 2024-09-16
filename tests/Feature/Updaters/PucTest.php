@@ -36,7 +36,7 @@ class PucTest extends TestCase
 
     public function test_fetch_title(): void
     {
-        $this->assertEquals('Woo Discount Rules Pro', $this->puc->fetchTitle());
+        $this->assertEquals('Woo Discount Rules Pro', $this->puc->fetchPackageTitle());
     }
 
     public function test_version_is_set(): void

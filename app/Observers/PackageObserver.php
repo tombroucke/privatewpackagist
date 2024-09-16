@@ -9,7 +9,7 @@ class PackageObserver
 {
     public function creating(Package $package): void
     {
-        $package->name = $package->updater()->fetchTitle();
+        $package->name = $package->updater()->fetchPackageTitle();
     }
 
     /**
@@ -25,7 +25,7 @@ class PackageObserver
      */
     public function updating(Package $package): void
     {
-        $package->name = $package->updater()->fetchTitle();
+        $package->name = $package->updater()->fetchPackageTitle();
     }
 
     /**

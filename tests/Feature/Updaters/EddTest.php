@@ -39,7 +39,7 @@ class EddTest extends TestCase
 
     public function test_fetch_title(): void
     {
-        $this->assertEquals('PDF Invoices & Packing Slips for WooCommerce - Professional', $this->edd->fetchTitle());
+        $this->assertEquals('PDF Invoices & Packing Slips for WooCommerce - Professional', $this->edd->fetchPackageTitle());
     }
 
     public function test_version_is_set(): void

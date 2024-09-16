@@ -4,13 +4,34 @@ namespace App\Updaters;
 
 use App\Exceptions\WpmlProductNotFoundException;
 use App\Updaters\Abstracts\Updater;
+use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class Wpml extends Updater implements Contracts\Updater
 {
-    public function fetchTitle(): string
+    public static function name(): string
+    {
+        return 'WPML';
+    }
+
+    public static function formSchema(): ?Section
+    {
+        return Forms\Components\Section::make('WPML Details')
+            ->statePath('settings')
+            ->visible(function ($get) {
+                return $get('updater') === 'wpml';
+            })
+            ->schema([
+                Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
+                    ->required(),
+            ]);
+    }
+
+    public function fetchPackageTitle(): string
     {
         $product = $this->getProduct($this->package->slug);
 
