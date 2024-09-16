@@ -43,6 +43,8 @@ class PackageResource extends Resource
                         'admin_columns_pro' => 'Admin Columns Pro',
                     ])
                     ->reactive()
+                    ->native(false)
+                    ->searchable()
                     ->afterStateUpdated(function (callable $set, $state) {
                         $set('updater', $state);
                     }),
@@ -53,6 +55,8 @@ class PackageResource extends Resource
                         'wordpress-muplugin' => 'WordPress MU Plugin',
                         'wordpress-theme' => 'WordPress Theme',
                     ])
+                    ->native(false)
+                    ->searchable()
                     ->default('wordpress-plugin'),
 
                 // Conditionally display fields for EDD
