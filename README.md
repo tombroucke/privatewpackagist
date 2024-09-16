@@ -1065,4 +1065,3 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 -   Check mime-type application/zip for downloaded packages before creating release
 -   Exhaustive testing
 -   Add more updaters
--   Create dedicated updater for Admin columns pro + products
