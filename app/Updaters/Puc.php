@@ -2,7 +2,6 @@
 
 namespace App\Updaters;
 
-use App\Exceptions\PucLicenceCheckFailed;
 use App\Exceptions\PucNoDownloadLinkException;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -36,9 +35,8 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
                     ->label('Source URL')
                     ->url()
                     ->required(),
-                Forms\Components\TextInput::make('endpoint_url')
-                    ->label('Endpoint URL')
-                    ->url()
+                Forms\Components\TextInput::make('meta_data_url')
+                    ->label('Metadata URL')
                     ->required(),
             ]);
     }
@@ -55,7 +53,38 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
     {
         $errors = new Collection;
 
+        $environmentVariables = $this->environmentVariables();
+        if ($environmentVariables) {
+            foreach ($environmentVariables as $environmentVariable) {
+                if (! getenv($environmentVariable)) {
+                    $errors->push('Env. variable '.$environmentVariable.' is required');
+                }
+            }
+        }
+
         return $errors;
+    }
+
+    private function environmentVariables(): ?array
+    {
+        preg_match_all('/\${{([A-Za-z_]+)}}/', str_replace(' ', '', $this->cleanUrl()), $matches);
+
+        if (empty($matches[1])) {
+            return null;
+        }
+
+        return array_map(function ($match) {
+            $match = preg_replace('/^'.$this->package->prefix().'/', '', $match);
+
+            return $this->package->prefixedEnvironmentVariable($match);
+        }, $matches[1]);
+
+        return $matches[1];
+    }
+
+    private function cleanUrl(): string
+    {
+        return str_replace(' ', '', $this->package->settings['meta_data_url']);
     }
 
     public function userAgent(): string
@@ -66,14 +95,25 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
         );
     }
 
-    private function licenseKey(): string
+    public function licenseKey(): string
     {
         return $this->package->environmentVariable('LICENSE_KEY');
     }
 
     public function doWpAction(string $action)
     {
-        $response = Http::withUserAgent($this->userAgent())->get($this->package->settings['endpoint_url'], [
+        $replacements = [];
+        $environmentVariables = $this->environmentVariables();
+
+        if ($environmentVariables) {
+            foreach ($environmentVariables as $environmentVariable) {
+                $replacements['${{'.$environmentVariable.'}}'] = getenv($environmentVariable);
+            }
+        }
+
+        $metaDataLink = strtr($this->cleanUrl(), $replacements);
+
+        $response = Http::withUserAgent($this->userAgent())->get($metaDataLink, [
             'wpaction' => $action,
             'dlid' => $this->licenseKey(),
             'wpslug' => $this->package->settings['slug'],
@@ -84,12 +124,6 @@ class Puc extends Abstracts\Updater implements Contracts\Updater
 
     protected function fetchPackageInformation(): array
     {
-        $licenseCheck = $this->doWpAction('licensecheck');
-
-        if (($licenseCheck['license_check'] ?? true) !== true) {
-            throw new PucLicenceCheckFailed;
-        }
-
         $packageInformation = $this->doWpAction('updatecheck');
 
         if (! isset($packageInformation['download_url']) || $packageInformation === '') {

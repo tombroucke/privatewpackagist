@@ -95,7 +95,7 @@ php artisan app:update-packages
 -   Required fields are
     -   **Slug**: You need to find this in the plugin / theme source code. E.g. 'discount-rules-v2-pro'
     -   **Source url**: The url attached to your license
-    -   **Endpoint url**: You need to find this in the plugin source code (search for `Puc_v4_Factory::buildUpdateChecker`). E.g. 'https://my.flycart.org/'
+    -   **Metadata url**: This is a little tricky to find (search for `Puc_v4_Factory::buildUpdateChecker`). E.g. 'https://my.flycart.org?wpaction=updatecheck&wpslug=discount-rules-v2-pro&dlid=${{ WOO_DISCOUNT_RULES_PRO_LICENSE_KEY }}'
 
 ## WP Rocket packages
 
@@ -106,6 +106,10 @@ php artisan app:update-packages
 Packages with direct links E.g. Revolution Slider, WPBakery Visual Composer
 
 -   You can add environment variable in the name. Note that the variable needs to be prefixed with the plugin name
+
+## Manual packages
+
+For plugins that are not (yet) supported, you can add a package and choose a the Manual updater. You can create a release manually and upload your plugin file.
 
 # Usage
 
@@ -813,6 +817,8 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 
 ## PuC
 
+These are a little tricky, not all implementations are the same. This will need a little research to get the right metadata_url, and might need some code changes. (See `app/Listeners/FilebirdProPackageInformationListener`)
+
 <details>
 <summary>Woo Discount Rules Pro</summary>
 
@@ -823,9 +829,27 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 {
 	slug: discount-rules-v2-pro,
 	source_url: https://example.com,
-	endpoint_url: https://my.flycart.org/
+	metadata_url: https://my.flycart.org?wpaction=updatecheck&wpslug=discount-rules-v2-pro&dlid=${{ WOO_DISCOUNT_RULES_PRO_LICENSE_KEY }}
 }
 ```
+
+</details>
+
+<details>
+<summary>Filebird Pro</summary>
+
+**type:** puc\
+**slug:** filebird-pro
+
+```
+{
+	slug: filebird_pro,
+	source_url: https://example.com,
+	metadata_url: https://active.ninjateam.org/json/filebird.json
+}
+```
+
+Filebird needs an emailaddres (the e-mailadres you purchased filebird-pro with), you need to add it in the `FILEBIRD_PRO_EMAIL` environment variable.
 
 </details>
 
@@ -952,6 +976,20 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 ```
 {
 	slug: woocommerce-cost-of-goods
+}
+```
+
+</details>
+
+<details>
+<summary>reCaptcha for WooCommerce</summary>
+
+**type:** woocommerce\
+**slug:** recaptcha-for-woocommerce
+
+```
+{
+	slug: recaptcha-for-woocommerce
 }
 ```
 

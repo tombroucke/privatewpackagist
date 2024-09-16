@@ -39,7 +39,15 @@ class PackageDownloader
         $downloadLink = $this->updater->downloadLink();
         $zip = $this->fetchZip($downloadLink);
 
-        // Test if the download file is plain text, probably an error message
+        return $zip !== null;
+    }
+
+    public function validateZip(string $zip)
+    {
+        if (empty($zip)) {
+            throw new \Exception('The file is empty');
+        }
+
         if (ctype_print($zip)) {
             throw new \Exception($zip);
         }
@@ -47,12 +55,13 @@ class PackageDownloader
         if (substr($zip, 0, 2) !== 'PK') {
             throw new \Exception('The file is not a zip file');
         }
-
-        return $zip !== null;
     }
 
     public function fetchZip(string $link): string
     {
-        return Http::withUserAgent($this->updater->userAgent())->get($link)->body();
+        $zip = Http::withUserAgent($this->updater->userAgent())->get($link)->body();
+        $this->validateZip($zip);
+
+        return $zip;
     }
 }

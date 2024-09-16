@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
+use App\Events\PackageInformationEvent;
+use App\Listeners\FilebirdProPackageInformationListener;
 use App\Models\Package;
 use App\Models\Release;
 use App\Observers\PackageObserver;
 use App\Observers\ReleaseObserver;
 use App\PackagesJson;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,9 +29,13 @@ class AppServiceProvider extends ServiceProvider
 
             return collect($updaters)->mapWithKeys(function ($updater) {
                 $className = 'App\\Updaters\\'.basename($updater, '.php');
+                if (! class_exists($className)) {
+                    return [];
+                }
 
                 return [($className)::slug() => $className];
-            });
+            })
+                ->filter();
         });
     }
 
@@ -39,5 +46,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Package::observe(PackageObserver::class);
         Release::observe(ReleaseObserver::class);
+        Event::listen(PackageInformationEvent::class, FilebirdProPackageInformationListener::class);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Updaters\Abstracts;
 
+use App\Events\PackageInformationEvent;
 use App\Models\Package;
 use App\Models\Release;
 use App\PackageDownloader;
@@ -65,6 +66,8 @@ abstract class Updater implements UpdaterContract
         if (! isset($this->packageInformation)) {
             $this->packageInformation = $this->fetchPackageInformation();
         }
+
+        event(new PackageInformationEvent($this->packageInformation, $this->package));
 
         return $this->packageInformation[$key] ?? null;
     }
