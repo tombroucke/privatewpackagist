@@ -128,47 +128,7 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 
 # Package configurations
 
-<details>
-<summary>Woocommerce Product Filters</summary>
-
-**type:** woocommerce\
-**slug:** woocommerce-product-filters
-
-```
-{
-	slug: woocommerce-product-filters
-}
-```
-
-</details>
-
-<details>
-<summary>Woocommerce Eu Vat Number</summary>
-
-**type:** woocommerce\
-**slug:** woocommerce-eu-vat-number
-
-```
-{
-	slug: woocommerce-eu-vat-number
-}
-```
-
-</details>
-
-<details>
-<summary>Advanced Custom Fields Multilingual</summary>
-
-**type:** wpml\
-**slug:** acfml
-
-```
-{
-	slug: acfml
-}
-```
-
-</details>
+## ACF
 
 <details>
 <summary>Advanced Custom Fields Pro</summary>
@@ -177,6 +137,52 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 **slug:** advanced-custom-fields-pro
 
 </details>
+
+## Direct
+
+<details>
+<summary>Admin Columns Pro</summary>
+
+**type:** direct\
+**slug:** admin-columns-pro
+
+```
+{
+	url: https://www.admincolumns.com/?command=download&product_key=admin-columns-pro&subscription_key=${{ ADMIN_COLUMNS_PRO_SUBSCRIPTION_KEY }}
+}
+```
+
+</details>
+
+<details>
+<summary>Revolution slider</summary>
+
+**type:** direct\
+**slug:** revslider
+
+```
+{
+	url: https://updates.themepunch-ext-a.tools/revslider/download.php?code=${{ REVSLIDER_LICENSE_KEY }}
+}
+```
+
+</details>
+
+<details>
+<summary>WPBakery Page Builder</summary>
+
+**type:** direct\
+**slug:** js-composer
+
+```
+{
+	url: https://support.wpbakery.com/updates/download-link?product=vc&url=https://example.com&key=${{ JS_COMPOSER_LICENSE_KEY }}
+}
+```
+
+</details>
+
+## EDD
 
 <details>
 <summary>Advanced Order Export For WooCommerce (Pro)</summary>
@@ -213,20 +219,6 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 </details>
 
 <details>
-<summary>Woocommerce Product Feeds</summary>
-
-**type:** woocommerce\
-**slug:** woocommerce-product-feeds
-
-```
-{
-	slug: woocommerce-product-feeds
-}
-```
-
-</details>
-
-<details>
 <summary>PDF Invoices & Packing Slips for WooCommerce - Professional</summary>
 
 **type:** edd\
@@ -244,34 +236,6 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 </details>
 
 <details>
-<summary>Woocommerce Subscriptions</summary>
-
-**type:** woocommerce\
-**slug:** woocommerce-subscriptions
-
-```
-{
-	slug: woocommerce-subscriptions
-}
-```
-
-</details>
-
-<details>
-<summary>WPML Multilingual CMS</summary>
-
-**type:** wpml\
-**slug:** sitepress-multilingual-cms
-
-```
-{
-	slug: sitepress-multilingual-cms
-}
-```
-
-</details>
-
-<details>
 <summary>Gravity Forms Image Choices</summary>
 
 **type:** edd\
@@ -283,277 +247,6 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 	source_url: https://example.com,
 	endpoint_url: https://jetsloth.com,
 	method: GET
-}
-```
-
-</details>
-
-<details>
-<summary>WooCommerce Multilingual & Multicurrency</summary>
-
-**type:** wpml\
-**slug:** woocommerce-multilingual
-
-```
-{
-	slug: woocommerce-multilingual
-}
-```
-
-</details>
-
-<details>
-<summary>Gravity Forms Multilingual</summary>
-
-**type:** wpml\
-**slug:** gravityforms-multilingual
-
-```
-{
-	slug: gravityforms-multilingual
-}
-```
-
-</details>
-
-<details>
-<summary>WPML SEO</summary>
-
-**type:** wpml\
-**slug:** wp-seo-multilingual
-
-```
-{
-	slug: wp-seo-multilingual
-}
-```
-
-</details>
-
-<details>
-<summary>Media Translation</summary>
-
-**type:** wpml\
-**slug:** wpml-media-translation
-
-```
-{
-	slug: wpml-media-translation
-}
-```
-
-</details>
-
-<details>
-<summary>String Translation</summary>
-
-**type:** wpml\
-**slug:** wpml-string-translation
-
-```
-{
-	slug: wpml-string-translation
-}
-```
-
-</details>
-
-<details>
-<summary>Gravityforms</summary>
-
-**type:** gravity_form\s
-**slug:** gravityforms
-
-```
-{
-	slug: gravityforms
-}
-```
-
-</details>
-
-<details>
-<summary>Advanced Permissions</summary>
-
-**type:** edd\
-**slug:** forgravity-advancedpermissions
-
-```
-{
-	slug: Advanced Permissions,
-	source_url: https://example.com,
-	endpoint_url: https://cosmicgiant.com,
-	method: GET
-}
-```
-
-</details>
-
-<details>
-<summary>AffiliateWP</summary>
-
-**type:** edd\
-**slug:** affiliate-wp
-
-```
-{
-	slug: AffiliateWP,
-	source_url: https://example.com/,
-	endpoint_url: https://affiliatewp.com,
-	method: GET
-}
-```
-
-</details>
-
-<details>
-<summary>Gravityformsmailchimp</summary>
-
-**type:** gravity_forms\
-**slug:** gravityformsmailchimp
-
-```
-{
-	slug: gravityformsmailchimp
-}
-```
-
-</details>
-
-<details>
-<summary>Gravityformszapier</summary>
-
-**type:** gravity_forms\
-**slug:** gravityformszapier
-
-```
-{
-	slug: gravityformszapier
-}
-```
-
-</details>
-
-<details>
-<summary>Gravityformsrecaptcha</summary>
-
-**type:** gravity_forms\
-**slug:** gravityformsrecaptcha
-
-```
-{
-	slug: gravityformsrecaptcha
-}
-```
-
-</details>
-
-<details>
-<summary>Woocommerce Gateway Ogone</summary>
-
-**type:** woocommerce\
-**slug:** woocommerce-gateway-ogone
-
-```
-{
-	slug: woocommerce-gateway-ogone
-}
-```
-
-</details>
-
-<details>
-<summary>Woocommerce Product Bundles</summary>
-
-**type:** woocommerce\
-**slug:** woocommerce-product-bundles
-
-```
-{
-	slug: woocommerce-product-bundles
-}
-```
-
-</details>
-
-<details>
-<summary>Woocommerce Product Addons</summary>
-
-**type:** woocommerce\
-**slug:** woocommerce-product-addons
-
-```
-{
-	slug: woocommerce-product-addons
-}
-```
-
-</details>
-
-<details>
-<summary>Woocommerce Sequential Order Numbers Pro</summary>
-
-**type:** woocommerce\
-**slug:** woocommerce-sequential-order-numbers-pro
-
-```
-{
-	slug: woocommerce-sequential-order-numbers-pro
-}
-```
-
-</details>
-
-<details>
-<summary>Woocommerce Cost Of Goods</summary>
-
-**type:** woocommerce\
-**slug:** woocommerce-cost-of-goods
-
-```
-{
-	slug: woocommerce-cost-of-goods
-}
-```
-
-</details>
-
-<details>
-<summary>WooCommerce Next Order Coupon</summary>
-
-**type:** edd\
-**slug:** woocommerce-next-order-coupon
-
-```
-{
-	slug: WooCommerce Next Order Coupon,
-	source_url: https://example.com,
-	endpoint_url: https://wpovernight.com/license-api/,
-	method: GET
-}
-```
-
-</details>
-
-<details>
-<summary>Wp Rocket</summary>
-
-**type:** wp_rocket\
-**slug:** wp-rocket
-
-</details>
-
-<details>
-<summary>Woo Discount Rules Pro</summary>
-
-**type:** puc\
-**slug:** woo-discount-rules-pro
-
-```
-{
-	slug: discount-rules-v2-pro,
-	source_url: https://example.com,
-	endpoint_url: https://my.flycart.org/
 }
 ```
 
@@ -613,7 +306,7 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 </details>
 
 <details>
-<summary>ACF Export Add-On Pro</summary>
+<summary>WP All Export - ACF Export Add-On Pro</summary>
 
 **type:** edd\
 **slug:** wpae-acf-add-on
@@ -631,7 +324,7 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 </details>
 
 <details>
-<summary>ACF Add-On</summary>
+<summary>WP All Import - ACF Add-On</summary>
 
 **type:** edd\
 **slug:** wpai-acf-add-on
@@ -649,7 +342,7 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 </details>
 
 <details>
-<summary>Link Cloaking Add-On</summary>
+<summary>WP All Import - Link Cloaking Add-On</summary>
 
 **type:** edd\
 **slug:** wpai-linkcloak-add-on
@@ -667,7 +360,7 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 </details>
 
 <details>
-<summary>User Import Add-On</summary>
+<summary>WP All Import - User Import Add-On</summary>
 
 **type:** edd\
 **slug:** wpai-user-add-on
@@ -685,7 +378,7 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 </details>
 
 <details>
-<summary>WooCommerce Add-On</summary>
+<summary>WP All Import - WooCommerce Add-On</summary>
 
 **type:** edd\
 **slug:** wpai-woocommerce-add-on
@@ -703,7 +396,7 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 </details>
 
 <details>
-<summary>WooCommerce Export Add-On Pro</summary>
+<summary>WP All Export - WooCommerce Export Add-On Pro</summary>
 
 **type:** edd\
 **slug:** wpae-woocommerce-add-on
@@ -715,34 +408,6 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 	endpoint_url: https://update.wpallimport.com/check_version,
 	method: GET,
 	skip_license_check: true
-}
-```
-
-</details>
-
-<details>
-<summary>WPBakery Page Builder</summary>
-
-**type:** direct\
-**slug:** js-composer
-
-```
-{
-	url: https://support.wpbakery.com/updates/download-link?product=vc&url=https://example.com&key=${{ JS_COMPOSER_LICENSE_KEY }}
-}
-```
-
-</details>
-
-<details>
-<summary>Revolution slider</summary>
-
-**type:** direct\
-**slug:** revslider
-
-```
-{
-	url: https://updates.themepunch-ext-a.tools/revslider/download.php?code=${{ REVSLIDER_LICENSE_KEY }}
 }
 ```
 
@@ -885,14 +550,363 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 </details>
 
 <details>
-<summary>Admin Columns Pro</summary>
+<summary>Forgravity Advanced Permissions</summary>
 
-**type:** direct\
-**slug:** admin-columns-pro
+**type:** edd\
+**slug:** forgravity-advancedpermissions
 
 ```
 {
-	url: https://www.admincolumns.com/?command=download&product_key=admin-columns-pro&subscription_key=${{ ADMIN_COLUMNS_PRO_SUBSCRIPTION_KEY }}
+	slug: Advanced Permissions,
+	source_url: https://example.com,
+	endpoint_url: https://cosmicgiant.com,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>AffiliateWP</summary>
+
+**type:** edd\
+**slug:** affiliate-wp
+
+```
+{
+	slug: AffiliateWP,
+	source_url: https://example.com/,
+	endpoint_url: https://affiliatewp.com,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>WooCommerce Next Order Coupon</summary>
+
+**type:** edd\
+**slug:** woocommerce-next-order-coupon
+
+```
+{
+	slug: WooCommerce Next Order Coupon,
+	source_url: https://example.com,
+	endpoint_url: https://wpovernight.com/license-api/,
+	method: GET
+}
+```
+
+</details>
+
+<details>
+<summary>Wp Rocket</summary>
+
+**type:** wp_rocket\
+**slug:** wp-rocket
+
+</details>
+
+## Gravity Forms
+
+<details>
+<summary>Gravityforms</summary>
+
+**type:** gravity_forms\
+**slug:** gravityforms
+
+```
+{
+	slug: gravityforms
+}
+```
+
+</details>
+
+<details>
+<summary>Gravityformsmailchimp</summary>
+
+**type:** gravity_forms\
+**slug:** gravityformsmailchimp
+
+```
+{
+	slug: gravityformsmailchimp
+}
+```
+
+</details>
+
+<details>
+<summary>Gravityformszapier</summary>
+
+**type:** gravity_forms\
+**slug:** gravityformszapier
+
+```
+{
+	slug: gravityformszapier
+}
+```
+
+</details>
+
+<details>
+<summary>Gravityformsrecaptcha</summary>
+
+**type:** gravity_forms\
+**slug:** gravityformsrecaptcha
+
+```
+{
+	slug: gravityformsrecaptcha
+}
+```
+
+</details>
+
+## PuC
+
+<details>
+<summary>Woo Discount Rules Pro</summary>
+
+**type:** puc\
+**slug:** woo-discount-rules-pro
+
+```
+{
+	slug: discount-rules-v2-pro,
+	source_url: https://example.com,
+	endpoint_url: https://my.flycart.org/
+}
+```
+
+</details>
+
+## Woocommerce
+
+<details>
+<summary>Woocommerce Product Filters</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-product-filters
+
+```
+{
+	slug: woocommerce-product-filters
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Eu Vat Number</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-eu-vat-number
+
+```
+{
+	slug: woocommerce-eu-vat-number
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Product Feeds</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-product-feeds
+
+```
+{
+	slug: woocommerce-product-feeds
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Subscriptions</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-subscriptions
+
+```
+{
+	slug: woocommerce-subscriptions
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Gateway Ogone</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-gateway-ogone
+
+```
+{
+	slug: woocommerce-gateway-ogone
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Product Bundles</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-product-bundles
+
+```
+{
+	slug: woocommerce-product-bundles
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Product Addons</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-product-addons
+
+```
+{
+	slug: woocommerce-product-addons
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Sequential Order Numbers Pro</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-sequential-order-numbers-pro
+
+```
+{
+	slug: woocommerce-sequential-order-numbers-pro
+}
+```
+
+</details>
+
+<details>
+<summary>Woocommerce Cost Of Goods</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-cost-of-goods
+
+```
+{
+	slug: woocommerce-cost-of-goods
+}
+```
+
+</details>
+
+## WPML
+
+<details>
+<summary>WPML Multilingual CMS</summary>
+
+**type:** wpml\
+**slug:** sitepress-multilingual-cms
+
+```
+{
+	slug: sitepress-multilingual-cms
+}
+```
+
+</details>
+
+<details>
+<summary>Advanced Custom Fields Multilingual</summary>
+
+**type:** wpml\
+**slug:** acfml
+
+```
+{
+	slug: acfml
+}
+```
+
+</details>
+
+<details>
+<summary>WooCommerce Multilingual & Multicurrency</summary>
+
+**type:** wpml\
+**slug:** woocommerce-multilingual
+
+```
+{
+	slug: woocommerce-multilingual
+}
+```
+
+</details>
+
+<details>
+<summary>Gravity Forms Multilingual</summary>
+
+**type:** wpml\
+**slug:** gravityforms-multilingual
+
+```
+{
+	slug: gravityforms-multilingual
+}
+```
+
+</details>
+
+<details>
+<summary>WPML SEO</summary>
+
+**type:** wpml\
+**slug:** wp-seo-multilingual
+
+```
+{
+	slug: wp-seo-multilingual
+}
+```
+
+</details>
+
+<details>
+<summary>Media Translation</summary>
+
+**type:** wpml\
+**slug:** wpml-media-translation
+
+```
+{
+	slug: wpml-media-translation
+}
+```
+
+</details>
+
+<details>
+<summary>String Translation</summary>
+
+**type:** wpml\
+**slug:** wpml-string-translation
+
+```
+{
+	slug: wpml-string-translation
 }
 ```
 
