@@ -63,13 +63,6 @@ class UpdatesNotification extends Notification
     {
         return Release::whereBetween('created_at', $between)->get()
             ->map(function ($release) {
-
-                // get previous version
-                $previousVersion = Release::where('package_id', $release->package_id)
-                    ->where('created_at', '<', $release->created_at)
-                    ->orderBy('created_at', 'desc')
-                    ->first();
-
                 return [
                     'package' => $release->package,
                     'version' => $release->version,
