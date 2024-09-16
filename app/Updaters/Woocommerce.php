@@ -73,6 +73,7 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
 
         $signature = hash_hmac('sha256', json_encode($data), $accessTokenSecret);
         $query = http_build_query(['token' => $accessToken, 'signature' => $signature]);
+        // TODO: convert to Http request
         $response = exec(sprintf(
             'curl -s -X %s %s -H %s -H %s %s',
             $method,
