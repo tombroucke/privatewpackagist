@@ -736,8 +736,9 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 
 # TODO
 
--   Add more updaters
+-   Calculate checksum after download instead of when packages.json is generated, and store it in the DB.
+-   Cache releases per package, and create a cached packages.json from these cache files.
 -   Send notifications after new releases / failed releases
 -   Check mime-type application/zip for downloaded packages before creating release
--   Refactor updaters so we can validate env variables better
 -   Exhaustive testing
+-   Add more updaters
