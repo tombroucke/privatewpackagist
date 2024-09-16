@@ -10,6 +10,7 @@ use App\Exceptions\WoocommerceSubscriptionNotFoundException;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class Woocommerce extends Abstracts\Updater implements Contracts\Updater
@@ -73,15 +74,18 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
 
         $signature = hash_hmac('sha256', json_encode($data), $accessTokenSecret);
         $query = http_build_query(['token' => $accessToken, 'signature' => $signature]);
-        // TODO: convert to Http request
-        $response = exec(sprintf(
-            'curl -s -X %s %s -H %s -H %s %s',
-            $method,
-            $body ? '--data '.escapeshellarg($body) : '',
-            escapeshellarg('Authorization: Bearer '.$accessToken),
-            escapeshellarg('X-Woo-Signature: '.$signature),
-            escapeshellarg($endpoint.'?'.$query),
-        ));
+
+        $url = $endpoint.'?'.$query;
+        $request = Http::withHeaders([
+            'Authorization: Bearer '.$accessToken,
+            'X-Woo-Signature: '.$signature,
+        ]);
+
+        if ($body) {
+            $request->withBody($body);
+        }
+
+        $response = $request->send($method, $url);
 
         return json_decode($response, true);
     }
