@@ -505,6 +505,20 @@ composer require privatewpackagist-plugin/advanced-custom-fields-pro
 </details>
 
 <details>
+<summary>Woocommerce Cost Of Goods</summary>
+
+**type:** woocommerce\
+**slug:** woocommerce-cost-of-goods
+
+```
+{
+	slug: woocommerce-cost-of-goods
+}
+```
+
+</details>
+
+<details>
 <summary>WooCommerce Next Order Coupon</summary>
 
 **type:** edd\
