@@ -57,6 +57,14 @@ class Edd extends Abstracts\Updater implements Contracts\Updater
         $this->doEddAction('activate_license');
     }
 
+    public function userAgent(): string
+    {
+        return sprintf('%s; %s',
+            config('app.wp_user_agent'),
+            $this->package->settings['source_url'],
+        );
+    }
+
     private function checkLicense(): bool
     {
         $response = $this->doEddAction('check_license');
@@ -66,7 +74,7 @@ class Edd extends Abstracts\Updater implements Contracts\Updater
 
     private function doEddAction(string $action): array
     {
-        $response = Http::get($this->package->settings['endpoint_url'], [
+        $response = Http::withUserAgent($this->userAgent())->get($this->package->settings['endpoint_url'], [
             'edd_action' => $action,
             'license' => $this->licenseKey(),
             'item_name' => $this->package->settings['slug'],
