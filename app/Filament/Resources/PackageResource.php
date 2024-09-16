@@ -31,16 +31,16 @@ class PackageResource extends Resource
                 Forms\Components\Select::make('updater')
                     ->required()
                     ->options([
+                        'acf' => 'ACF',
+                        'admin_columns_pro' => 'Admin Columns Pro',
+                        'direct' => 'Direct',
                         'edd' => 'Easy Digital Downloads',
+                        'gravity_forms' => 'Gravity Forms',
+                        'manual' => 'Manual',
+                        'wp_rocket' => 'WP Rocket',
                         'wpml' => 'WPML',
                         'woocommerce' => 'WooCommerce',
-                        'acf' => 'ACF',
-                        'gravity_forms' => 'Gravity Forms',
-                        'wp_rocket' => 'WP Rocket',
                         'puc' => 'YahnisElsts Plugin Update Checker',
-                        'direct' => 'Direct',
-                        'manual' => 'Manual',
-                        'admin_columns_pro' => 'Admin Columns Pro',
                     ])
                     ->reactive()
                     ->native(false)
