@@ -60,7 +60,8 @@ class Package extends Model
             ->ucwords()
             ->replace(' ', '')
             ->start('\\')
-            ->start($namespace);
+            ->start($namespace)
+            ->toString();
 
         return $this->instantiatedRecipe = new $class($this);
     }
