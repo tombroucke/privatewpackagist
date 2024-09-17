@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('type');
-            $table->string('updater');
+            $table->string('recipe');
             $table->json('settings')->nullable();
             $table->timestamps();
         });
