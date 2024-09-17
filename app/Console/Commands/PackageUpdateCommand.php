@@ -52,7 +52,7 @@ class PackageUpdateCommand extends Command
         }
 
         $packages = $package
-            ? Package::where('id', $package)->get()
+            ? Package::whereIn('id', $package)->get()
             : Package::all();
 
         if ($packages->isEmpty()) {
