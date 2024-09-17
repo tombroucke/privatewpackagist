@@ -128,7 +128,7 @@ class Package extends Model
      */
     public function getLatestReleaseAttribute(): ?string
     {
-        return $this->getLatestRelease()->created_at->diffForHumans() ?? null;
+        return $this->getLatestRelease() ? $this->getLatestRelease()->created_at->diffForHumans() : null;
     }
 
     /**
@@ -136,7 +136,7 @@ class Package extends Model
      */
     public function getLatestVersionAttribute(): ?string
     {
-        return $this->getLatestRelease()->version ?? null;
+        return $this->getLatestRelease() ? $this->getLatestRelease()->version : null;
     }
 
     /**
