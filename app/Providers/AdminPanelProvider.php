@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers\Filament;
+namespace App\Providers;
 
 use App\Filament\Pages\AccountPage;
 use Filament\Http\Middleware\Authenticate;
@@ -8,7 +8,6 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -28,13 +27,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('/')
             ->login()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
+            ->colors(['primary' => '#21759b'])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-            ->pages([
-            ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
@@ -43,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugin(
                 BreezyCore::make()
                     ->enableTwoFactorAuthentication(
-                        force: true,
+                        force: false,
                     )
                     ->enableSanctumTokens()
                     ->myProfile(
