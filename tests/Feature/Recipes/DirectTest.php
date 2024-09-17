@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Updaters;
+namespace Tests\Feature\Recipes;
 
 use App\Models\Package;
-use App\Updaters\Direct;
+use App\Recipes\Direct;
 use Tests\TestCase;
 
 class DirectTest extends TestCase
@@ -16,13 +16,13 @@ class DirectTest extends TestCase
 
         $package = new Package([
             'slug' => 'js-composer',
-            'updater' => 'direct',
+            'recipe' => 'direct',
             'settings' => [
                 'url' => 'https://support.wpbakery.com/updates/download-link?product=vc&url=${{ JS_COMPOSER_SITE_URL }}&key=${{JS_COMPOSER_LICENSE_KEY}}',
             ],
         ]);
 
-        $this->direct = $package->updater();
+        $this->direct = $package->recipe();
     }
 
     public function test_validation_errors(): void

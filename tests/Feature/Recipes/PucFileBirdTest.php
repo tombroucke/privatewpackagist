@@ -1,32 +1,32 @@
 <?php
 
-namespace Tests\Feature\Updaters;
+namespace Tests\Feature\Recipes;
 
 use App\Models\Package;
-use App\Updaters\Puc;
+use App\Recipes\Puc;
 use Tests\TestCase;
 
-class PucWooDiscountRulesTest extends TestCase
+class PucFileBirdTest extends TestCase
 {
     private Puc $puc;
 
-    private $sourceUrl = 'https://tombroucke.be';
+    private $sourceUrl = 'https://satispress.tombroucke.be';
 
     public function setUp(): void
     {
         parent::setUp();
 
         $package = new Package([
-            'slug' => 'woo-discount-rules-pro',
-            'updater' => 'puc',
+            'slug' => 'filebird-pro',
+            'recipe' => 'puc',
             'settings' => [
-                'slug' => 'discount-rules-v2-pro',
+                'slug' => 'filebird_pro',
                 'source_url' => $this->sourceUrl,
-                'meta_data_url' => 'https://my.flycart.org?wpaction=updatecheck&wpslug=discount-rules-v2-pro&dlid=${{ WOO_DISCOUNT_RULES_PRO_LICENSE_KEY }}',
+                'meta_data_url' => 'https://active.ninjateam.org/json/filebird.json',
             ],
         ]);
 
-        $this->puc = $package->updater();
+        $this->puc = $package->recipe();
     }
 
     public function test_validation_errors(): void
@@ -36,7 +36,7 @@ class PucWooDiscountRulesTest extends TestCase
 
     public function test_fetch_title(): void
     {
-        $this->assertEquals('Woo Discount Rules Pro', $this->puc->fetchPackageTitle());
+        $this->assertEquals('Filebird Pro', $this->puc->fetchPackageTitle());
     }
 
     public function test_version_is_set(): void
@@ -62,7 +62,7 @@ class PucWooDiscountRulesTest extends TestCase
 
     public function test_user_agent_is_set(): void
     {
-        $userAgent = config('app.wp_user_agent').'; '.$this->sourceUrl;
+        $userAgent = config('packagist.user_agent').'; '.$this->sourceUrl;
         $this->assertEquals($userAgent, $this->puc->userAgent());
     }
 }

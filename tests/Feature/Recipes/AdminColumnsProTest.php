@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Updaters;
+namespace Tests\Feature\Recipes;
 
 use App\Models\Package;
-use App\Updaters\AdminColumnsPro;
+use App\Recipes\AdminColumnsPro;
 use Tests\TestCase;
 
 class AdminColumnsProTest extends TestCase
@@ -16,13 +16,13 @@ class AdminColumnsProTest extends TestCase
 
         $package = new Package([
             'slug' => 'admin-columns-pro',
-            'updater' => 'admin_columns_pro',
+            'recipe' => 'admin_columns_pro',
             'settings' => [
                 'slug' => 'admin-columns-pro',
             ],
         ]);
 
-        $this->adminColumnsPro = $package->updater();
+        $this->adminColumnsPro = $package->recipe();
     }
 
     public function test_validation_errors(): void

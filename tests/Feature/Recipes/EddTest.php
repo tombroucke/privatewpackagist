@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Updaters;
+namespace Tests\Feature\Recipes;
 
 use App\Models\Package;
-use App\Updaters\Edd;
+use App\Recipes\Edd;
 use Tests\TestCase;
 
 class EddTest extends TestCase
@@ -16,7 +16,7 @@ class EddTest extends TestCase
 
         $package = new Package([
             'slug' => 'woocommerce-pdf-ips-pro',
-            'updater' => 'edd',
+            'recipe' => 'edd',
             'settings' => [
                 'slug' => 'PDF Invoices & Packing Slips for WooCommerce - Professional',
                 'source_url' => 'https://github.tombroucke.be',
@@ -25,7 +25,7 @@ class EddTest extends TestCase
             ],
         ]);
 
-        $this->edd = $package->updater();
+        $this->edd = $package->recipe();
     }
 
     public function test_validation_errors(): void

@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\Updaters;
+namespace Tests\Feature\Recipes;
 
 use App\Models\Package;
-use App\Updaters\Woocommerce;
+use App\Recipes\Woocommerce;
 use Tests\TestCase;
 
-class WoocommerceTest extends TestCase
+class WooCommerceTest extends TestCase
 {
     private Woocommerce $woocommerce;
 
@@ -16,13 +16,13 @@ class WoocommerceTest extends TestCase
 
         $package = new Package([
             'slug' => 'woocommerce-product-filters',
-            'updater' => 'woocommerce',
+            'recipe' => 'woocommerce',
             'settings' => [
                 'slug' => 'woocommerce-product-filters',
             ],
         ]);
 
-        $this->woocommerce = $package->updater();
+        $this->woocommerce = $package->recipe();
     }
 
     public function test_validation_errors(): void

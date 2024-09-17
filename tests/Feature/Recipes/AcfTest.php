@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Updaters;
+namespace Tests\Feature\Recipes;
 
 use App\Models\Package;
-use App\Updaters\Acf;
+use App\Recipes\Acf;
 use Tests\TestCase;
 
 class AcfTest extends TestCase
@@ -16,13 +16,13 @@ class AcfTest extends TestCase
 
         $package = new Package([
             'slug' => 'advanced-custom-fields-pro',
-            'updater' => 'acf',
+            'recipe' => 'acf',
             'settings' => [
                 'url' => 'https://www.advancedcustomfields.com/',
             ],
         ]);
 
-        $this->acf = $package->updater();
+        $this->acf = $package->recipe();
     }
 
     public function test_validation_errors(): void

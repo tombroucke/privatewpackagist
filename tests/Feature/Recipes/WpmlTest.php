@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Updaters;
+namespace Tests\Feature\Recipes;
 
 use App\Models\Package;
-use App\Updaters\Wpml;
+use App\Recipes\Wpml;
 use Tests\TestCase;
 
 class WpmlTest extends TestCase
@@ -16,13 +16,13 @@ class WpmlTest extends TestCase
 
         $package = new Package([
             'slug' => 'acfml',
-            'updater' => 'wpml',
+            'recipe' => 'wpml',
             'settings' => [
                 'slug' => 'acfml',
             ],
         ]);
 
-        $this->wpml = $package->updater();
+        $this->wpml = $package->recipe();
     }
 
     public function test_validation_errors(): void

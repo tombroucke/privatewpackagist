@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Updaters;
+namespace Tests\Feature\Recipes;
 
 use App\Models\Package;
-use App\Updaters\WpRocket;
+use App\Recipes\WpRocket;
 use Tests\TestCase;
 
 class WpRocketTest extends TestCase
@@ -16,12 +16,11 @@ class WpRocketTest extends TestCase
 
         $package = new Package([
             'slug' => 'wp-rocket',
-            'updater' => 'wp_rocket',
-            'settings' => [
-            ],
+            'recipe' => 'wp_rocket',
+            'settings' => [],
         ]);
 
-        $this->wpRocket = $package->updater();
+        $this->wpRocket = $package->recipe();
     }
 
     public function test_validation_errors(): void
@@ -68,7 +67,7 @@ class WpRocketTest extends TestCase
     public function test_user_agent_is_set(): void
     {
         $userAgent = sprintf('%1$s; %2$s;WP-Rocket|3.6.3|%3$s|%4$s|%2$s|8.2;',
-            config('app.wp_user_agent'),
+            config('packagist.user_agent'),
             getenv('WP_ROCKET_URL'),
             getenv('WP_ROCKET_KEY'),
             getenv('WP_ROCKET_EMAIL'),

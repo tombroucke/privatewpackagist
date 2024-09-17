@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Updaters;
+namespace Tests\Feature\Recipes;
 
 use App\Models\Package;
-use App\Updaters\Manual;
+use App\Recipes\Manual;
 use Tests\TestCase;
 
 class ManualTest extends TestCase
@@ -16,11 +16,11 @@ class ManualTest extends TestCase
 
         $package = new Package([
             'slug' => 'chauffeur-booking-system',
-            'updater' => 'manual',
+            'recipe' => 'manual',
             'settings' => [],
         ]);
 
-        $this->manual = $package->updater();
+        $this->manual = $package->recipe();
     }
 
     public function test_validation_errors(): void
@@ -30,13 +30,13 @@ class ManualTest extends TestCase
 
     public function test_update_throws_exception(): void
     {
-        $this->expectException(\App\Exceptions\ManualUpdaterCanNotUpdatePackages::class);
+        $this->expectException(\App\Exceptions\ManualRecipeCanNotUpdatePackages::class);
         $this->manual->update();
     }
 
     public function test_user_agent_is_set(): void
     {
-        $userAgent = config('app.wp_user_agent');
+        $userAgent = config('packagist.user_agent');
         $this->assertEquals($userAgent, $this->manual->userAgent());
     }
 }

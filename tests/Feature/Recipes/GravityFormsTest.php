@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Updaters;
+namespace Tests\Feature\Recipes;
 
 use App\Models\Package;
-use App\Updaters\GravityForms;
+use App\Recipes\GravityForms;
 use Tests\TestCase;
 
 class GravityFormsTest extends TestCase
@@ -16,13 +16,13 @@ class GravityFormsTest extends TestCase
 
         $package = new Package([
             'slug' => 'gravityformszapier',
-            'updater' => 'gravityforms',
+            'recipe' => 'gravityforms',
             'settings' => [
                 'slug' => 'gravityformszapier',
             ],
         ]);
 
-        $this->gravityForms = $package->updater();
+        $this->gravityForms = $package->recipe();
     }
 
     public function test_validation_errors(): void
