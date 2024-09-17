@@ -95,10 +95,12 @@ class ReleaseResource extends Resource
                     ->label('Package')
                     ->sortable()
                     ->searchable()
+                    ->icon('heroicon-o-archive-box')
                     ->size(TextColumnSize::ExtraSmall),
 
                 Tables\Columns\TextColumn::make('package.slug')
-                    ->label('Package Slug')
+                    ->label('Slug')
+                    ->badge()
                     ->sortable()
                     ->searchable(),
 
