@@ -2,44 +2,51 @@
 
 namespace App;
 
-use App\Exceptions\DownloadLinkNotSetException;
 use App\Exceptions\VersionNotSetException;
 use App\Models\Package;
 use App\Models\Release;
-use App\Updaters\Contracts\Updater;
+use App\Recipes\Contracts\Recipe;
+use App\Recipes\Exceptions\NoDownloadLinkException;
 
 class ReleaseCreator
 {
-    public function __construct(private Updater $updater, private Package $package) {}
+    /**
+     * Create a new instance.
+     */
+    public function __construct(private Recipe $recipe, private Package $package) {}
 
+    /**
+     * Create a new release.
+     */
     public function release($downloadPath): ?Release
     {
-        $version = $this->updater->version();
-        $changelog = $this->updater->changelog();
-        $downloadLink = $this->updater->downloadLink();
+        $version = $this->recipe->version();
+        $changelog = $this->recipe->changelog();
+        $downloadLink = $this->recipe->downloadLink();
 
-        if ($version === null || $version === '') {
+        if (blank($version)) {
             throw new VersionNotSetException;
         }
 
-        if ($downloadLink === null || $downloadLink === '') {
-            throw new DownloadLinkNotSetException;
+        if (blank($downloadLink)) {
+            throw new NoDownloadLinkException($this->recipe);
         }
 
-        $existingRelease = $this->package->releases()->where('version', $version)->first();
-        if ($existingRelease) {
-            return $existingRelease;
+        $existing = $this->package->releases()->where('version', $version)->first();
+
+        if ($existing) {
+            return $existing;
         }
 
-        // // In case we are testing, $this->package is not saved to the database
         // if (! $this->package->exists) {
         //     $release = new Release;
+        //
         //     $release->fill([
         //         'version' => $version,
         //         'changelog' => $changelog,
         //         'path' => $filePath,
         //     ]);
-
+        //
         //     return $release;
         // }
 
@@ -48,6 +55,5 @@ class ReleaseCreator
             'changelog' => $changelog,
             'path' => $downloadPath,
         ]);
-
     }
 }
