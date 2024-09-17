@@ -8,14 +8,14 @@ use App\Notifications\UpdatesNotification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 
-class SendUpdatesNotification extends Command
+class ReleaseNotifyCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:send-updates-notification';
+    protected $signature = 'release:notify';
 
     /**
      * The console command description.
@@ -29,33 +29,31 @@ class SendUpdatesNotification extends Command
      */
     public function handle()
     {
-
         $users = User::all();
 
         $from = now()->subDay();
         $to = now();
+
         $packages = $this->getPackagesWithReleases([$from, $to]);
 
         foreach ($users as $user) {
             $user->notify(new UpdatesNotification($packages, $from, $to));
         }
 
-        $this->info('Updates notification sent to all users');
+        $this->components->info('Updates notification sent to all users');
     }
 
+    /**
+     * Retrieve packages with releases between the given dates.
+     */
     private function getPackagesWithReleases(array $between): Collection
     {
         return Release::whereBetween('created_at', $between)->get()
-            ->map(function ($release) {
-                return [
-                    'package' => $release->package,
-                    'version' => $release->version,
-                ];
-            })
-            // group by package
-            ->groupBy(function ($item) {
-                return $item['package']->vendoredName();
-            })
+            ->map(fn ($release) => [
+                'package' => $release->package,
+                'version' => $release->version,
+            ])
+            ->groupBy(fn ($item) => $item['package']->vendoredName())
             ->sortKeys();
     }
 }
