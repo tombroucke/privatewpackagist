@@ -1,4 +1,4 @@
-> [!WARNING]  
+> [!WARNING]
 > I haven't tagged a release yet, but the application should work just fine. If you encounter a bug, fetch the latest changes and see if this fixes the issue. if it doesn't, please [create an issue](https://github.com/tombroucke/privatewpackagist/issues/new)\
 > As the application is still in an early stage, I am open to suggestions and improvements. [start a discussing](https://github.com/tombroucke/privatewpackagist/discussions/new/choose)
 
@@ -54,8 +54,7 @@ To schedule package updates (every 6 hours), you need to add this cron job:
 # Manually triggering package updates
 
 ```bash
-php artisan app:update-package package-slug
-php artisan app:update-packages
+php artisan package:update [package]
 ```
 
 # Packages
@@ -109,7 +108,7 @@ Packages with direct links E.g. Revolution Slider, WPBakery Visual Composer
 
 ## Manual packages
 
-For plugins that are not (yet) supported, you can add a package and choose a the Manual updater. You can create a release manually and upload your plugin file.
+For plugins that are not (yet) supported, you can add a package and choose the Manual recipe. You can create a release manually and upload your plugin file.
 
 # Usage
 
