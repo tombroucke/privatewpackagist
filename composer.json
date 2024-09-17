@@ -2,7 +2,14 @@
     "name": "tombroucke/privatewpackagist",
     "type": "project",
     "description": "Expose premium WordPress plugins as composer packages",
-    "keywords": ["wordpress", "premium", "composer", "packagist", "wpackagist", "private"],
+    "keywords": [
+        "wordpress",
+        "premium",
+        "composer",
+        "packagist",
+        "wpackagist",
+        "private"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
