@@ -9,8 +9,12 @@ use App\Models\Release;
 use App\Observers\PackageObserver;
 use App\Observers\ReleaseObserver;
 use App\PackagesCache;
+use App\Recipes\Recipe;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
+use ReflectionClass;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,23 +23,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(PackagesCache::class, function ($app) {
-            return new PackagesCache;
-        });
+        $this->app->singleton(PackagesCache::class, fn ($app) => new PackagesCache);
 
-        $this->app->singleton('updaters', function ($app) {
-            // glob() is used to get all the files in the directory
-            $updaters = glob(app_path('Updaters/*.php'));
+        $this->app->singleton('recipes', function ($app) {
+            $path = config('packagist.recipes.path');
+            $namespace = Str::finish(config('packagist.recipes.namespace'), '\\');
 
-            return collect($updaters)->mapWithKeys(function ($updater) {
-                $className = 'App\\Updaters\\'.basename($updater, '.php');
-                if (! class_exists($className)) {
-                    return [];
-                }
+            $recipes = collect(File::allFiles($path))
+                ->filter(fn ($file) => $file->getExtension() === 'php')
+                ->map(fn ($file) => Str::of($file->getPathname())
+                    ->replace([$path, '.php'], '')
+                    ->ltrim('/')
+                    ->start($namespace)
+                    ->toString()
+                );
 
-                return [($className)::slug() => $className];
-            })
-                ->filter();
+            return $recipes
+                ->filter(fn ($recipe) => is_subclass_of($recipe, Recipe::class))
+                ->reject(fn ($recipe) => (new ReflectionClass($recipe))->isAbstract())
+                ->mapWithKeys(fn ($recipe) => [$recipe::slug() => $recipe]);
         });
     }
 
