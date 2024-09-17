@@ -13,12 +13,24 @@ use Filament\Tables\Table;
 
 class TokenResource extends Resource
 {
+    /**
+     * The resource class this resource belongs to.
+     */
     protected static ?string $model = Token::class;
 
+    /**
+     * The navigation icon for the resource.
+     */
     protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
 
+    /**
+     * The navigation group for the resource.
+     */
     protected static ?string $navigationGroup = 'Access';
 
+    /**
+     * The form for the resource.
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -26,16 +38,18 @@ class TokenResource extends Resource
                 Forms\Components\TextInput::make('username')
                     ->required()
                     ->maxLength(255),
+
                 Forms\Components\TextInput::make('token')
                     ->required()
                     ->default(fn () => bin2hex(random_bytes(16)))
                     ->maxLength(255)
-                    ->disabled(function ($record) {
-                        return $record; // Disable the field when editing an existing record.
-                    }),
+                    ->disabled(fn ($record) => $record),
             ]);
     }
 
+    /**
+     * The table for the resource.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -47,6 +61,7 @@ class TokenResource extends Resource
                     ->iconPosition(IconPosition::After)
                     ->copyable()
                     ->copyMessage('Username copied'),
+
                 Tables\Columns\TextColumn::make('token')
                     ->searchable()
                     ->icon('heroicon-o-document-duplicate')
@@ -54,13 +69,16 @@ class TokenResource extends Resource
                     ->iconPosition(IconPosition::After)
                     ->copyable()
                     ->copyMessage('Token copied'),
+
                 Tables\Columns\TextColumn::make('last_used_at')
                     ->dateTime()
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -79,6 +97,9 @@ class TokenResource extends Resource
             ]);
     }
 
+    /**
+     * The relation managers for the resource.
+     */
     public static function getRelations(): array
     {
         return [
@@ -86,12 +107,13 @@ class TokenResource extends Resource
         ];
     }
 
+    /**
+     * The pages for the resource.
+     */
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListTokens::route('/'),
-            'create' => Pages\CreateToken::route('/create'),
-            'edit' => Pages\EditToken::route('/{record}/edit'),
         ];
     }
 }

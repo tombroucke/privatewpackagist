@@ -9,8 +9,16 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditPackage extends EditRecord
 {
+    /**
+     * The resource this page belongs to.
+     */
     protected static string $resource = PackageResource::class;
 
+    /**
+     * Get the header actions for the page.
+     *
+     * @return array<Actions\Action>
+     */
     protected function getHeaderActions(): array
     {
         return [
@@ -18,20 +26,23 @@ class EditPackage extends EditRecord
         ];
     }
 
+    /**
+     * Handle actions before saving a record.
+     */
     protected function beforeSave(): void
     {
-        $tempPackage = $this->record->replicate();
-        $tempPackage->fill($this->data);
+        $package = $this->record->replicate();
+        $package->fill($this->data);
 
-        $validationErrors = $tempPackage->validationErrors();
-        if ($validationErrors->isNotEmpty()) {
-            $validationErrors->each(function ($error) {
-                Notification::make()
-                    ->danger()
-                    ->title('Validation Error')
-                    ->body($error)
-                    ->send();
-            });
+        $errors = $package->validationErrors();
+
+        if ($errors->isNotEmpty()) {
+            $errors->each(fn ($error) => Notification::make()
+                ->danger()
+                ->title('Validation Error')
+                ->body($error)
+                ->send()
+            );
 
             $this->halt();
         }
