@@ -9,14 +9,32 @@ class Release extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['package_id', 'version', 'changelog', 'path'];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'package_id',
+        'version',
+        'changelog',
+        'path',
+    ];
 
+    /**
+     * Get the package that owns the release.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function package()
     {
         return $this->belongsTo(Package::class);
     }
 
-    public function isLatest()
+    /**
+     * Determine if the release is the latest.
+     */
+    public function isLatest(): bool
     {
         return $this->package->getLatestRelease()->is($this);
     }
