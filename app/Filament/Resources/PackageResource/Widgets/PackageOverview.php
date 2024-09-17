@@ -17,7 +17,7 @@ class PackageOverview extends BaseWidget
     {
         $packages = Package::count();
         $releases = Release::count();
-        $latest = Release::latest()->first();
+        $latest = Release::all()->isNotEmpty() ? Release::latest()->first()->created_at->diffForHumans() : 'NA';
 
         return [
             Stat::make('Total Packages', Number::format($packages))
@@ -28,7 +28,7 @@ class PackageOverview extends BaseWidget
                 ->description('The total number of versions released.')
                 ->icon('heroicon-o-tag'),
 
-            Stat::make('Last Updated', $latest->created_at->diffForHumans())
+            Stat::make('Last Updated', $latest)
                 ->description('The last time a release was created.')
                 ->icon('heroicon-o-calendar'),
         ];
