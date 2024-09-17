@@ -2,43 +2,82 @@
 
 namespace App\Models;
 
-use App\Updaters\Contracts\Updater;
+use App\Recipes\Contracts\Recipe;
+use Exception;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
 class Package extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'type', 'updater', 'settings'];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'slug',
+        'type',
+        'recipe',
+        'settings',
+    ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'settings' => 'json',
     ];
 
-    private ?Updater $instantiatedUpdater = null;
+    /**
+     * The instantiated recipe instance.
+     */
+    private ?Recipe $instantiatedRecipe = null;
 
-    public function updater(): Updater
+    /**
+     * Get the recipe instance.
+     */
+    public function recipe(): Recipe
     {
-        if (! $this->instantiatedUpdater) {
-            $updater = $this->updater;
-            $pascalCaseUpdater = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $updater)));
-            $updaterClass = "App\\Updaters\\{$pascalCaseUpdater}";
-
-            $this->instantiatedUpdater = new $updaterClass($this);
+        if ($this->instantiatedRecipe) {
+            return $this->instantiatedRecipe;
         }
 
-        return $this->instantiatedUpdater;
+        $namespace = config('packagist.recipes.namespace');
+
+        $recipe = $this->recipe;
+
+        $class = Str::of($recipe)
+            ->replace(['-', '_'], ' ')
+            ->ucwords()
+            ->replace(' ', '')
+            ->start('\\')
+            ->start($namespace);
+
+        return $this->instantiatedRecipe = new $class($this);
     }
 
+    /**
+     * Get the releases for the package.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function releases()
     {
         return $this->hasMany(Release::class);
     }
 
+    /**
+     * Retrieve the slug attribute.
+     */
     protected function slug(): Attribute
     {
         return Attribute::make(
@@ -46,11 +85,28 @@ class Package extends Model
         );
     }
 
+    /**
+     * Retrieve the decrypted secrets.
+     */
+    public function secrets(): Collection
+    {
+        return collect($this->settings['secrets'] ?? [])
+            ->mapWithKeys(fn ($secret, $key) => [
+                $key => rescue(fn () => Crypt::decryptString($secret), $secret, false),
+            ]);
+    }
+
+    /**
+     * Retrieve the package prefix.
+     */
     public function prefix(): string
     {
         return str_replace('-', '_', strtoupper($this->slug)).'_';
     }
 
+    /**
+     * Generate the release path.
+     */
     public function generateReleasePath(string $version): string
     {
         $type = str_replace('wordpress-', '', $this->type);
@@ -58,84 +114,66 @@ class Package extends Model
         return "{$type}/{$this->slug}/{$this->slug}-{$version}.zip";
     }
 
-    public function prefixedEnvironmentVariable($variable): string
-    {
-        return $this->prefix().$variable;
-    }
-
-    public function environmentVariables(): Collection
-    {
-        $updater = $this->updater;
-        $pascalCaseUpdater = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $updater)));
-        $updaterClass = "App\\Updaters\\{$pascalCaseUpdater}";
-
-        return collect($updaterClass::ENV_VARIABLES)
-            ->mapWithKeys(fn ($variable) => ["{$variable}" => getenv($this->prefixedEnvironmentVariable($variable))]);
-    }
-
-    public function environmentVariable(string $variable): string
-    {
-        return $this->environmentVariables()[$variable] ?? null;
-    }
-
+    /**
+     * Retrieve the latest release.
+     */
     public function getLatestRelease(): ?Release
     {
         return $this->releases()->latest()->first();
     }
 
+    /**
+     * Retrieve the latest release attribute.
+     */
     public function getLatestReleaseAttribute(): ?string
     {
-        return $this->getLatestRelease()->created_at ?? null;
+        return $this->getLatestRelease()->created_at->diffForHumans() ?? null;
     }
 
+    /**
+     * Retrieve the latest version attribute.
+     */
     public function getLatestVersionAttribute(): ?string
     {
         return $this->getLatestRelease()->version ?? null;
     }
 
+    /**
+     * Retrieve the vendored package name.
+     */
     public function vendoredName(): string
     {
-        $type = str_replace('wordpress-', '', $this->type);
-        $type = str_replace('muplugin', 'plugin', $type);
+        $vendor = config('packagist.vendor');
 
-        return config('app.packages_vendor_name').'-'.$type.'/'.$this->slug;
+        $type = Str::of($this->type)
+            ->replace('wordpress-', '')
+            ->replace('muplugin', 'plugin');
+
+        return "{$vendor}-{$type}/{$this->slug}";
     }
 
+    /**
+     * Retrieve the validation errors.
+     */
     public function validationErrors()
     {
         $errors = collect();
 
         try {
-            $updater = $this->updater();
-        } catch (\Exception $e) {
+            $recipe = $this->recipe();
+        } catch (Exception $e) {
             $errors->push($e->getMessage());
-
-            return $errors;
         }
-
-        $this
-            ->environmentVariables()
-            ->each(function ($value, $key) use ($errors) {
-                if (empty($value)) {
-                    $errors->push("Env. variable {$this->prefixedEnvironmentVariable($key)} is required");
-                }
-            });
 
         if ($errors->isNotEmpty()) {
-
             return $errors;
-        }
-
-        $validationErrors = $updater->validationErrors();
-        if ($validationErrors->isNotEmpty()) {
-            return $validationErrors;
         }
 
         try {
-            if (! $this->updater()->testDownload()) {
+            if (! $this->recipe()->testDownload()) {
                 $errors->push("Failed to download package for {$this->slug}");
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $errors->push("Failed to download package for {$this->slug}: {$e->getMessage()}");
         }
 
