@@ -1,54 +1,38 @@
 <?php
 
-namespace App\Updaters;
+namespace App\Recipes;
 
-use App\Exceptions\DownloadLinkNotSetException;
+use App\Recipes\Exceptions\InvalidApiResponseException;
+use App\Recipes\Exceptions\NoDownloadLinkException;
 use Filament\Forms;
-use Filament\Forms\Components\Section;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
-class Direct extends Abstracts\Updater implements Contracts\Updater
+class Direct extends Recipe
 {
-    use Concerns\EnvironmentVariablesInUrl;
-
+    /**
+     * The name of the recipe.
+     */
     public static function name(): string
     {
         return 'Direct';
     }
 
-    public static function formSchema(): ?Section
+    /**
+     * The form schema for the recipe.
+     */
+    public static function forms(): array
     {
-        return Forms\Components\Section::make('Direct Details')
-            ->statePath('settings')
-            ->visible(function ($get) {
-                return $get('updater') === 'direct';
-            })
-            ->schema([
-                Forms\Components\TextInput::make('url')
-                    ->label('Url')
-                    ->required()
-                    ->helperText('The direct link to the package. You can use ${{ YOUR_VAR }} as a placeholder for environment variables. Note that the environment variables must be prefixed with the package prefix.'),
-            ]);
+        return [
+            Forms\Components\TextInput::make('url')
+                ->label('Url')
+                ->required()
+                ->helperText('The direct link to the package. You can use ${{ YOUR_VAR }} as a placeholder for environment variables. Note that the environment variables must be prefixed with the package prefix.'),
+        ];
     }
 
-    public function fetchPackageTitle(): string
-    {
-
-        $name = Str::of($this->package->slug)
-            ->title()
-            ->replace('-', ' ')
-            ->__toString();
-
-        return strip_tags($name);
-    }
-
-    public function validationErrors(): Collection
-    {
-        return $this->environmentVariablesValidationErrors($this->package->settings['url']);
-    }
-
+    /**
+     * Download the package using the JSON response.
+     */
     private function downloadPackageFromJson($json): ?array
     {
         $packageDownloadLink = null;
@@ -81,6 +65,9 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
         return [$fileContent, $downloadLink];
     }
 
+    /**
+     * Extract the version from the plugin.
+     */
     private function extractVersionFromPlugin($tmpDir): ?string
     {
         if (! is_dir($tmpDir)) {
@@ -115,6 +102,9 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
         return null;
     }
 
+    /**
+     * Maybe get the plugin version from the file.
+     */
     private function maybeGetPluginVersionFromFile($file): ?string
     {
         $fileContents = file_get_contents($file, false, null, 0, 8192);
@@ -130,14 +120,15 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
         return null;
     }
 
+    /**
+     * Fetch the package information.
+     */
     protected function fetchPackageInformation(): array
     {
-        $downloadLink = $this->replaceEnvironmentVariables($this->package->settings['url']);
-
-        $response = Http::get($downloadLink);
+        $response = Http::get($this->package->settings['url']);
 
         if (! $response->successful()) {
-            throw new \Exception('Failed to download the plugin');
+            throw new InvalidApiResponseException($this);
         }
 
         if ($response->header('content-type') === 'application/json') {
@@ -147,7 +138,7 @@ class Direct extends Abstracts\Updater implements Contracts\Updater
         }
 
         if (! $fileContent) {
-            throw new DownloadLinkNotSetException;
+            throw new NoDownloadLinkException($this);
         }
 
         if (substr($fileContent, 0, 2) !== 'PK') {

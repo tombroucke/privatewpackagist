@@ -1,66 +1,59 @@
 <?php
 
-namespace App\Updaters;
+namespace App\Recipes;
 
-use App\Exceptions\IncorrectApiResponseCodeException;
-use App\Exceptions\WoocommerceApiNotRespondingException;
-use App\Exceptions\WoocommerceApiRestLimitReachedException;
-use App\Exceptions\WoocommerceProductNotFoundException;
-use App\Exceptions\WoocommerceSubscriptionNotFoundException;
+use App\Recipes\Exceptions\InvalidResponseStatusException;
+use App\Recipes\Exceptions\NoActiveProductOrSubscriptionException;
+use App\Recipes\Exceptions\NotRespondingException;
+use App\Recipes\Exceptions\RateLimitReachedException;
 use Filament\Forms;
-use Filament\Forms\Components\Section;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
-class Woocommerce extends Abstracts\Updater implements Contracts\Updater
+class WooCommerce extends Recipe
 {
+    /**
+     * The secrets used by the recipe.
+     */
+    protected static array $secrets = [
+        'access_token',
+        'access_token_secret',
+    ];
+
+    /**
+     * The name of the recipe.
+     */
     public static function name(): string
     {
-        return 'Woocommerce';
+        return 'WooCommerce';
     }
 
-    public static function formSchema(): ?Section
+    /**
+     * The form schema for the recipe.
+     */
+    public static function forms(): array
     {
-        return Forms\Components\Section::make('Woocommerce Details')
-            ->statePath('settings')
-            ->visible(function ($get) {
-                return $get('updater') === 'woocommerce';
-            })
-            ->schema([
-                Forms\Components\TextInput::make('slug')
-                    ->label('Slug')
-                    ->required(),
-            ]);
+        return [
+            Forms\Components\TextInput::make('slug')
+                ->label('Slug')
+                ->required(),
+
+            Forms\Components\TextInput::make('access_token')
+                ->label('Access Token')
+                ->required(),
+
+            Forms\Components\TextInput::make('access_token_secret')
+                ->label('Access Token Secret')
+                ->required(),
+        ];
     }
 
-    public function fetchPackageTitle(): string
-    {
-        return Str::of($this->package->slug)
-            ->title()
-            ->replace('-', ' ')
-            ->__toString();
-    }
-
-    public function validationErrors(): Collection
-    {
-        $errors = new Collection;
-
-        if (! getenv('WOOCOMMERCE_ACCESS_TOKEN') !== false) {
-            $errors->push('Env. variable WOOCOMMERCE_ACCESS_TOKEN is required');
-        }
-
-        if (! getenv('WOOCOMMERCE_ACCESS_TOKEN_SECRET') !== false) {
-            $errors->push('Env. variable WOOCOMMERCE_ACCESS_TOKEN_SECRET is required');
-        }
-
-        return $errors;
-    }
-
+    /**
+     * Fetch the package information.
+     */
     public function doRequest(string $endpoint, string $method = 'GET', ?string $body = null)
     {
-        $accessToken = getenv('WOOCOMMERCE_ACCESS_TOKEN');
-        $accessTokenSecret = getenv('WOOCOMMERCE_ACCESS_TOKEN_SECRET');
+        $token = $this->package->secrets()->get('access_token');
+        $secret = $this->package->secrets()->get('access_token_secret');
 
         $data = [
             'host' => parse_url($endpoint, PHP_URL_HOST),
@@ -72,13 +65,14 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
             $data['body'] = $body;
         }
 
-        $signature = hash_hmac('sha256', json_encode($data), $accessTokenSecret);
-        $query = http_build_query(['token' => $accessToken, 'signature' => $signature]);
+        $signature = hash_hmac('sha256', json_encode($data), $secret);
 
-        $url = $endpoint.'?'.$query;
         $request = Http::withHeaders([
-            'Authorization: Bearer '.$accessToken,
-            'X-Woo-Signature: '.$signature,
+            "Authorization: Bearer {$token}",
+            "X-Woo-Signature: {$signature}",
+        ])->withQueryParameters([
+            'token' => $token,
+            'signature' => $signature,
         ]);
 
         if ($body) {
@@ -90,16 +84,18 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
         return json_decode($response, true);
     }
 
+    /**
+     * Fetch the package information.
+     */
     protected function fetchPackageInformation(): array
     {
-
         $subscriptions = collect($this->doRequest(
             endpoint: 'https://woocommerce.com/wp-json/helper/1.0/subscriptions',
             method: 'GET',
         ));
 
         if ($subscriptions->get('data') && $subscriptions->get('data')['status'] !== 200) {
-            throw new IncorrectApiResponseCodeException($subscriptions->get('message'));
+            throw new InvalidResponseStatusException($this);
         }
 
         $subscription = $subscriptions
@@ -107,7 +103,7 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
             ->get($this->package->slug);
 
         if (! $subscription) {
-            throw new WoocommerceSubscriptionNotFoundException;
+            throw new NoActiveProductOrSubscriptionException($this);
         }
 
         $productId = (int) $subscription['product_id'];
@@ -125,10 +121,12 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
 
         $status = null;
         $iterations = 0;
+
         while ($status !== 200) {
             if ($iterations++ > 5) {
-                throw new WoocommerceApiNotRespondingException;
+                throw new NotRespondingException($this);
             }
+
             $response = $this->doRequest(
                 endpoint: 'https://woocommerce.com/wp-json/helper/1.0/update-check',
                 method: 'POST',
@@ -136,8 +134,9 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
             );
 
             $limitReached = ($response['code'] ?? false) === 'wccom_rest_limit_reached';
+
             if ($limitReached) {
-                throw new WoocommerceApiRestLimitReachedException;
+                throw new RateLimitReachedException($this);
             }
 
             $status = $response['data']['status'] ?? 200;
@@ -147,8 +146,9 @@ class Woocommerce extends Abstracts\Updater implements Contracts\Updater
         }
 
         $product = $response[$productId];
+
         if (! $product) {
-            throw new WoocommerceProductNotFoundException;
+            throw new NoActiveProductOrSubscriptionException($this);
         }
 
         return [

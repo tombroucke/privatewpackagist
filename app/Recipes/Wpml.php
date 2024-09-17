@@ -1,69 +1,72 @@
 <?php
 
-namespace App\Updaters;
+namespace App\Recipes;
 
-use App\Exceptions\WpmlProductNotFoundException;
-use App\Updaters\Abstracts\Updater;
+use App\Recipes\Exceptions\NoActiveProductOrSubscriptionException;
 use Filament\Forms;
-use Filament\Forms\Components\Section;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class Wpml extends Updater implements Contracts\Updater
+class Wpml extends Recipe
 {
+    /**
+     * The secrets used by the recipe.
+     */
+    protected static array $secrets = [
+        'user_id',
+        'license_key',
+    ];
+
+    /**
+     * The name of the recipe.
+     */
     public static function name(): string
     {
         return 'WPML';
     }
 
-    public static function formSchema(): ?Section
+    /**
+     * The form schema for the recipe.
+     */
+    public static function forms(): array
     {
-        return Forms\Components\Section::make('WPML Details')
-            ->statePath('settings')
-            ->visible(function ($get) {
-                return $get('updater') === 'wpml';
-            })
-            ->schema([
-                Forms\Components\TextInput::make('slug')
-                    ->label('Slug')
-                    ->required(),
-            ]);
+        return [
+            Forms\Components\TextInput::make('slug')
+                ->label('Slug')
+                ->required(),
+
+            Forms\Components\TextInput::make('user_id')
+                ->label('User ID')
+                ->required(),
+
+            Forms\Components\TextInput::make('license_key')
+                ->required(),
+        ];
     }
 
+    /**
+     * The package title.
+     */
     public function fetchPackageTitle(): string
     {
         $product = $this->getProduct($this->package->slug);
 
-        $name = $product['name'] ?? Str::of($this->package->slug)
+        return $product['name'] ?? Str::of($this->package->slug)
             ->title()
             ->replace('-', ' ')
-            ->__toString();
-
-        return strip_tags($name);
+            ->stripTags();
     }
 
-    public function validationErrors(): Collection
-    {
-        $errors = new Collection;
-
-        if (! getenv('WPML_USER_ID') !== false) {
-            $errors->push('Env. variable WPML_USER_ID is required');
-        }
-
-        if (! getenv('WPML_LICENSE_KEY') !== false) {
-            $errors->push('Env. variable WPML_LICENSE_KEY is required');
-        }
-
-        return $errors;
-    }
-
+    /**
+     * Fetch the product information.
+     */
     private function getProduct($slug)
     {
         $response = Http::get('http://d2salfytceyqoe.cloudfront.net/wpml33-products.json');
         $body = $response->body();
 
         $products = json_decode($body, true);
+
         if (! is_array($products) || ! isset($products['downloads']['plugins'])) {
             return null;
         }
@@ -71,19 +74,23 @@ class Wpml extends Updater implements Contracts\Updater
         return collect($products['downloads']['plugins'])->firstWhere('slug', $slug);
     }
 
+    /**
+     * Fetch the package information.
+     */
     protected function fetchPackageInformation(): array
     {
         $product = $this->getProduct($this->package->settings['slug']);
+
         if (! $product) {
-            throw new WpmlProductNotFoundException($this->package->settings['slug']);
+            throw new NoActiveProductOrSubscriptionException($this);
         }
 
         $version = $product['version'];
         $changelog = $this->extractLatestChangelog($product['changelog'] ?? '', '#### (\d+\.\d+\.\d+)(?:\s*\n\n)?(.*?)(?=\n\n#### \d+\.\d+\.\d+|$)');
         $downloadLink = sprintf(
             $product['url'].'&user_id=%s&subscription_key=%s',
-            getenv('WPML_USER_ID'),
-            getenv('WPML_LICENSE_KEY'),
+            $this->package->secrets()->get('user_id'),
+            $this->package->secrets()->get('license_key'),
         );
 
         return [

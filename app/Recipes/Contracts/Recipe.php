@@ -1,20 +1,16 @@
 <?php
 
-namespace App\Updaters\Contracts;
+namespace App\Recipes\Contracts;
 
 use App\Models\Release;
-use Filament\Forms\Components\Section;
-use Illuminate\Support\Collection;
 
-interface Updater
+interface Recipe
 {
     public static function name(): string;
 
     public static function slug(): string;
 
-    public static function formSchema(): ?Section;
-
-    public function validationErrors(): Collection;
+    public static function forms(): array;
 
     public function fetchPackageTitle(): string;
 
