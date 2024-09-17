@@ -6,7 +6,10 @@ use Exception;
 
 class VersionNotSetException extends Exception
 {
-    public function __construct($message = 'Release version not set')
+    /**
+     * Create a new exception instance.
+     */
+    public function __construct(string $message = 'Release version not set')
     {
         parent::__construct($message);
     }
