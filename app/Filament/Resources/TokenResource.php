@@ -3,12 +3,15 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TokenResource\Pages;
+use App\Filament\Resources\TokenResource\RelationManagers;
 use App\Models\Token;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\IconPosition;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
 
 class TokenResource extends Resource
@@ -44,6 +47,12 @@ class TokenResource extends Resource
                     ->default(fn () => bin2hex(random_bytes(16)))
                     ->maxLength(255)
                     ->disabled(fn ($record) => $record),
+
+                Forms\Components\Toggle::make('deactivated_at')
+                    ->formatStateUsing(function ($record) {
+                        return ! $record || $record->isActive();
+                    })
+                    ->label('Active'),
             ]);
     }
 
@@ -70,9 +79,15 @@ class TokenResource extends Resource
                     ->copyable()
                     ->copyMessage('Token copied'),
 
-                Tables\Columns\TextColumn::make('last_used_at')
+                Tables\Columns\TextColumn::make('activity.created_at')
+                    ->label('Last Used At')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->getStateUsing(function ($record) {
+                        $lastActivity = $record->activity()->where('action', 'authenticate')->latest()->first();
+
+                        return $lastActivity->created_at ?? null;
+                    }),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -83,12 +98,43 @@ class TokenResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\ToggleColumn::make('deactivated_at')
+                    ->label('Active')
+                    ->state(function (Token $token): bool {
+                        return $token->isActive();
+                    })
+                    ->updateStateUsing(function ($record, $state) {
+                        $record->update(['deactivated_at' => $state ? null : now()]);
+                    })
+                    ->afterStateUpdated(function ($record, $state) {
+                        Notification::make()
+                            ->icon(function () use ($state) {
+                                return $state ? 'heroicon-o-check-circle' : 'heroicon-o-information-circle';
+                            })
+                            ->iconColor(function () use ($state) {
+                                return $state ? 'success' : 'info';
+                            })
+                            ->title($state ? 'Token activated.' : 'Token deactivated.')
+                            ->send();
+                    }),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->hiddenLabel(),
+
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->mutateFormDataUsing(function (array $data): array {
+                            $data['deactivated_at'] = $data['deactivated_at'] ? null : now();
+
+                            return $data;
+                        }),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -103,7 +149,7 @@ class TokenResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\TokenActivityRelationManager::class,
         ];
     }
 
@@ -114,6 +160,7 @@ class TokenResource extends Resource
     {
         return [
             'index' => Pages\ListTokens::route('/'),
+            'view' => Pages\ViewToken::route('/{record}/view'),
         ];
     }
 }

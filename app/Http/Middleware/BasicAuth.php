@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Models\Token;
-use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,14 +23,19 @@ class BasicAuth
         $username = $request->getUser();
         $password = $request->getPassword();
 
-        $token = Token::where('username', $username)->where('token', $password)->first();
+        $token = Token::where('username', $username)
+            ->where('token', $password)
+            ->whereNull('deactivated_at')->first();
 
         if (! $token) {
             return response('Unauthorized.', 401, ['WWW-Authenticate' => 'Basic']);
         }
 
-        $token->update([
-            'last_used_at' => Carbon::now(),
+        $token->activity()->create([
+            'action' => 'authenticate',
+            'message' => 'Token has been used to authenticate.',
+            'ip_address' => $request->ip(),
+            'user_id' => null,
         ]);
 
         return $next($request);

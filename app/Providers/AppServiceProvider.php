@@ -6,8 +6,10 @@ use App\Events\PackageInformationEvent;
 use App\Listeners\FilebirdProPackageInformationListener;
 use App\Models\Package;
 use App\Models\Release;
+use App\Models\Token;
 use App\Observers\PackageObserver;
 use App\Observers\ReleaseObserver;
+use App\Observers\TokenObserver;
 use App\PackageDownloader;
 use App\PackagesCache;
 use App\Recipes\Recipe;
@@ -69,6 +71,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Package::observe(PackageObserver::class);
         Release::observe(ReleaseObserver::class);
+        Token::observe(TokenObserver::class);
         Event::listen(PackageInformationEvent::class, FilebirdProPackageInformationListener::class);
     }
 }

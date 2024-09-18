@@ -21,7 +21,12 @@ class ListTokens extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->mutateFormDataUsing(function (array $data): array {
+                    $data['deactivated_at'] = $data['deactivated_at'] ? null : now();
+
+                    return $data;
+                }),
         ];
     }
 }
