@@ -104,9 +104,6 @@ class TokenResource extends Resource
                     ->state(function (Token $token): bool {
                         return $token->isActive();
                     })
-                    ->updateStateUsing(function ($record, $state) {
-                        $record->update(['deactivated_at' => $state ? null : now()]);
-                    })
                     ->afterStateUpdated(function ($record, $state) {
                         Notification::make()
                             ->icon(function () use ($state) {
@@ -127,12 +124,7 @@ class TokenResource extends Resource
                     ->hiddenLabel(),
 
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make()
-                        ->mutateFormDataUsing(function (array $data): array {
-                            $data['deactivated_at'] = $data['deactivated_at'] ? null : now();
-
-                            return $data;
-                        }),
+                    Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ]),
             ])
