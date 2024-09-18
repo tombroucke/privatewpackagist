@@ -2,5 +2,5 @@
 
 use Illuminate\Support\Facades\Schedule;
 
-Schedule::command('app:update-packages')->everySixHours();
-Schedule::command('app:send-updates-notification')->dailyAt('08:00');
+Schedule::command('package:update --all --confirm')->everySixHours();
+Schedule::command('release:notify')->dailyAt('08:00');

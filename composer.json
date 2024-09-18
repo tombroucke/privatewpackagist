@@ -2,10 +2,18 @@
     "name": "tombroucke/privatewpackagist",
     "type": "project",
     "description": "Expose premium WordPress plugins as composer packages",
-    "keywords": ["wordpress", "premium", "composer", "packagist", "wpackagist", "private"],
+    "keywords": [
+        "wordpress",
+        "premium",
+        "composer",
+        "packagist",
+        "wpackagist",
+        "private"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "calebporzio/sushi": "^2.5",
         "fakerphp/faker": "^1.23",
         "filament/filament": "^3.2",
         "jeffgreco13/filament-breezy": "^2.4",

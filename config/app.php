@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Privatewpackagist'),
+    'name' => env('APP_NAME', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,8 +84,6 @@ return [
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 
-    'date_time_format' => env('APP_DATE_TIME_FORMAT', 'Y-m-d H:i:s'),
-
     /*
     |--------------------------------------------------------------------------
     | Encryption Key
@@ -124,9 +122,5 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-
-    'packages_vendor_name' => env('PACKAGES_VENDOR_NAME', 'privatewpackagist'),
-
-    'wp_user_agent' => env('WP_USER_AGENT', 'WordPress/6.6.2'),
 
 ];

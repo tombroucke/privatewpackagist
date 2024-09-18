@@ -1,31 +1,11 @@
 <?php
 
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\PackagesJsonController;
 use App\Http\Middleware\BasicAuth;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(BasicAuth::class)->group(function () {
-    Route::get('/repo/packages.json', PackagesJsonController::class.'@show');
-
-    Route::get('/repo/{file}', function ($file) {
-
-        $allowedFileTypes = ['zip'];
-        $requestedFileType = pathinfo($file, PATHINFO_EXTENSION);
-        $fileTypeAllowed = in_array($requestedFileType, $allowedFileTypes);
-        if (! $fileTypeAllowed) {
-            abort(403);
-        }
-
-        $directoryTraversal = strpos($file, '..') !== false;
-        if ($directoryTraversal) {
-            abort(403);
-        }
-
-        $filePath = storage_path('app/packages/'.$file);
-        if (! file_exists($filePath)) {
-            abort(404);
-        }
-
-        return response()->file($filePath);
-    })->where('file', '.*');
+Route::prefix('repo')->middleware(BasicAuth::class)->group(function () {
+    Route::get('packages.json', [PackagesJsonController::class, 'show']);
+    Route::get('{file}', [FileController::class, 'download'])->where('file', '.*');
 });

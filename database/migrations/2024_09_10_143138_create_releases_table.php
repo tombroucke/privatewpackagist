@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('package_id')->constrained()->cascadeOnDelete();
             $table->string('version');
-            $table->text('changelog');
+            $table->text('changelog')->nullable();
             $table->string('path');
             $table->timestamps();
         });

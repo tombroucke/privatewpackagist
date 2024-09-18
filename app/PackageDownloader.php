@@ -4,66 +4,84 @@ namespace App;
 
 use App\Exceptions\CouldNotDownloadPackageException;
 use App\Exceptions\UnableToDownloadFileException;
-use App\Updaters\Contracts\Updater;
+use App\Recipes\Contracts\Recipe;
+use Exception;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 
 class PackageDownloader
 {
-    public function __construct(private Updater $updater) {}
+    /**
+     * Create a new instance.
+     */
+    public function __construct(private Recipe $recipe, private Http $httpClient)
+    {
+        //
+    }
 
+    /**
+     * Store the package.
+     */
     public function store($path): string
     {
-        $downloadLink = $this->updater->downloadLink();
-        $zip = $this->fetchZip($downloadLink);
+        $download = $this->recipe->downloadLink();
+        $zip = $this->fetchZip($download);
 
-        $fullpath = storage_path('app/packages/'.$path);
+        $fullPath = storage_path('app/packages/'.$path);
 
-        if (! file_exists(dirname($fullpath))) {
-            mkdir(dirname($fullpath), 0755, true);
-        }
-        file_put_contents($fullpath, $zip);
+        File::ensureDirectoryExists(dirname($fullPath));
 
-        if (! file_exists($fullpath)) {
-            throw new UnableToDownloadFileException($downloadLink);
+        if (! File::put($fullPath, $zip)) {
+            throw new UnableToDownloadFileException($download);
         }
 
         if ($path === null) {
-            throw new CouldNotDownloadPackageException($downloadLink);
+            throw new CouldNotDownloadPackageException($download);
         }
 
         return $path;
     }
 
+    /**
+     * Test the download.
+     */
     public function test(): bool
     {
-        $downloadLink = $this->updater->downloadLink();
+        $downloadLink = $this->recipe->downloadLink();
         $zip = $this->fetchZip($downloadLink);
 
         return $zip !== null;
     }
 
-    public function validateZip(string $zip)
+    /**
+     * Validate the zip.
+     */
+    public function validateZip(string $zip): string
     {
-        if (empty($zip)) {
-            throw new \Exception('The file is empty');
+        if (blank($zip)) {
+            throw new Exception('The file is empty');
         }
 
         if (ctype_print($zip)) {
-            throw new \Exception($zip);
+            throw new Exception($zip);
         }
 
-        $mimeType = finfo_buffer(finfo_open(), $zip, FILEINFO_MIME_TYPE);
-        $zipMimeTypes = ['application/zip', 'application/x-zip-compressed'];
-        if (! in_array($mimeType, $zipMimeTypes)) {
-            throw new \Exception('The downloaded file is not a valid zip file');
-        }
-    }
+        $type = finfo_buffer(finfo_open(), $zip, FILEINFO_MIME_TYPE);
 
-    public function fetchZip(string $link): string
-    {
-        $zip = Http::withUserAgent($this->updater->userAgent())->get($link)->body();
-        $this->validateZip($zip);
+        if (! in_array($type, ['application/zip', 'application/x-zip-compressed'])) {
+            throw new Exception('The downloaded file is not a valid zip file');
+        }
 
         return $zip;
+    }
+
+    /**
+     * Fetch the zip.
+     */
+    public function fetchZip(string $link): string
+    {
+        $zip = $this->httpClient::withUserAgent($this->recipe->userAgent())->get($link)->body();
+
+        return $this->validateZip($zip);
     }
 }

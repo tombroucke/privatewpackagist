@@ -17,20 +17,22 @@ class BasicAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->user()) {
+            return $next($request);
+        }
+
         $username = $request->getUser();
         $password = $request->getPassword();
 
-        // find token where username=username en token=password
         $token = Token::where('username', $username)->where('token', $password)->first();
 
-        // Validate request headers against the provided credentials
         if (! $token) {
-
             return response('Unauthorized.', 401, ['WWW-Authenticate' => 'Basic']);
         }
 
-        $token->last_used_at = Carbon::now();
-        $token->save();
+        $token->update([
+            'last_used_at' => Carbon::now(),
+        ]);
 
         return $next($request);
     }

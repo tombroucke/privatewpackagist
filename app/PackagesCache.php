@@ -8,40 +8,48 @@ use Illuminate\Support\Facades\Cache;
 
 class PackagesCache
 {
+    /**
+     * The cache key.
+     */
     private string $cacheKey = 'packages';
 
-    public function __construct() {}
-
+    /**
+     * Regenerate the cache.
+     */
     public function regenerate(): void
     {
         $packages = Package::all()
-            ->mapWithKeys(function ($package) {
-                return [$package->vendoredName() => (new PackageReleasesCache($package))->get()];
-            })
-            ->reject(function ($package) {
-                return $package->isEmpty();
-            })
-            ->sortKeys();
+            ->mapWithKeys(fn ($package) => [
+                $package->vendoredName() => (new PackageReleasesCache($package))->get(),
+            ])
+            ->reject(fn ($package) => $package->isEmpty())
+            ->sortKeys()
+            ->all();
 
-        $output = [
-            'packages' => $packages->toArray(),
-        ];
-
-        Cache::put($this->cacheKey, $output);
+        Cache::put($this->cacheKey, ['packages' => $packages]);
     }
 
+    /**
+     * Get the cache.
+     */
     public function get(): array
     {
         if (! Cache::has($this->cacheKey)) {
             $this->regenerate();
         }
 
-        return Cache::has($this->cacheKey) ? Cache::get($this->cacheKey) : [];
+        return Cache::has($this->cacheKey)
+            ? Cache::get($this->cacheKey)
+            : [];
     }
 
+    /**
+     * Forget the cache.
+     */
     public function forget(): void
     {
         event(new CacheClearedEvent($this->cacheKey));
+
         Cache::forget($this->cacheKey);
     }
 }

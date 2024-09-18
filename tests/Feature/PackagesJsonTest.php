@@ -22,7 +22,7 @@ class PackagesJsonTest extends TestCase
         $this->basicAuthUsername = 'tom';
         $this->basicAuthToken = bin2hex(random_bytes(16));
 
-        config(['app.packages_vendor_name' => 'privatewpackagist']);
+        config(['packagist.vendor' => 'privatewpackagist']);
 
         Token::create([
             'username' => $this->basicAuthUsername,
@@ -33,7 +33,7 @@ class PackagesJsonTest extends TestCase
             'name' => 'WooCommerce Product Filters',
             'slug' => 'woocommerce-product-filters',
             'type' => 'wordpress-plugin',
-            'updater' => 'woocommerce',
+            'recipe' => 'woocommerce',
             'settings' => [
                 'slug' => 'woocommerce-product-filters',
             ],

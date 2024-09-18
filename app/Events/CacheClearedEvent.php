@@ -15,6 +15,9 @@ class CacheClearedEvent
      */
     public function __construct(private string $cacheType) {}
 
+    /**
+     * Get the cache type.
+     */
     public function cacheType(): string
     {
         return $this->cacheType;

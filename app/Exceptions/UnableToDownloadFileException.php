@@ -6,7 +6,10 @@ use Exception;
 
 class UnableToDownloadFileException extends Exception
 {
-    public function __construct($link)
+    /**
+     * Create a new exception instance.
+     */
+    public function __construct(string $link)
     {
         parent::__construct("Unable to download file from link: {$link}");
     }

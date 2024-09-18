@@ -49,9 +49,13 @@ class ReleaseObserver
         $this->clearPackageCache($release->package);
     }
 
+    /**
+     * Clear the package cache.
+     */
     private function clearPackageCache(Package $package): void
     {
         (new PackageReleasesCache($package))->forget();
+
         app()->make(PackagesCache::class)->forget();
     }
 }

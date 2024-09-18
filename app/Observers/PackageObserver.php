@@ -8,9 +8,12 @@ use App\PackagesCache;
 
 class PackageObserver
 {
+    /**
+     * Handle the Package "creating" event.
+     */
     public function creating(Package $package): void
     {
-        $package->name = $package->updater()->fetchPackageTitle();
+        $package->name = $package->recipe()->fetchPackageTitle();
     }
 
     /**
@@ -19,6 +22,7 @@ class PackageObserver
     public function created(Package $package): void
     {
         (new PackageReleasesCache($package))->forget();
+
         app()->make(PackagesCache::class)->forget();
     }
 
@@ -27,7 +31,7 @@ class PackageObserver
      */
     public function updating(Package $package): void
     {
-        $package->name = $package->updater()->fetchPackageTitle();
+        $package->name = $package->recipe()->fetchPackageTitle();
     }
 
     /**
@@ -36,6 +40,7 @@ class PackageObserver
     public function updated(Package $package): void
     {
         (new PackageReleasesCache($package))->forget();
+
         app()->make(PackagesCache::class)->forget();
     }
 
