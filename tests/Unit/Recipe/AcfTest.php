@@ -29,7 +29,7 @@ class AcfTest extends TestCase
         $this->acf = $package->recipe();
     }
 
-    public function test_package_version_if_fetched(): void
+    public function test_package_version_is_fetched(): void
     {
         Http::fake([
             'https://connect.advancedcustomfields.com/packages.json' => Http::response([
