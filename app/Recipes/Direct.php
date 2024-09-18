@@ -5,7 +5,6 @@ namespace App\Recipes;
 use App\Recipes\Exceptions\InvalidApiResponseException;
 use App\Recipes\Exceptions\NoDownloadLinkException;
 use Filament\Forms;
-use Illuminate\Support\Facades\Http;
 
 class Direct extends Recipe
 {
@@ -60,7 +59,7 @@ class Direct extends Recipe
         }
 
         $downloadLink = $packageDownloadLink;
-        $fileContent = Http::get($packageDownloadLink)->body();
+        $fileContent = $this->httpClient::get($packageDownloadLink)->body();
 
         return [$fileContent, $downloadLink];
     }
@@ -125,7 +124,7 @@ class Direct extends Recipe
      */
     protected function fetchPackageInformation(): array
     {
-        $response = Http::get($this->package->settings['url']);
+        $response = $this->httpClient::get($this->package->settings['url']);
 
         if (! $response->successful()) {
             throw new InvalidApiResponseException($this);

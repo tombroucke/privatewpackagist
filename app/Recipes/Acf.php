@@ -4,7 +4,6 @@ namespace App\Recipes;
 
 use App\Recipes\Exceptions\LatestVersionFailedException;
 use Filament\Forms;
-use Illuminate\Support\Facades\Http;
 
 class Acf extends Recipe
 {
@@ -63,7 +62,7 @@ class Acf extends Recipe
      */
     private function getLatestVersion()
     {
-        $packages = Http::get('https://connect.advancedcustomfields.com/packages.json')->json();
+        $packages = $this->httpClient::get('https://connect.advancedcustomfields.com/packages.json')->json();
 
         if (! is_array($packages) || ! isset($packages['packages']['wpengine/advanced-custom-fields-pro'])) {
             return null;

@@ -63,7 +63,7 @@ class Package extends Model
             ->start($namespace)
             ->toString();
 
-        return $this->instantiatedRecipe = new $class($this);
+        return $this->instantiatedRecipe = app()->make($class, ['package' => $this]);
     }
 
     /**

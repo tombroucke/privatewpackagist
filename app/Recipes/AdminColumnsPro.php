@@ -5,7 +5,6 @@ namespace App\Recipes;
 use App\Exceptions\UnexpectedResponseException;
 use App\Recipes\Exceptions\NoDownloadLinkException;
 use Filament\Forms;
-use Illuminate\Support\Facades\Http;
 
 class AdminColumnsPro extends Recipe
 {
@@ -108,7 +107,7 @@ class AdminColumnsPro extends Recipe
      */
     private function doRequest(array $args)
     {
-        return Http::asForm()
+        return $this->httpClient::asForm()
             ->withUserAgent($this->userAgent())
             ->withHeaders([
                 'Content-Type' => 'application/x-www-form-urlencoded',

@@ -8,6 +8,7 @@ use App\Models\Release;
 use App\PackageDownloader;
 use App\Recipes\Contracts\Recipe as RecipeContract;
 use App\ReleaseCreator;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use League\HTMLToMarkdown\HtmlConverter;
 
@@ -25,14 +26,16 @@ abstract class Recipe implements RecipeContract
      */
     protected static array $secrets = [];
 
+    private ?PackageDownloader $packageDownloader = null;
+
     /**
      * Create a new Recipe instance.
      *
      * @return void
      */
-    public function __construct(protected Package $package)
+    public function __construct(protected Package $package, protected Http $httpClient)
     {
-        //
+        $this->packageDownloader = app()->make(PackageDownloader::class, ['recipe' => $this]);
     }
 
     /**
@@ -76,7 +79,7 @@ abstract class Recipe implements RecipeContract
      */
     public function update(): ?Release
     {
-        $downloadPath = (new PackageDownloader($this))
+        $downloadPath = $this->packageDownloader
             ->store($this->package->generateReleasePath($this->version()));
 
         return (new ReleaseCreator($this, $this->package))
@@ -108,7 +111,7 @@ abstract class Recipe implements RecipeContract
      */
     public function testDownload(): bool
     {
-        return (new PackageDownloader($this))
+        return $this->packageDownloader
             ->test();
     }
 
@@ -154,6 +157,8 @@ abstract class Recipe implements RecipeContract
      */
     public function changelog(): ?string
     {
+        ray($this->getPackageInformation('changelog'));
+
         return $this->getPackageInformation('changelog');
     }
 }

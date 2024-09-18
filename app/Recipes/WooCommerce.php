@@ -7,7 +7,6 @@ use App\Recipes\Exceptions\NoActiveProductOrSubscriptionException;
 use App\Recipes\Exceptions\NotRespondingException;
 use App\Recipes\Exceptions\RateLimitReachedException;
 use Filament\Forms;
-use Illuminate\Support\Facades\Http;
 
 class WooCommerce extends Recipe
 {
@@ -67,7 +66,7 @@ class WooCommerce extends Recipe
 
         $signature = hash_hmac('sha256', json_encode($data), $secret);
 
-        $request = Http::withHeaders([
+        $request = $this->httpClient::withHeaders([
             "Authorization: Bearer {$token}",
             "X-Woo-Signature: {$signature}",
         ])->withQueryParameters([

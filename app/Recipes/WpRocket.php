@@ -5,7 +5,6 @@ namespace App\Recipes;
 use App\Recipes\Exceptions\InvalidResponseStatusException;
 use App\Recipes\Exceptions\UnexpectedResponseException;
 use Filament\Forms;
-use Illuminate\Support\Facades\Http;
 
 class WpRocket extends Recipe
 {
@@ -63,7 +62,7 @@ class WpRocket extends Recipe
      */
     protected function fetchPackageInformation(): array
     {
-        $response = Http::withUserAgent($this->userAgent())->get('https://api.wp-rocket.me/check_update.php');
+        $response = $this->httpClient::withUserAgent($this->userAgent())->get('https://api.wp-rocket.me/check_update.php');
         $body = $response->body();
 
         $jsonResponse = $response->json();

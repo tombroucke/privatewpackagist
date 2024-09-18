@@ -14,7 +14,7 @@ class PackageDownloader
     /**
      * Create a new instance.
      */
-    public function __construct(private Recipe $recipe)
+    public function __construct(private Recipe $recipe, private Http $httpClient)
     {
         //
     }
@@ -80,7 +80,7 @@ class PackageDownloader
      */
     public function fetchZip(string $link): string
     {
-        $zip = Http::withUserAgent($this->recipe->userAgent())->get($link)->body();
+        $zip = $this->httpClient::withUserAgent($this->recipe->userAgent())->get($link)->body();
 
         return $this->validateZip($zip);
     }

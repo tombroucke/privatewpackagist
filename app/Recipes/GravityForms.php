@@ -4,7 +4,6 @@ namespace App\Recipes;
 
 use App\Recipes\Exceptions\IncorrectApiResponseCodeException;
 use Filament\Forms;
-use Illuminate\Support\Facades\Http;
 
 class GravityForms extends Recipe
 {
@@ -49,7 +48,7 @@ class GravityForms extends Recipe
             $this->package->secrets()->get('license_key')
         );
 
-        $response = Http::get($url);
+        $response = $this->httpClient::get($url);
 
         if ($response->status() !== 200) {
             throw new IncorrectApiResponseCodeException;

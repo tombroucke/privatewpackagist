@@ -4,7 +4,6 @@ namespace App\Recipes;
 
 use App\Recipes\Exceptions\NoActiveProductOrSubscriptionException;
 use Filament\Forms;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class Wpml extends Recipe
@@ -62,7 +61,7 @@ class Wpml extends Recipe
      */
     private function getProduct($slug)
     {
-        $response = Http::get('http://d2salfytceyqoe.cloudfront.net/wpml33-products.json');
+        $response = $this->httpClient::get('http://d2salfytceyqoe.cloudfront.net/wpml33-products.json');
         $body = $response->body();
 
         $products = json_decode($body, true);

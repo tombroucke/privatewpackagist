@@ -4,7 +4,6 @@ namespace App\Recipes;
 
 use App\Recipes\Exceptions\NoDownloadLinkException;
 use Filament\Forms;
-use Illuminate\Support\Facades\Http;
 
 class Puc extends Recipe
 {
@@ -71,7 +70,7 @@ class Puc extends Recipe
      */
     public function doWpAction(string $action)
     {
-        $response = Http::withUserAgent($this->userAgent())->get($this->package->settings['meta_data_url'], [
+        $response = $this->httpClient::withUserAgent($this->userAgent())->get($this->package->settings['meta_data_url'], [
             'wpaction' => $action,
             'dlid' => $this->licenseKey(),
             'wpslug' => $this->package->settings['slug'],

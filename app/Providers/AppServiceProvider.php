@@ -8,10 +8,12 @@ use App\Models\Package;
 use App\Models\Release;
 use App\Observers\PackageObserver;
 use App\Observers\ReleaseObserver;
+use App\PackageDownloader;
 use App\PackagesCache;
 use App\Recipes\Recipe;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use ReflectionClass;
@@ -42,6 +44,21 @@ class AppServiceProvider extends ServiceProvider
                 ->filter(fn ($recipe) => is_subclass_of($recipe, Recipe::class))
                 ->reject(fn ($recipe) => (new ReflectionClass($recipe))->isAbstract())
                 ->mapWithKeys(fn ($recipe) => [$recipe::slug() => $recipe]);
+        });
+
+        $this->app->make('recipes')
+            ->each(function ($recipe, $slug) {
+                $this->app->bind($recipe, function ($app, $params) use ($recipe) {
+                    $httpClient = new Http;
+
+                    return new $recipe($params['package'], $httpClient);
+                });
+            });
+
+        $this->app->bind(PackageDownloader::class, function ($app, $params) {
+            $httpClient = new Http;
+
+            return new PackageDownloader($params['recipe'], $httpClient);
         });
     }
 

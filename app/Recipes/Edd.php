@@ -6,7 +6,6 @@ use App\Models\Package;
 use App\Recipes\Exceptions\EddLicenseCheckFailedException;
 use Filament\Forms;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class Edd extends Recipe
@@ -139,7 +138,7 @@ class Edd extends Recipe
      */
     private function doEddAction(string $action): array
     {
-        $response = Http::withUserAgent($this->userAgent())->get($this->package->settings['endpoint_url'], [
+        $response = $this->httpClient::withUserAgent($this->userAgent())->get($this->package->settings['endpoint_url'], [
             'edd_action' => $action,
             'license' => $this->licenseKey(),
             'item_name' => $this->package->settings['slug'],
