@@ -28,6 +28,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Date Time Format
+    |--------------------------------------------------------------------------
+    |
+    | This value is the default date time format used when displaying dates and
+    | times in the application. This value is used when displaying dates and
+    | times in the application.
+    |
+    */
+    'date_time_format' => env('PACKAGIST_DATE_TIME_FORMAT', 'Y-m-d H:i:s'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Update Recipes
     |--------------------------------------------------------------------------
     |

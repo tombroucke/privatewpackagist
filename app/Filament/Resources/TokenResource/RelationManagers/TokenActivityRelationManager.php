@@ -26,7 +26,7 @@ class TokenActivityRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('ip_address'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Time')
-                    ->dateTime(config('app.date_time_format'))
+                    ->dateTime(config('packagist.date_time_format'))
                     ->sortable(),
             ])
             ->filters([
