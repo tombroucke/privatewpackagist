@@ -24,10 +24,18 @@ class BasicAuth
         $password = $request->getPassword();
 
         $token = Token::where('username', $username)
-            ->where('token', $password)
-            ->whereNull('deactivated_at')->first();
+            ->where('token', $password)->first();
 
         if (! $token) {
+            return response('Unauthorized.', 401, ['WWW-Authenticate' => 'Basic']);
+        } elseif ($token->deactivated_at) {
+            $token->activity()->create([
+                'action' => 'authenticate_blocked',
+                'message' => 'Token has been used to authenticate but is deactivated.',
+                'ip_address' => $request->ip(),
+                'user_id' => null,
+            ]);
+
             return response('Unauthorized.', 401, ['WWW-Authenticate' => 'Basic']);
         }
 

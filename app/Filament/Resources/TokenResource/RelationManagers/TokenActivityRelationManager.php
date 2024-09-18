@@ -21,7 +21,15 @@ class TokenActivityRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('action'),
+                Tables\Columns\TextColumn::make('action')
+                    ->searchable()
+                    ->badge()
+                    ->color(fn ($record) => match ($record->action) {
+                        'activate' => 'success',
+                        'deactivate' => 'gray',
+                        'authenticate_blocked' => 'danger',
+                        default => 'info',
+                    }),
                 Tables\Columns\TextColumn::make('message'),
                 Tables\Columns\TextColumn::make('ip_address'),
                 Tables\Columns\TextColumn::make('created_at')
@@ -43,6 +51,7 @@ class TokenActivityRelationManager extends RelationManager
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 }

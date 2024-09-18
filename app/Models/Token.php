@@ -34,6 +34,11 @@ class Token extends Model
         return is_null($this->deactivated_at);
     }
 
+    /**
+     * Mutate the deactivated_at attribute.
+     * If the value is true (toggle 'active' is on), set the value to null.
+     * If the value is false (toggle 'active' is off), set the value to now.
+     */
     public function deactivatedAt(): Attribute
     {
         return Attribute::make(

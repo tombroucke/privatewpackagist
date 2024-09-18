@@ -19,20 +19,18 @@ class TokenObserver
      */
     public function updated(Token $token): void
     {
-        if ($token->isDirty('deactivated_at')) {
-            if ($token->deactivated_at) {
-                $action = 'deactivate';
-            } else {
-                $action = 'activate';
-            }
+        if ($token->isClean('deactivated_at')) {
 
-            $token->activity()->create([
-                'action' => $action,
-                'message' => 'Token has been '.$action.'d.',
-                'ip_address' => request()->ip(),
-                'user_id' => auth()->id(),
-            ]);
+            return;
         }
+
+        $action = $token->deactivated_at ? 'deactivate' : 'activate';
+        $token->activity()->create([
+            'action' => $action,
+            'message' => 'Token has been '.$action.'d.',
+            'ip_address' => request()->ip(),
+            'user_id' => auth()->id(),
+        ]);
     }
 
     /**
