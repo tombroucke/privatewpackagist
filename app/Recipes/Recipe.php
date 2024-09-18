@@ -157,8 +157,6 @@ abstract class Recipe implements RecipeContract
      */
     public function changelog(): ?string
     {
-        ray($this->getPackageInformation('changelog'));
-
         return $this->getPackageInformation('changelog');
     }
 }
