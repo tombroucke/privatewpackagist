@@ -58,21 +58,13 @@ class Puc extends Recipe
     }
 
     /**
-     * The license key.
-     */
-    public function licenseKey(): string
-    {
-        return $this->package->secrets()->get('license_key');
-    }
-
-    /**
      * Handle the request.
      */
     public function doWpAction(string $action)
     {
         $response = $this->httpClient::withUserAgent($this->userAgent())->get($this->package->settings['meta_data_url'], [
             'wpaction' => $action,
-            'dlid' => $this->licenseKey(),
+            'dlid' => $this->package->secrets()->get('license_key'),
             'wpslug' => $this->package->settings['slug'],
         ]);
 

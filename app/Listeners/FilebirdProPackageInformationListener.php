@@ -24,7 +24,7 @@ class FilebirdProPackageInformationListener
             return;
         }
 
-        $code = $event->package->recipe()->licenseKey();
+        $code = $event->package->secrets()->get('license_key');
         $email = getenv('FILEBIRD_PRO_EMAIL');
         $url = $event->package->settings['source_url'];
 

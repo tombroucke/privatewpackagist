@@ -97,14 +97,6 @@ class Edd extends Recipe
     }
 
     /**
-     * The license key.
-     */
-    private function licenseKey(): string
-    {
-        return $this->package->secrets()->get('license_key');
-    }
-
-    /**
      * Activate the license.
      */
     private function activateLicense(): void
@@ -140,7 +132,7 @@ class Edd extends Recipe
     {
         $response = $this->httpClient::withUserAgent($this->userAgent())->get($this->package->settings['endpoint_url'], [
             'edd_action' => $action,
-            'license' => $this->licenseKey(),
+            'license' => $this->package->secrets()->get('license_key'),
             'item_name' => $this->package->settings['slug'],
             'url' => $this->package->settings['source_url'],
         ]);
