@@ -13,12 +13,12 @@ class ReleaseCreator
     /**
      * Create a new instance.
      */
-    public function __construct(private Recipe $recipe, private Package $package) {}
+    public function __construct(private Recipe $recipe, private PackageDownloader $packageDownloader, private Package $package) {}
 
     /**
      * Create a new release.
      */
-    public function release($downloadPath): ?Release
+    public function release(string $version): ?Release
     {
         $version = $this->recipe->version();
         $changelog = $this->recipe->changelog();
@@ -38,17 +38,8 @@ class ReleaseCreator
             return $existing;
         }
 
-        // if (! $this->package->exists) {
-        //     $release = new Release;
-        //
-        //     $release->fill([
-        //         'version' => $version,
-        //         'changelog' => $changelog,
-        //         'path' => $filePath,
-        //     ]);
-        //
-        //     return $release;
-        // }
+        $downloadPath = $this->packageDownloader
+            ->store($this->package->generateReleasePath($version));
 
         return $this->package->releases()->create([
             'version' => $version,

@@ -79,11 +79,8 @@ abstract class Recipe implements RecipeContract
      */
     public function update(): ?Release
     {
-        $downloadPath = $this->packageDownloader
-            ->store($this->package->generateReleasePath($this->version()));
-
-        return (new ReleaseCreator($this, $this->package))
-            ->release($downloadPath);
+        return (new ReleaseCreator($this, $this->packageDownloader, $this->package))
+            ->release($this->version());
     }
 
     /**
