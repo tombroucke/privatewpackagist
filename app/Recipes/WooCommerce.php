@@ -78,7 +78,7 @@ class WooCommerce extends Recipe
             $request->withBody($body);
         }
 
-        $response = $request->send($method, $url);
+        $response = $request->send($method, $endpoint);
 
         return json_decode($response, true);
     }
