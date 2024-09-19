@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Events\RecipeFormsCollectedEvent;
 use App\Filament\Resources\PackageResource\Pages;
 use App\Filament\Resources\PackageResource\RelationManagers\ReleasesRelationManager;
 use App\Models\Package;
@@ -87,6 +88,7 @@ class PackageResource extends Resource
             }
 
             $options = collect($recipe::forms());
+            event(new RecipeFormsCollectedEvent($options, $recipe));
 
             $secrets = $options
                 ->filter(fn ($option) => in_array($option->getName(), $recipe::secrets()))

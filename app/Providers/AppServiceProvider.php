@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Events\PackageInformationEvent;
-use App\Listeners\FilebirdProPackageInformationListener;
+use App\Events\RecipeFormsCollectedEvent;
 use App\Models\Package;
 use App\Models\Release;
 use App\Models\Token;
@@ -72,6 +72,37 @@ class AppServiceProvider extends ServiceProvider
         Package::observe(PackageObserver::class);
         Release::observe(ReleaseObserver::class);
         Token::observe(TokenObserver::class);
-        Event::listen(PackageInformationEvent::class, FilebirdProPackageInformationListener::class);
+
+        $this->registerModifiers();
+
+    }
+
+    /**
+     * Register recipe modifiers.
+     */
+    private function registerModifiers()
+    {
+        $path = config('packagist.recipes.path').'/Modifiers';
+        $namespace = Str::finish(config('packagist.recipes.namespace'), '\\Modifiers\\');
+
+        $modifiers = collect(File::allFiles($path))
+            ->filter(fn ($file) => $file->getExtension() === 'php')
+            ->map(fn ($file) => Str::of($file->getPathname())
+                ->replace([$path, '.php'], '')
+                ->ltrim('/')
+                ->start($namespace)
+                ->toString()
+            );
+
+        $modifiers->reject(function ($recipe) {
+            try {
+                return (new ReflectionClass($recipe))->isInterface();
+            } catch (\Throwable $th) {
+                return true;
+            }
+        })->each(function ($modifier) {
+            Event::listen(RecipeFormsCollectedEvent::class, [$modifier, 'modifyRecipeForms']);
+            Event::listen(PackageInformationEvent::class, [$modifier, 'modifyPackageInformation']);
+        });
     }
 }
