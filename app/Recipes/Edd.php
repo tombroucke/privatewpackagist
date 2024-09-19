@@ -128,14 +128,27 @@ class Edd extends Recipe
     /**
      * Handle the request.
      */
-    private function doEddAction(string $action): array
+    private function doEddAction(string $action, string $method = 'GET'): array
     {
-        $response = $this->httpClient::withUserAgent($this->userAgent())->get($this->package->settings['endpoint_url'], [
+
+        $args = [
             'edd_action' => $action,
             'license' => $this->package->secrets()->get('license_key'),
             'item_name' => $this->package->settings['slug'],
             'url' => $this->package->settings['source_url'],
-        ]);
+        ];
+
+        $request = $this->httpClient::withUserAgent($this->userAgent());
+
+        if ($method === 'POST') {
+            $response = $request
+                ->asForm()
+                ->post($this->package->settings['endpoint_url'], $args);
+        } else {
+            $response = $request
+                ->withQueryParameters($args)
+                ->get($this->package->settings['endpoint_url']);
+        }
 
         $body = $response->body();
 
@@ -151,7 +164,7 @@ class Edd extends Recipe
             throw new EddLicenseCheckFailedException;
         }
 
-        $response = $this->doEddAction('get_version');
+        $response = $this->doEddAction('get_version', $this->package->settings['method']);
 
         $version = $response['new_version'];
         $sections = @unserialize($response['sections']);
