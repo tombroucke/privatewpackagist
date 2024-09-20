@@ -3,9 +3,10 @@
 namespace App;
 
 use App\Exceptions\CouldNotDownloadPackageException;
+use App\Exceptions\DownloadedFileIsPlainTextException;
+use App\Exceptions\InvalidFileTypeException;
 use App\Exceptions\UnableToDownloadFileException;
 use App\Recipes\Contracts\Recipe;
-use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 
@@ -31,12 +32,12 @@ class PackageDownloader
 
         File::ensureDirectoryExists(dirname($fullPath));
 
-        if (! File::put($fullPath, $zip)) {
-            throw new UnableToDownloadFileException($download);
-        }
-
         if ($path === null) {
             throw new CouldNotDownloadPackageException($download);
+        }
+
+        if (! File::put($fullPath, $zip)) {
+            throw new UnableToDownloadFileException($download);
         }
 
         return $path;
@@ -59,17 +60,16 @@ class PackageDownloader
     public function validateZip(string $zip): string
     {
         if (blank($zip)) {
-            throw new Exception('The file is empty');
+            throw new InvalidFileTypeException('none');
         }
 
         if (ctype_print($zip)) {
-            throw new Exception($zip);
+            throw new DownloadedFileIsPlainTextException($zip);
         }
 
         $type = finfo_buffer(finfo_open(), $zip, FILEINFO_MIME_TYPE);
-
         if (! in_array($type, ['application/zip', 'application/x-zip-compressed'])) {
-            throw new Exception('The downloaded file is not a valid zip file');
+            throw new InvalidFileTypeException($type);
         }
 
         return $zip;

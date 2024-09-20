@@ -37,7 +37,6 @@ class ReleaseCreator
         if ($existing) {
             return $existing;
         }
-
         $downloadPath = $this->packageDownloader
             ->store($this->package->generateReleasePath($version));
 
