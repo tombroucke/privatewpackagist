@@ -110,7 +110,6 @@ class PackageResource extends Resource
             }
 
             $options = $options->reject(fn ($option) => in_array($option->getName(), $recipe::secrets()));
-
             $schema[] = Forms\Components\Section::make("{$recipe::name()} Details")
                 ->icon('heroicon-o-cog-6-tooth')
                 ->description('Configure the package settings.')

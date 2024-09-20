@@ -2,7 +2,7 @@
 
 namespace App\Recipes;
 
-use App\Recipes\Exceptions\IncorrectApiResponseCodeException;
+use App\Recipes\Exceptions\InvalidResponseStatusException;
 use Filament\Forms;
 
 class GravityForms extends Recipe
@@ -51,7 +51,7 @@ class GravityForms extends Recipe
         $response = $this->httpClient::get($url);
 
         if ($response->status() !== 200) {
-            throw new IncorrectApiResponseCodeException;
+            throw new InvalidResponseStatusException($this);
         }
 
         $body = $response->body();

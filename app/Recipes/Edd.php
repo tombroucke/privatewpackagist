@@ -2,8 +2,7 @@
 
 namespace App\Recipes;
 
-use App\Models\Package;
-use App\Recipes\Exceptions\EddLicenseCheckFailedException;
+use App\Recipes\Exceptions\LicenseCheckFailedException;
 use Filament\Forms;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -161,7 +160,7 @@ class Edd extends Recipe
     protected function fetchPackageInformation(): array
     {
         if (! $this->package->settings['skip_license_check'] && ! $this->checkLicense()) {
-            throw new EddLicenseCheckFailedException;
+            throw new LicenseCheckFailedException($this);
         }
 
         $response = $this->doEddAction('get_version', $this->package->settings['method']);

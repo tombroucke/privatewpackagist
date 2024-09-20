@@ -2,9 +2,8 @@
 
 namespace App\Recipes;
 
-use App\Models\Package;
 use App\Models\Release;
-use App\Recipes\Exceptions\ManualRecipeCanNotUpdatePackages;
+use App\Recipes\Exceptions\ShouldNotBeAutomaticallyUpdatedException;
 use Illuminate\Support\Collection;
 
 class Manual extends Recipe
@@ -40,7 +39,7 @@ class Manual extends Recipe
      */
     public function update(): ?Release
     {
-        throw new ManualRecipeCanNotUpdatePackages($this->package->slug);
+        throw new ShouldNotBeAutomaticallyUpdatedException($this->package->slug);
     }
 
     public function testDownload(): bool

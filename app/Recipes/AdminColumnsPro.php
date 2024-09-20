@@ -2,8 +2,8 @@
 
 namespace App\Recipes;
 
-use App\Exceptions\UnexpectedResponseException;
 use App\Recipes\Exceptions\NoDownloadLinkException;
+use App\Recipes\Exceptions\UnexpectedResponseException;
 use Filament\Forms;
 
 class AdminColumnsPro extends Recipe
@@ -96,7 +96,7 @@ class AdminColumnsPro extends Recipe
         ]);
 
         if (! isset($response['version'])) {
-            throw new UnexpectedResponseException('Version not found in response');
+            throw new UnexpectedResponseException($this);
         }
 
         return $response['version'];

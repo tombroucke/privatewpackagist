@@ -2,7 +2,7 @@
 
 namespace App\Recipes;
 
-use App\Recipes\Exceptions\InvalidApiResponseException;
+use App\Recipes\Exceptions\InvalidResponseStatusException;
 use App\Recipes\Exceptions\NoDownloadLinkException;
 use Filament\Forms;
 
@@ -127,13 +127,14 @@ class Direct extends Recipe
         $response = $this->httpClient::get($this->package->settings['url']);
 
         if (! $response->successful()) {
-            throw new InvalidApiResponseException($this);
+            throw new InvalidResponseStatusException($this);
         }
 
         if ($response->header('content-type') === 'application/json') {
             [$fileContent, $downloadLink] = $this->downloadPackageFromJson($response->json());
         } else {
             $fileContent = $response->body();
+            $downloadLink = $this->package->settings['url'];
         }
 
         if (! $fileContent) {
