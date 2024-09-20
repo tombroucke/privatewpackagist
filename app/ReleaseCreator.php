@@ -44,6 +44,7 @@ class ReleaseCreator
             'version' => $version,
             'changelog' => $changelog,
             'path' => $downloadPath,
+            'shasum' => sha1_file(storage_path('app/packages/'.$downloadPath)),
         ]);
     }
 }

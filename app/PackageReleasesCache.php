@@ -40,7 +40,7 @@ class PackageReleasesCache
                 'dist' => [
                     'type' => 'zip',
                     'url' => asset('repo/'.$release->path),
-                    'shasum' => sha1_file(storage_path('app/packages/'.$release->path)),
+                    'shasum' => $release->shasum,
                 ],
             ],
         ])->sortKeysDesc();

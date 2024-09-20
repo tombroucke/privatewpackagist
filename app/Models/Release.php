@@ -19,6 +19,7 @@ class Release extends Model
         'version',
         'changelog',
         'path',
+        'shasum',
     ];
 
     /**
