@@ -35,6 +35,7 @@ class RecipeTest extends TestCase
             $table->text('changelog');
             $table->string('version');
             $table->string('path');
+            $table->string('shasum');
             $table->timestamps();
         });
 
@@ -98,6 +99,8 @@ class RecipeTest extends TestCase
         $this->assertEquals('1.0.0', $release->version);
         $this->assertEquals('testplugin/package-name/package-name-1.0.0.zip', $release->path);
         $this->assertFileExists(storage_path('app/packages/'.$release->path));
+
+        $this->assertEquals('d7885210675d1f5aa40f5ed5074e272ca269fb7a', $release->shasum);
 
         // clean up
         unlink(storage_path('app/packages/'.$release->path));

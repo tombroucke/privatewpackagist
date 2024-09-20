@@ -43,12 +43,14 @@ class PackagesJsonTest extends TestCase
             'version' => '1.4.32',
             'changelog' => 'Initial release',
             'path' => 'plugin/woocommerce-product-filters/woocommerce-product-filters-1.4.32.zip',
+            'shasum' => 'test',
         ]);
 
         $package->releases()->create([
             'version' => '1.4.33',
             'changelog' => 'Updated release',
             'path' => 'plugin/woocommerce-product-filters/woocommerce-product-filters-1.4.33.zip',
+            'shasum' => 'test',
         ]);
     }
 
