@@ -27,7 +27,7 @@ class EditPackage extends EditRecord
     }
 
     /**
-     * Handle actions before saving a record.
+     * Handle actions before saving a package.
      */
     protected function beforeSave(): void
     {
@@ -46,5 +46,13 @@ class EditPackage extends EditRecord
 
             $this->halt();
         }
+    }
+
+    /**
+     * Handle actions after saving a package.
+     */
+    protected function afterSave(): void
+    {
+        $this->dispatch('refreshRelation', 'releases');
     }
 }

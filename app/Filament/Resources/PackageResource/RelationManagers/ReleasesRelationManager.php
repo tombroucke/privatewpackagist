@@ -16,6 +16,11 @@ class ReleasesRelationManager extends RelationManager
     protected static string $relationship = 'releases';
 
     /**
+     * Listeners for the relation manager.
+     */
+    protected $listeners = ['refreshRelation' => '$refresh'];
+
+    /**
      * The form for the relation manager.
      */
     public function form(Form $form): Form

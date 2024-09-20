@@ -5,6 +5,9 @@ namespace App\Observers;
 use App\Models\Package;
 use App\PackageReleasesCache;
 use App\PackagesCache;
+use App\Recipes\Exceptions\ShouldNotBeAutomaticallyUpdatedException;
+use Exception;
+use Filament\Notifications\Notification;
 
 class PackageObserver
 {
@@ -21,6 +24,8 @@ class PackageObserver
      */
     public function created(Package $package): void
     {
+        $this->updatePackage($package);
+
         (new PackageReleasesCache($package))->forget();
 
         app()->make(PackagesCache::class)->forget();
@@ -39,6 +44,8 @@ class PackageObserver
      */
     public function updated(Package $package): void
     {
+        $this->updatePackage($package);
+
         (new PackageReleasesCache($package))->forget();
 
         app()->make(PackagesCache::class)->forget();
@@ -66,5 +73,28 @@ class PackageObserver
     public function forceDeleted(Package $package): void
     {
         app()->make(PackagesCache::class)->forget();
+    }
+
+    private function updatePackage(Package $package): void
+    {
+        try {
+            $release = $package->recipe()->update();
+        } catch (ShouldNotBeAutomaticallyUpdatedException $e) {
+            // Do nothing, the package can not be automatically updated
+        } catch (Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title('Error')
+                ->body($e->getMessage())
+                ->send();
+        }
+
+        if (isset($release) && $release->wasRecentlyCreated) {
+            Notification::make()
+                ->success()
+                ->title('Release created')
+                ->body("{$package->name} {$release->version} has been released")
+                ->send();
+        }
     }
 }
