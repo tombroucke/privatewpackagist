@@ -28,9 +28,37 @@ class Acf extends Recipe
     public static function forms(): array
     {
         return [
+            Forms\Components\TextInput::make('source_url')
+                ->label('Source URL')
+                ->url()
+                ->required(),
+
             Forms\Components\TextInput::make('license_key')
                 ->required(),
         ];
+    }
+
+    /**
+     * Validate the license key.
+     */
+    public function licenseKeyError(): ?string
+    {
+        $data = [
+            'acf_license' => $this->package->secrets()->get('license_key'),
+            'wp_url' => $this->package->settings['source_url'],
+            'p' => 'pro',
+        ];
+
+        $response = $this->request('v2/plugins/validate', $data);
+
+        $status = $response['status'] ?? '';
+        $message = $response['message'] ?? '';
+
+        if ($status !== 1) {
+            return $message;
+        }
+
+        return null;
     }
 
     /**
@@ -55,6 +83,16 @@ class Acf extends Recipe
             'changelog' => '',
             'downloadLink' => $downloadLink,
         ];
+    }
+
+    private function request(string $endpoint, array $data = [])
+    {
+        $url = "https://connect.advancedcustomfields.com/$endpoint";
+        $data = array_merge($data, []);
+
+        $response = $this->httpClient::withQueryParameters($data)->post($url);
+
+        return $response->json();
     }
 
     /**

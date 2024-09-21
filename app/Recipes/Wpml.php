@@ -14,6 +14,7 @@ class Wpml extends Recipe
     protected static array $secrets = [
         'user_id',
         'license_key',
+        'site_key',
     ];
 
     /**
@@ -34,13 +35,51 @@ class Wpml extends Recipe
                 ->label('Slug')
                 ->required(),
 
+            Forms\Components\TextInput::make('source_url')
+                ->label('Source URL')
+                ->url()
+                ->required(),
+
             Forms\Components\TextInput::make('user_id')
                 ->label('User ID')
                 ->required(),
 
             Forms\Components\TextInput::make('license_key')
                 ->required(),
+
+            Forms\Components\TextInput::make('site_key')
+                ->label('Site key')
+                ->required(),
         ];
+    }
+
+    /**
+     * Validate the license key.
+     */
+    public function licenseKeyError(): ?string
+    {
+        $valid = false;
+        $endpoint = 'https://api.wpml.org/';
+        $message = 'License key is not valid';
+
+        $args = [
+            'action' => 'site_key_validation',
+            'site_key' => $this->package->secrets()->get('site_key'),
+            'site_url' => $this->package->settings['source_url'],
+        ];
+
+        $response = $this->httpClient::asForm()
+            ->post($endpoint, $args);
+
+        $body = unserialize($response->body());
+
+        if (property_exists($body, 'success')) {
+            $valid = true;
+        } else {
+            $message = property_exists($body, 'error') ? $body->error : $message;
+        }
+
+        return $valid ? null : $message;
     }
 
     /**
@@ -78,6 +117,7 @@ class Wpml extends Recipe
      */
     protected function fetchPackageInformation(): array
     {
+        // TODO: fetch the package information with sitekey instead of license key
         $product = $this->getProduct($this->package->settings['slug']);
 
         if (! $product) {

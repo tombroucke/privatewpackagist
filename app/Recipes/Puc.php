@@ -47,6 +47,34 @@ class Puc extends Recipe
     }
 
     /**
+     * Validate the license key.
+     */
+    public function licenseKeyError(): ?string
+    {
+        $packageInformation = $this->doWpAction('updatecheck');
+        $valid = false;
+        $message = 'License key is not valid';
+
+        if (($packageInformation['download_url'] ?? '') !== '') {
+            $valid = true;
+        } else {
+            $messageKeys = [
+                'upgrade_warning_notice',
+                'error',
+            ];
+
+            foreach ($messageKeys as $key) {
+                if (isset($packageInformation[$key])) {
+                    $message = $packageInformation[$key];
+                    break;
+                }
+            }
+        }
+
+        return $valid ? null : $message;
+    }
+
+    /**
      * The user agent for the request.
      */
     public function userAgent(): string

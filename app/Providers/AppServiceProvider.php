@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Events\LicenseValidatedEvent;
 use App\Events\PackageInformationEvent;
 use App\Events\RecipeFormsCollectedEvent;
 use App\Models\Package;
@@ -101,8 +102,17 @@ class AppServiceProvider extends ServiceProvider
                 return true;
             }
         })->each(function ($modifier) {
-            Event::listen(RecipeFormsCollectedEvent::class, [$modifier, 'modifyRecipeForms']);
-            Event::listen(PackageInformationEvent::class, [$modifier, 'modifyPackageInformation']);
+            $eventMapping = [
+                LicenseValidatedEvent::class => 'modifyLicenseValidation',
+                RecipeFormsCollectedEvent::class => 'modifyRecipeForms',
+                PackageInformationEvent::class => 'modifyPackageInformation',
+            ];
+
+            foreach ($eventMapping as $event => $method) {
+                if (method_exists($modifier, $method)) {
+                    Event::listen($event, [$modifier, $method]);
+                }
+            }
         });
     }
 }

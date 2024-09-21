@@ -2,9 +2,8 @@
 
 namespace App\Recipes;
 
-use App\Recipes\Exceptions\LicenseCheckFailedException;
+use App\Events\LicenseValidatedEvent;
 use Filament\Forms;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class Edd extends Recipe
@@ -59,11 +58,36 @@ class Edd extends Recipe
             Forms\Components\TextInput::make('changelog_extract')
                 ->label('Changelog extract')
                 ->helperText('Regular expression to extract changelog'),
-
-            Forms\Components\Checkbox::make('skip_license_check')
-                ->label('Skip license check')
-                ->helperText('Some plugins like WP All Import does not return a valid license key. Only tick this box if you get a \'403 Invalid license\' error'),
         ];
+    }
+
+    /**
+     * Validate the license key.
+     */
+    public function licenseKeyError(): ?string
+    {
+        $response = $this->doEddAction('check_license');
+        $licenseStatus = $response['license'] ?? 'invalid';
+        $valid = $licenseStatus === 'valid';
+        $message = match ($licenseStatus) {
+            'invalid' => 'Invalid license key',
+            'expired' => 'License key has expired',
+            'disabled' => 'License key has been disabled',
+            'site_inactive' => 'License key is not active for this URL',
+            'item_name_mismatch' => 'License key does not match the item name',
+            'no_activations_left' => 'License key has no activations left',
+            'invalid' => 'Invalid license key',
+            default => 'License key is not valid',
+        };
+
+        event(new LicenseValidatedEvent(
+            $this->package,
+            $valid,
+            $message,
+            ['response' => $response])
+        );
+
+        return $valid ? null : $message;
     }
 
     /**
@@ -80,25 +104,9 @@ class Edd extends Recipe
     }
 
     /**
-     * The validation errors for the recipe.
-     */
-    public function validationErrors(): Collection
-    {
-        $errors = new Collection;
-
-        $this->activateLicense();
-
-        if (! $this->package->settings['skip_license_check'] && ! $this->checkLicense()) {
-            $errors->push('Invalid license');
-        }
-
-        return $errors;
-    }
-
-    /**
      * Activate the license.
      */
-    private function activateLicense(): void
+    private function activateLicenseKey(): void
     {
         $this->doEddAction('activate_license');
     }
@@ -115,21 +123,10 @@ class Edd extends Recipe
     }
 
     /**
-     * Check the license.
-     */
-    private function checkLicense(): bool
-    {
-        $response = $this->doEddAction('check_license');
-
-        return isset($response['license']) && $response['license'] === 'valid';
-    }
-
-    /**
      * Handle the request.
      */
     private function doEddAction(string $action, string $method = 'GET'): array
     {
-
         $args = [
             'edd_action' => $action,
             'license' => $this->package->secrets()->get('license_key'),
@@ -159,10 +156,6 @@ class Edd extends Recipe
      */
     protected function fetchPackageInformation(): array
     {
-        if (! $this->package->settings['skip_license_check'] && ! $this->checkLicense()) {
-            throw new LicenseCheckFailedException($this);
-        }
-
         $response = $this->doEddAction('get_version', $this->package->settings['method']);
 
         $version = $response['new_version'];

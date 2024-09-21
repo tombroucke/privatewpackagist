@@ -4,7 +4,6 @@ namespace App\Recipes;
 
 use App\Models\Release;
 use App\Recipes\Exceptions\ShouldNotBeAutomaticallyUpdatedException;
-use Illuminate\Support\Collection;
 
 class Manual extends Recipe
 {
@@ -17,21 +16,19 @@ class Manual extends Recipe
     }
 
     /**
+     * Validate the license key.
+     */
+    public function licenseKeyError(): ?string
+    {
+        return null;
+    }
+
+    /**
      * Fetch the package information.
      */
     protected function fetchPackageInformation(): array
     {
         return [];
-    }
-
-    /**
-     * The validation errors for the recipe.
-     */
-    public function validationErrors(): Collection
-    {
-        $errors = new Collection;
-
-        return $errors;
     }
 
     /**

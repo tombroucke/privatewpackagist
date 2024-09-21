@@ -2,6 +2,7 @@
 
 namespace App\Recipes;
 
+use App\Recipes\Exceptions\CouldNotAuthenticateException;
 use App\Recipes\Exceptions\InvalidResponseStatusException;
 use App\Recipes\Exceptions\NoActiveProductOrSubscriptionException;
 use App\Recipes\Exceptions\NotRespondingException;
@@ -47,6 +48,24 @@ class WooCommerce extends Recipe
     }
 
     /**
+     * Validate the license key.
+     */
+    public function licenseKeyError(): ?string
+    {
+        try {
+            $this->getProductInformation();
+        } catch (NoActiveProductOrSubscriptionException $e) {
+            return 'No active product or subscription found.';
+        } catch (InvalidResponseStatusException $e) {
+            return $e->getMessage();
+        } catch (CouldNotAuthenticateException $e) {
+            return $e->getMessage();
+        }
+
+        return null;
+    }
+
+    /**
      * Fetch the package information.
      */
     public function doRequest(string $endpoint, string $method = 'GET', ?string $body = null)
@@ -83,15 +102,20 @@ class WooCommerce extends Recipe
         return json_decode($response, true);
     }
 
-    /**
-     * Fetch the package information.
-     */
-    protected function fetchPackageInformation(): array
+    private function getProductInformation()
     {
         $subscriptions = collect($this->doRequest(
             endpoint: 'https://woocommerce.com/wp-json/helper/1.0/subscriptions',
             method: 'GET',
         ));
+
+        $authenticationIssues = [
+            'not_found',
+            'invalid_signature',
+        ];
+        if (in_array(($subscriptions['code'] ?? false), $authenticationIssues)) {
+            throw new CouldNotAuthenticateException(($subscriptions['message'] ?? null));
+        }
 
         if ($subscriptions->get('data') && $subscriptions->get('data')['status'] !== 200) {
             throw new InvalidResponseStatusException($this);
@@ -99,12 +123,21 @@ class WooCommerce extends Recipe
 
         $subscription = $subscriptions
             ->mapWithKeys(fn ($subscription) => [$subscription['zip_slug'] => $subscription])
-            ->get($this->package->slug);
+            ->get($this->package->settings['slug']);
 
         if (! $subscription) {
             throw new NoActiveProductOrSubscriptionException($this);
         }
 
+        return $subscription;
+    }
+
+    /**
+     * Fetch the package information.
+     */
+    protected function fetchPackageInformation(): array
+    {
+        $subscription = $this->getProductInformation();
         $productId = (int) $subscription['product_id'];
 
         $payload = [

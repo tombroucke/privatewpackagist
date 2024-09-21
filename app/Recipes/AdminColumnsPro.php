@@ -48,9 +48,64 @@ class AdminColumnsPro extends Recipe
                 ->searchable()
                 ->required(),
 
+            Forms\Components\TextInput::make('source_url')
+                ->label('Source URL')
+                ->url()
+                ->required(),
+
             Forms\Components\TextInput::make('license_key')
                 ->required(),
         ];
+    }
+
+    /**
+     * Validate the license key.
+     */
+    public function licenseKeyError(): ?string
+    {
+        // This should be implemented to validate the license key, but this would require for the activation_key to be stored and shared between all the ACP recipes.
+        // $response = $this->doRequest([
+        //     'command' => 'subscription_details',
+        //     'activation_url' => $this->package->settings['source_url'],
+        //     'activation_key' => '{{activation_key}}',
+        //     'meta' => [
+        //         'admin-columns-pro' => '5.7.4',
+        //         'php_version' => PHP_VERSION,
+        //         'acp_version' => '5.7.4',
+        //         'is_network' => false,
+        //         'ip' => '127.0.0.1',
+        //     ],
+        // ]);
+
+        // Instead we will just check if we can get the latest version of the package and return a generic error message if not.
+        $response = $this->doRequest([
+            'command' => 'products_update',
+            'plugin_name' => $this->package->settings['slug'],
+            'subscription_key' => $this->package->secrets()->get('license_key'),
+        ]);
+
+        if (($response['code'] ?? null) === 'error') {
+            return 'Invalid license key.';
+        }
+
+        return null;
+    }
+
+    public function activateLicenseKey(): array
+    {
+        $response = $this->doRequest([
+            'command' => 'activate',
+            'activation_url' => $this->package->settings['source_url'],
+            'subscription_key' => $this->package->secrets()->get('license_key'),
+        ]);
+
+        $return = [
+            'activated' => $response['activated'] ?? false,
+            'message' => $response['message'] ?? null,
+            'activation_key' => $response['activation_key'] ?? null,
+        ];
+
+        return $return;
     }
 
     /**

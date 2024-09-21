@@ -164,9 +164,13 @@ class Package extends Model
             $recipe = $this->recipe();
         } catch (Exception $e) {
             $errors->push($e->getMessage());
+
+            return $errors;
         }
 
-        if ($errors->isNotEmpty()) {
+        if ($licenseKeyError = $recipe->licenseKeyError()) {
+            $errors->push($licenseKeyError);
+
             return $errors;
         }
 

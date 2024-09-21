@@ -32,9 +32,36 @@ class GravityForms extends Recipe
                 ->label('Slug')
                 ->required(),
 
+            Forms\Components\TextInput::make('source_url')
+                ->label('Source URL')
+                ->url()
+                ->required(),
+
             Forms\Components\TextInput::make('license_key')
                 ->required(),
         ];
+    }
+
+    /**
+     * Validate the license key.
+     */
+    public function licenseKeyError(): ?string
+    {
+
+        $key = $this->package->secrets()->get('license_key');
+
+        $response = $this->httpClient::post(
+            'https://gravityapi.com/wp-json/gravityapi/v1/licenses/'.$key.'/check',
+            [
+                'site_url' => $this->package->settings['source_url'],
+                'is_multisite' => false,
+            ]
+        )->json();
+
+        $message = $response['message'] ?? 'License key is not valid';
+        $valid = ($response['is_active'] ?? false);
+
+        return $valid ? null : $message;
     }
 
     /**

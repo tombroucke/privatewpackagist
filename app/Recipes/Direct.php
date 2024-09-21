@@ -30,6 +30,14 @@ class Direct extends Recipe
     }
 
     /**
+     * Validate the license key.
+     */
+    public function licenseKeyError(): ?string
+    {
+        return null;
+    }
+
+    /**
      * Download the package using the JSON response.
      */
     private function downloadPackageFromJson($json): ?array

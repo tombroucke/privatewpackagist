@@ -34,7 +34,7 @@ class PackageObserver
     /**
      * Handle the Package "updated" event.
      */
-    public function updating(Package $package): void
+    public function updating(Package $package)
     {
         $package->name = $package->recipe()->fetchPackageTitle();
     }

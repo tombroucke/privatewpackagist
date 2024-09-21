@@ -12,6 +12,8 @@ interface Recipe
 
     public static function forms(): array;
 
+    public function licenseKeyError(): ?string;
+
     public function fetchPackageTitle(): string;
 
     public function update(): ?Release;

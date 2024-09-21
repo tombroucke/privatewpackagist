@@ -7,14 +7,14 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PackageInformationEvent
+class LicenseValidatedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public array &$packageInformation, public Package $package)
+    public function __construct(public Package &$package, public bool &$valid, public string &$message, public array $params = [])
     {
         //
     }

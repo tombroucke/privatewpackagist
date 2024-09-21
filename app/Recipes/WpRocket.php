@@ -45,6 +45,21 @@ class WpRocket extends Recipe
     }
 
     /**
+     * Validate the license key.
+     */
+    public function licenseKeyError(): ?string
+    {
+        $message = 'License key is not valid for this site';
+        $response = $this->httpClient::withUserAgent($this->userAgent())->get('https://api.wp-rocket.me/check_update.php');
+
+        if ($response->status() !== 200) {
+            return $message;
+        }
+
+        return null;
+    }
+
+    /**
      * The user agent for the request.
      */
     public function userAgent(): string
@@ -62,6 +77,7 @@ class WpRocket extends Recipe
      */
     protected function fetchPackageInformation(): array
     {
+        sleep(1); // Prevent rate limiting. On package create/save, this is called immediately after the license key check.
         $response = $this->httpClient::withUserAgent($this->userAgent())->get('https://api.wp-rocket.me/check_update.php');
         $body = $response->body();
 
