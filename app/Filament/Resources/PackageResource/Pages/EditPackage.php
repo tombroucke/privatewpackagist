@@ -31,10 +31,10 @@ class EditPackage extends EditRecord
      */
     protected function beforeSave(): void
     {
-        $package = $this->record->replicate();
-        $package->fill($this->data);
-
-        $errors = $package->validationErrors();
+        $errors = $this->record
+            ->replicate()
+            ->fill($this->data)
+            ->validationErrors();
 
         if ($errors->isNotEmpty()) {
             $errors->each(fn ($error) => Notification::make()
@@ -43,7 +43,6 @@ class EditPackage extends EditRecord
                 ->body($error)
                 ->send()
             );
-
             $this->halt();
         }
     }
