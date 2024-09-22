@@ -66,9 +66,10 @@ class Edd extends Recipe
      */
     public function licenseKeyError(): ?string
     {
-        $response = $this->doEddAction('check_license');
+        $response = $this->doRequest('check_license');
         $licenseStatus = $response['license'] ?? 'invalid';
-        $valid = $licenseStatus === 'valid';
+
+        $active = $licenseStatus === 'valid';
         $message = match ($licenseStatus) {
             'invalid' => 'Invalid license key',
             'expired' => 'License key has expired',
@@ -82,12 +83,12 @@ class Edd extends Recipe
 
         event(new LicenseValidatedEvent(
             $this->package,
-            $valid,
+            $active,
             $message,
             ['response' => $response])
         );
 
-        return $valid ? null : $message;
+        return $active ? null : $message;
     }
 
     /**
@@ -95,7 +96,7 @@ class Edd extends Recipe
      */
     public function fetchPackageTitle(): string
     {
-        $response = $this->doEddAction('check_license');
+        $response = $this->doRequest('check_license');
 
         return $response['item_name'] ?? $response['name'] ?? Str::of($this->package->slug)
             ->title()
@@ -108,7 +109,7 @@ class Edd extends Recipe
      */
     private function activateLicenseKey(): void
     {
-        $this->doEddAction('activate_license');
+        $this->doRequest('activate_license');
     }
 
     /**
@@ -125,7 +126,7 @@ class Edd extends Recipe
     /**
      * Handle the request.
      */
-    private function doEddAction(string $action, string $method = 'GET'): array
+    private function doRequest(string $action, string $method = 'GET'): array
     {
         $args = [
             'edd_action' => $action,
@@ -156,7 +157,7 @@ class Edd extends Recipe
      */
     protected function fetchPackageInformation(): array
     {
-        $response = $this->doEddAction('get_version', $this->package->settings['method']);
+        $response = $this->doRequest('get_version', $this->package->settings['method']);
 
         $version = $response['new_version'];
         $sections = @unserialize($response['sections']);

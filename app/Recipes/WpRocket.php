@@ -49,14 +49,20 @@ class WpRocket extends Recipe
      */
     public function licenseKeyError(): ?string
     {
-        $message = 'License key is not valid for this site';
-        $response = $this->httpClient::withUserAgent($this->userAgent())->get('https://api.wp-rocket.me/check_update.php');
+        $json = $this->httpClient::withUserAgent($this->userAgent())
+            ->get('https://api.wp-rocket.me/valid_key.php')
+            ->json();
 
-        if ($response->status() !== 200) {
-            return $message;
-        }
+        $active = ($json['success'] ?? false) === true;
+        $message = match ($json['data']['reason'] ?? '') {
+            'BAD_LICENSE' => 'Your license is not valid.',
+            'BAD_NUMBER' => 'You have added as many sites as your current license allows.',
+            'BAD_SITE' => 'This website is not allowed.',
+            'BAD_KEY' => 'This license key is not recognized.',
+            default => 'License key is not valid for this site',
+        };
 
-        return null;
+        return $active ? null : $message;
     }
 
     /**

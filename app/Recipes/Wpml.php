@@ -58,9 +58,7 @@ class Wpml extends Recipe
      */
     public function licenseKeyError(): ?string
     {
-        $valid = false;
         $endpoint = 'https://api.wpml.org/';
-        $message = 'License key is not valid';
 
         $args = [
             'action' => 'site_key_validation',
@@ -68,18 +66,16 @@ class Wpml extends Recipe
             'site_url' => $this->package->settings['source_url'],
         ];
 
-        $response = $this->httpClient::asForm()
-            ->post($endpoint, $args);
+        $responseBody = $this->httpClient::asForm()
+            ->post($endpoint, $args)
+            ->body();
 
-        $body = unserialize($response->body());
+        $body = unserialize($responseBody);
 
-        if (property_exists($body, 'success')) {
-            $valid = true;
-        } else {
-            $message = property_exists($body, 'error') ? $body->error : $message;
-        }
+        $active = property_exists($body, 'success');
+        $message = property_exists($body, 'error') ? 'Answer from remote server: '.$body->error : 'Invalid license key.';
 
-        return $valid ? null : $message;
+        return $active ? null : $message;
     }
 
     /**

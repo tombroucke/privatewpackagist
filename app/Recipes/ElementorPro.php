@@ -49,8 +49,8 @@ class ElementorPro extends Recipe
         ];
 
         $response = $this->doRequest('license/validate', $args);
-        $active = strtolower($response['status'] ?? '') === 'active';
 
+        $active = strtolower($response['status'] ?? '') === 'active';
         $message = match ($response['error'] ?? '') {
             'missing' => 'License key is missing or invalid.',
             'site_inactive' => 'License key is not active for this site.',

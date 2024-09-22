@@ -84,11 +84,10 @@ class AdminColumnsPro extends Recipe
             'subscription_key' => $this->package->secrets()->get('license_key'),
         ]);
 
-        if (($response['code'] ?? null) === 'error') {
-            return 'Invalid license key.';
-        }
+        $active = ($response['code'] ?? null) !== 'error';
+        $message = isset($response['message']) ? 'Answer from remote server: '.$response['message'] : 'Invalid license key.';
 
-        return null;
+        return $active ? null : $message;
     }
 
     public function activateLicenseKey(): array

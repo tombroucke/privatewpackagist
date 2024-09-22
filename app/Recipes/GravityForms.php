@@ -50,7 +50,7 @@ class GravityForms extends Recipe
 
         $key = $this->package->secrets()->get('license_key');
 
-        $response = $this->httpClient::post(
+        $responseBody = $this->httpClient::post(
             'https://gravityapi.com/wp-json/gravityapi/v1/licenses/'.$key.'/check',
             [
                 'site_url' => $this->package->settings['source_url'],
@@ -58,10 +58,10 @@ class GravityForms extends Recipe
             ]
         )->json();
 
-        $message = $response['message'] ?? 'License key is not valid';
-        $valid = ($response['is_active'] ?? false);
+        $active = ($responseBody['is_active'] ?? false);
+        $message = isset($responseBody['message']) ? 'Answer from remote server: '.$responseBody['message'] : 'Invalid license key.';
 
-        return $valid ? null : $message;
+        return $active ? null : $message;
     }
 
     /**

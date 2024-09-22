@@ -51,27 +51,23 @@ class Puc extends Recipe
      */
     public function licenseKeyError(): ?string
     {
-        $packageInformation = $this->doWpAction('updatecheck');
-        $valid = false;
-        $message = 'License key is not valid';
+        $packageInformation = $this->doRequest('updatecheck');
 
-        if (($packageInformation['download_url'] ?? '') !== '') {
-            $valid = true;
-        } else {
-            $messageKeys = [
-                'upgrade_warning_notice',
-                'error',
-            ];
+        $valid = ($packageInformation['download_url'] ?? '') !== '';
 
-            foreach ($messageKeys as $key) {
-                if (isset($packageInformation[$key])) {
-                    $message = $packageInformation[$key];
-                    break;
-                }
+        $messageKeys = [
+            'upgrade_warning_notice',
+            'error',
+        ];
+
+        foreach ($messageKeys as $key) {
+            if (isset($packageInformation[$key])) {
+                $message = 'Answer from remote server: '.$packageInformation[$key];
+                break;
             }
         }
 
-        return $valid ? null : $message;
+        return $valid ? null : $message ?? 'License key is not valid';
     }
 
     /**
@@ -88,7 +84,7 @@ class Puc extends Recipe
     /**
      * Handle the request.
      */
-    public function doWpAction(string $action)
+    public function doRequest(string $action)
     {
         $response = $this->httpClient::withUserAgent($this->userAgent())->get($this->package->settings['meta_data_url'], [
             'wpaction' => $action,
@@ -104,7 +100,7 @@ class Puc extends Recipe
      */
     protected function fetchPackageInformation(): array
     {
-        $packageInformation = $this->doWpAction('updatecheck');
+        $packageInformation = $this->doRequest('updatecheck');
 
         if (! isset($packageInformation['download_url']) || $packageInformation === '') {
             throw new NoDownloadLinkException($this);

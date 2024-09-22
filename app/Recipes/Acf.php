@@ -49,16 +49,12 @@ class Acf extends Recipe
             'p' => 'pro',
         ];
 
-        $response = $this->request('v2/plugins/validate', $data);
+        $response = $this->doRequest('v2/plugins/validate', $data);
 
-        $status = $response['status'] ?? '';
-        $message = $response['message'] ?? '';
+        $active = ($response['status'] ?? '') === 1;
+        $message = isset($response['message']) ? 'Answer from remote server: '.$response['message'] : 'Invalid license key.';
 
-        if ($status !== 1) {
-            return $message;
-        }
-
-        return null;
+        return $active ? null : $message;
     }
 
     /**
@@ -85,12 +81,13 @@ class Acf extends Recipe
         ];
     }
 
-    private function request(string $endpoint, array $data = [])
+    private function doRequest(string $endpoint, array $data = [])
     {
         $url = "https://connect.advancedcustomfields.com/$endpoint";
         $data = array_merge($data, []);
 
-        $response = $this->httpClient::withQueryParameters($data)->post($url);
+        $response = $this->httpClient::withQueryParameters($data)
+            ->post($url);
 
         return $response->json();
     }
