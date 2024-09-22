@@ -58,6 +58,7 @@ class PackageResource extends Resource
                 ->prefix(config('packagist.vendor').'/')
                 ->required()
                 ->autofocus()
+                ->unique()
                 ->maxLength(255),
 
             Forms\Components\Select::make('type')
