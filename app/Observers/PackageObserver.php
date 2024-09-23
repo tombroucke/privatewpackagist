@@ -25,10 +25,6 @@ class PackageObserver
     public function created(Package $package): void
     {
         $this->updatePackage($package);
-
-        (new PackageReleasesCache($package))->forget();
-
-        app()->make(PackagesCache::class)->forget();
     }
 
     /**
