@@ -40,7 +40,7 @@ class TokenResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('username')
                     ->required()
-                    ->unique()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
 
                 Forms\Components\TextInput::make('token')
