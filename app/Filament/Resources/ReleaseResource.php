@@ -121,6 +121,11 @@ class ReleaseResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
+                    ->mutateRecordDataUsing(function (array $data) {
+                        $data['path'] = 'packages/'.$data['path'];
+
+                        return $data;
+                    })
                     ->hiddenLabel(),
 
                 ActionGroup::make([

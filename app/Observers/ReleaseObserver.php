@@ -10,6 +10,14 @@ use App\PackagesCache;
 class ReleaseObserver
 {
     /**
+     * Handle the Release "creating" event.
+     */
+    public function creating(Release $release): void
+    {
+        $release->shasum = sha1_file(storage_path('app/packages/'.$release->path));
+    }
+
+    /**
      * Handle the Release "created" event.
      */
     public function created(Release $release): void
