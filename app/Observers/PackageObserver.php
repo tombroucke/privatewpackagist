@@ -24,7 +24,23 @@ class PackageObserver
      */
     public function created(Package $package): void
     {
-        $this->updatePackage($package);
+        $errors = $package->validationErrors();
+
+        if ($errors->isNotEmpty()) {
+            $errors->each(fn ($error) => Notification::make()
+                ->danger()
+                ->title('Validation Error')
+                ->body($error)
+                ->send()
+            );
+        } else {
+            if (is_null($package->license_valid_from)) {
+                $package->update([
+                    'license_valid_from' => now(),
+                ]);
+            }
+            $this->createRelease($package);
+        }
     }
 
     /**
@@ -40,11 +56,33 @@ class PackageObserver
      */
     public function updated(Package $package): void
     {
-        $this->updatePackage($package);
+        $errors = $package->validationErrors();
 
-        (new PackageReleasesCache($package))->forget();
+        if ($errors->isNotEmpty()) {
+            $errors->each(fn ($error) => Notification::make()
+                ->danger()
+                ->title('Validation Error')
+                ->body($error)
+                ->send()
+            );
+            if ($package->license_valid_from && is_null($package->license_valid_to)) {
+                $package->updateQuietly([
+                    'license_valid_to' => now(),
+                ]);
+            }
+        } else {
+            if (is_null($package->license_valid_from)) {
+                $package->license_valid_from = now();
+            }
+            $package->license_valid_to = null;
+            $package->saveQuietly();
 
-        app()->make(PackagesCache::class)->forget();
+            $this->createRelease($package);
+
+            (new PackageReleasesCache($package))->forget();
+
+            app()->make(PackagesCache::class)->forget();
+        }
     }
 
     /**
@@ -71,7 +109,7 @@ class PackageObserver
         app()->make(PackagesCache::class)->forget();
     }
 
-    private function updatePackage(Package $package): void
+    private function createRelease(Package $package): void
     {
         try {
             $release = $package->recipe()->update();

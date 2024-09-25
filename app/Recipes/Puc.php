@@ -40,9 +40,6 @@ class Puc extends Recipe
             Forms\Components\TextInput::make('meta_data_url')
                 ->label('Metadata URL')
                 ->required(),
-
-            Forms\Components\TextInput::make('license_key')
-                ->required(),
         ];
     }
 
@@ -88,7 +85,7 @@ class Puc extends Recipe
     {
         $response = $this->httpClient::withUserAgent($this->userAgent())->get($this->package->settings['meta_data_url'], [
             'wpaction' => $action,
-            'dlid' => $this->package->secrets()->get('license_key'),
+            'dlid' => $this->package->getSecret('license_key'),
             'wpslug' => $this->package->settings['slug'],
         ]);
 

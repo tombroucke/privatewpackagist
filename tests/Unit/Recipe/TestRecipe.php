@@ -42,7 +42,7 @@ class TestRecipe extends AbstractRecipe
 
     public function licenseKeyError(): ?string
     {
-        if ($this->package->secrets()->get('license_key') !== 'test_license_key') {
+        if ($this->package->getSecret('license_key') !== 'test_license_key') {
             return 'Invalid license key';
         }
 

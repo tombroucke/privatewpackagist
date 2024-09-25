@@ -5,7 +5,9 @@ namespace Tests\Unit\Recipes;
 use App\Models\Package;
 use App\Recipes\Acf;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class AcfTest extends TestCase
@@ -16,17 +18,55 @@ class AcfTest extends TestCase
     {
         parent::setUp();
 
-        $package = new Package([
+        Schema::create('secrets', function ($table) {
+            $table->id();
+            $table->string('name');
+            $table->string('type');
+            $table->text('value');
+            $table->timestamps();
+        });
+
+        Schema::create('package_secret', function ($table) {
+            $table->id();
+            $table->foreignId('package_id')->constrained();
+            $table->foreignId('secret_id')->constrained();
+            $table->timestamps();
+        });
+
+        Schema::create('packages', function ($table) {
+            $table->id();
+            $table->string('slug');
+            $table->string('name');
+            $table->string('type');
+            $table->string('recipe');
+            $table->json('settings');
+            $table->timestamps();
+        });
+
+        DB::table('secrets')->insert([
+            'name' => 'ACF License Key',
+            'type' => 'license_key',
+            'value' => Crypt::encryptString('test_license_key'),
+        ]);
+
+        DB::table('packages')->insert([
             'slug' => 'advanced-custom-fields-pro',
+            'name' => 'Temp Name',
+            'type' => 'wordpress-testplugin',
             'recipe' => 'acf',
-            'settings' => [
+            'settings' => json_encode([
                 'secrets' => [
                     'license_key' => Crypt::encryptString('test_license_key'),
                 ],
-            ],
+            ]),
         ]);
 
-        $this->acf = $package->recipe();
+        DB::table('package_secret')->insert([
+            'package_id' => 1,
+            'secret_id' => 1,
+        ]);
+
+        $this->acf = Package::find(1)->recipe();
 
         Http::fake([
             'https://connect.advancedcustomfields.com/packages.json' => Http::response([

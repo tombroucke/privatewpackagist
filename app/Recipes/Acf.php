@@ -32,9 +32,6 @@ class Acf extends Recipe
                 ->label('Source URL')
                 ->url()
                 ->required(),
-
-            Forms\Components\TextInput::make('license_key')
-                ->required(),
         ];
     }
 
@@ -44,7 +41,7 @@ class Acf extends Recipe
     public function licenseKeyError(): ?string
     {
         $data = [
-            'acf_license' => $this->package->secrets()->get('license_key'),
+            'acf_license' => $this->package->getSecret('license_key'),
             'wp_url' => $this->package->settings['source_url'],
             'p' => 'pro',
         ];
@@ -71,7 +68,7 @@ class Acf extends Recipe
         $downloadLink = sprintf(
             'https://connect.advancedcustomfields.com/v2/plugins/download?t=%s&p=pro&k=%s',
             $version,
-            $this->package->secrets()->get('license_key'),
+            $this->package->getSecret('license_key'),
         );
 
         return [

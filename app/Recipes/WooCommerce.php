@@ -36,14 +36,6 @@ class WooCommerce extends Recipe
             Forms\Components\TextInput::make('slug')
                 ->label('Slug')
                 ->required(),
-
-            Forms\Components\TextInput::make('access_token')
-                ->label('Access Token')
-                ->required(),
-
-            Forms\Components\TextInput::make('access_token_secret')
-                ->label('Access Token Secret')
-                ->required(),
         ];
     }
 
@@ -57,9 +49,9 @@ class WooCommerce extends Recipe
         } catch (NoActiveProductOrSubscriptionException $e) {
             return 'No active product or subscription found.';
         } catch (InvalidResponseStatusException $e) {
-            return $e->getMessage();
+            return 'Answer from remote server: '.$e->getMessage();
         } catch (CouldNotAuthenticateException $e) {
-            return $e->getMessage();
+            return 'Answer from remote server: '.$e->getMessage();
         }
 
         return null;
@@ -70,8 +62,8 @@ class WooCommerce extends Recipe
      */
     public function doRequest(string $endpoint, string $method = 'GET', ?string $body = null)
     {
-        $token = $this->package->secrets()->get('access_token');
-        $secret = $this->package->secrets()->get('access_token_secret');
+        $token = $this->package->getSecret('access_token');
+        $secret = $this->package->getSecret('access_token_secret');
 
         $data = [
             'host' => parse_url($endpoint, PHP_URL_HOST),

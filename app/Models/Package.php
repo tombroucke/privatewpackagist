@@ -7,7 +7,6 @@ use Exception;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
@@ -35,6 +34,8 @@ class Package extends Model
      */
     protected $casts = [
         'settings' => 'json',
+        'license_valid_from' => 'datetime',
+        'license_valid_to' => 'datetime',
     ];
 
     /**
@@ -77,6 +78,16 @@ class Package extends Model
     }
 
     /**
+     * Get the secrets for the package.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function secrets()
+    {
+        return $this->belongsToMany(Secret::class, 'package_secret');
+    }
+
+    /**
      * Retrieve the slug attribute.
      */
     protected function slug(): Attribute
@@ -87,14 +98,17 @@ class Package extends Model
     }
 
     /**
-     * Retrieve the decrypted secrets.
+     * Retrieve a decrypted secret.
      */
-    public function secrets(): Collection
+    public function getSecret($key): ?string
     {
-        return collect($this->settings['secrets'] ?? [])
-            ->mapWithKeys(fn ($secret, $key) => [
-                $key => rescue(fn () => Crypt::decryptString($secret), $secret, false),
-            ]);
+        $secret = $this->secrets()->where('type', $key)->first();
+
+        if (! $secret) {
+            return null;
+        }
+
+        return Crypt::decryptString($secret->value);
     }
 
     /**
@@ -183,5 +197,26 @@ class Package extends Model
         }
 
         return $errors;
+    }
+
+    /**
+     * Create a custom attribute for the license key validity
+     * Checks if the license is valid.
+     */
+    public function getValidAttribute()
+    {
+        $licenseValidFrom = $this->license_valid_from;
+        $licenseValidTo = $this->license_valid_to;
+        $licenseValid = false;
+
+        if ($licenseValidFrom && $licenseValidTo) {
+            $licenseValid = now()->between($licenseValidFrom, $licenseValidTo);
+        } elseif ($licenseValidFrom) {
+            $licenseValid = now()->gte($licenseValidFrom);
+        } elseif ($licenseValidTo) {
+            $licenseValid = now()->lte($licenseValidTo);
+        }
+
+        return $licenseValid;
     }
 }

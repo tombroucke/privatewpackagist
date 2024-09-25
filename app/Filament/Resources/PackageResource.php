@@ -13,9 +13,11 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 
 class PackageResource extends Resource
 {
@@ -82,7 +84,6 @@ class PackageResource extends Resource
                 ->searchable()
                 ->disabled(fn ($operation) => $operation !== 'create'),
         ];
-
         foreach (self::getRecipes() as $recipe) {
             if (blank($recipe::forms())) {
                 continue;
@@ -91,16 +92,50 @@ class PackageResource extends Resource
             $options = collect($recipe::forms());
             event(new RecipeFormsCollectedEvent($options, $recipe));
 
-            $secrets = $options
-                ->filter(fn ($option) => in_array($option->getName(), $recipe::secrets()))
-                ->map(fn ($secret) => $secret
-                    ->password()
-                    ->revealable()
-                    ->required()
-                    ->formatStateUsing(fn (?string $state): ?string => filled($state) ? rescue(fn () => Crypt::decryptString($state), $state, false) : $state)
-                    ->dehydrateStateUsing(fn (string $state): string => Crypt::encryptString($state))
-                    ->dehydrated(fn (?string $state): bool => filled($state))
-                );
+            $secrets = collect($recipe::secrets())
+                ->map(function ($secretType) {
+                    return Forms\Components\Select::make('secrets.'.$secretType)
+                        ->label(Str::of($secretType)->title()->replace('_', ' '))
+                        ->relationship(
+                            name: 'secrets',
+                            titleAttribute: 'name',
+                            modifyQueryUsing: fn (Builder $query) => $query->where('type', $secretType),
+                        )
+                        ->native(false)
+                        ->searchable()
+                        ->preload()
+                        ->required()
+                        ->createOptionForm(function () use ($secretType) {
+                            return [
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Secret name')
+                                    ->required()
+                                    ->autofocus()
+                                    ->unique(ignoreRecord: true)
+                                    ->maxLength(255),
+
+                                Forms\Components\TextInput::make('value')
+                                    ->password()
+                                    ->revealable()
+                                    ->required()
+                                    ->formatStateUsing(fn (?string $state): ?string => filled($state) ? rescue(fn () => Crypt::decryptString($state), $state, false) : $state)
+                                    ->dehydrateStateUsing(fn (string $state): string => Crypt::encryptString($state))
+                                    ->dehydrated(fn (?string $state): bool => filled($state)),
+
+                                Forms\Components\TextInput::make('type') // Hidden input to save the value
+                                    ->readOnly()
+                                    ->default($secretType), // Ensure it has the correct default value
+                            ];
+                        });
+                });
+
+            if ($secrets->isNotEmpty()) {
+                $options = [
+                    Forms\Components\Fieldset::make('Options')
+                        ->statePath('settings')
+                        ->schema($options->all()),
+                ];
+            }
 
             if ($secrets->isNotEmpty()) {
                 $secrets = [
@@ -110,11 +145,9 @@ class PackageResource extends Resource
                 ];
             }
 
-            $options = $options->reject(fn ($option) => in_array($option->getName(), $recipe::secrets()));
             $schema[] = Forms\Components\Section::make("{$recipe::name()} Details")
                 ->icon('heroicon-o-cog-6-tooth')
                 ->description('Configure the package settings.')
-                ->statePath('settings')
                 ->visible(fn ($get) => $get('recipe') === $recipe::slug())
                 ->columns(2)
                 ->schema([
@@ -135,6 +168,11 @@ class PackageResource extends Resource
         return $table
             ->defaultSort('name')
             ->columns([
+                Tables\Columns\IconColumn::make('valid')
+                    ->label('License')
+                    ->icon(fn ($record) => $record->valid ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
+                    ->color(fn ($record) => $record->valid ? 'success' : 'danger'),
+
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),

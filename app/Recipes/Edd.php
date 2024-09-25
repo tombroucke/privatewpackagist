@@ -52,9 +52,6 @@ class Edd extends Recipe
                 ->searchable()
                 ->required(),
 
-            Forms\Components\TextInput::make('license_key')
-                ->required(),
-
             Forms\Components\TextInput::make('changelog_extract')
                 ->label('Changelog extract')
                 ->helperText('Regular expression to extract changelog'),
@@ -130,7 +127,7 @@ class Edd extends Recipe
     {
         $args = [
             'edd_action' => $action,
-            'license' => $this->package->secrets()->get('license_key'),
+            'license' => $this->package->getSecret('license_key'),
             'item_name' => $this->package->settings['slug'],
             'url' => $this->package->settings['source_url'],
         ];

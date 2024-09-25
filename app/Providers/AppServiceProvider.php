@@ -7,9 +7,11 @@ use App\Events\PackageInformationEvent;
 use App\Events\RecipeFormsCollectedEvent;
 use App\Models\Package;
 use App\Models\Release;
+use App\Models\Secret;
 use App\Models\Token;
 use App\Observers\PackageObserver;
 use App\Observers\ReleaseObserver;
+use App\Observers\SecretObserver;
 use App\Observers\TokenObserver;
 use App\PackageDownloader;
 use App\PackagesCache;
@@ -63,6 +65,15 @@ class AppServiceProvider extends ServiceProvider
 
             return new PackageDownloader($params['recipe'], $httpClient);
         });
+
+        $this->app->singleton('secretTypes', function () {
+            $recipes = app()->make('recipes');
+            $secrets = collect($recipes)->flatMap(function ($recipe) {
+                return $recipe::secrets();
+            });
+
+            return $secrets->unique();
+        });
     }
 
     /**
@@ -72,6 +83,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Package::observe(PackageObserver::class);
         Release::observe(ReleaseObserver::class);
+        Secret::observe(SecretObserver::class);
         Token::observe(TokenObserver::class);
 
         $this->registerModifiers();

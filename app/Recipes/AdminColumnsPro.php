@@ -52,9 +52,6 @@ class AdminColumnsPro extends Recipe
                 ->label('Source URL')
                 ->url()
                 ->required(),
-
-            Forms\Components\TextInput::make('license_key')
-                ->required(),
         ];
     }
 
@@ -81,7 +78,7 @@ class AdminColumnsPro extends Recipe
         $response = $this->doRequest([
             'command' => 'products_update',
             'plugin_name' => $this->package->settings['slug'],
-            'subscription_key' => $this->package->secrets()->get('license_key'),
+            'subscription_key' => $this->package->getSecret('license_key'),
         ]);
 
         $active = ($response['code'] ?? null) !== 'error';
@@ -95,7 +92,7 @@ class AdminColumnsPro extends Recipe
         $response = $this->doRequest([
             'command' => 'activate',
             'activation_url' => $this->package->settings['source_url'],
-            'subscription_key' => $this->package->secrets()->get('license_key'),
+            'subscription_key' => $this->package->getSecret('license_key'),
         ]);
 
         $return = [
@@ -129,7 +126,7 @@ class AdminColumnsPro extends Recipe
         $response = $this->doRequest([
             'command' => 'products_update',
             'plugin_name' => $this->package->settings['slug'],
-            'subscription_key' => $this->package->secrets()->get('license_key'),
+            'subscription_key' => $this->package->getSecret('license_key'),
         ]);
 
         if (! isset($response['admin-columns-pro']['package'])) {

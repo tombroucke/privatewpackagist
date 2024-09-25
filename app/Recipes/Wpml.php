@@ -39,17 +39,6 @@ class Wpml extends Recipe
                 ->label('Source URL')
                 ->url()
                 ->required(),
-
-            Forms\Components\TextInput::make('user_id')
-                ->label('User ID')
-                ->required(),
-
-            Forms\Components\TextInput::make('license_key')
-                ->required(),
-
-            Forms\Components\TextInput::make('site_key')
-                ->label('Site key')
-                ->required(),
         ];
     }
 
@@ -62,7 +51,7 @@ class Wpml extends Recipe
 
         $args = [
             'action' => 'site_key_validation',
-            'site_key' => $this->package->secrets()->get('site_key'),
+            'site_key' => $this->package->getSecret('site_key'),
             'site_url' => $this->package->settings['source_url'],
         ];
 
@@ -124,8 +113,8 @@ class Wpml extends Recipe
         $changelog = $this->extractLatestChangelog($product['changelog'] ?? '', '#### (\d+\.\d+\.\d+)(?:\s*\n\n)?(.*?)(?=\n\n#### \d+\.\d+\.\d+|$)');
         $downloadLink = sprintf(
             $product['url'].'&user_id=%s&subscription_key=%s',
-            $this->package->secrets()->get('user_id'),
-            $this->package->secrets()->get('license_key'),
+            $this->package->getSecret('user_id'),
+            $this->package->getSecret('license_key'),
         );
 
         return [

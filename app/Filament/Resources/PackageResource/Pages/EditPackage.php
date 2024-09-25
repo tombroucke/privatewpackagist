@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\PackageResource\Pages;
 
 use App\Filament\Resources\PackageResource;
+use App\Filament\Resources\PackageResource\Widgets;
 use Filament\Actions;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
 class EditPackage extends EditRecord
@@ -27,24 +27,16 @@ class EditPackage extends EditRecord
     }
 
     /**
-     * Handle actions before saving a package.
+     * The header widgets.
      */
-    protected function beforeSave(): void
+    protected function getHeaderWidgets(): array
     {
-        $errors = $this->record
-            ->replicate()
-            ->fill($this->data)
-            ->validationErrors();
-
-        if ($errors->isNotEmpty()) {
-            $errors->each(fn ($error) => Notification::make()
-                ->danger()
-                ->title('Validation Error')
-                ->body($error)
-                ->send()
-            );
-            $this->halt();
+        $widgets = [];
+        if (! $this->record->valid) {
+            $widgets[] = Widgets\PackageLicenseStatus::class;
         }
+
+        return $widgets;
     }
 
     /**
@@ -53,5 +45,15 @@ class EditPackage extends EditRecord
     protected function afterSave(): void
     {
         $this->dispatch('refreshRelation', 'releases');
+    }
+
+    /**
+     * Mutate the form data before saving.
+     */
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $this->record->updated_at = now(); // Make sure the updated() method of the observer is called.
+
+        return $data;
     }
 }

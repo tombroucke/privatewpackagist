@@ -31,9 +31,6 @@ class ElementorPro extends Recipe
                 ->label('Source URL')
                 ->url()
                 ->required(),
-
-            Forms\Components\TextInput::make('license_key')
-                ->required(),
         ];
     }
 
@@ -43,7 +40,7 @@ class ElementorPro extends Recipe
     public function licenseKeyError(): ?string
     {
         $args = [
-            'license' => $this->package->secrets()->get('license_key'),
+            'license' => $this->package->getSecret('license_key'),
             'item_name' => 'Elementor Pro',
             'url' => $this->package->settings['source_url'],
         ];
@@ -85,7 +82,7 @@ class ElementorPro extends Recipe
     protected function fetchPackageInformation(): array
     {
         $args = [
-            'license' => $this->package->secrets()->get('license_key'),
+            'license' => $this->package->getSecret('license_key'),
             'name' => 'Elementor Pro',
             'url' => $this->package->settings['source_url'],
         ];

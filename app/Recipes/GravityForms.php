@@ -36,9 +36,6 @@ class GravityForms extends Recipe
                 ->label('Source URL')
                 ->url()
                 ->required(),
-
-            Forms\Components\TextInput::make('license_key')
-                ->required(),
         ];
     }
 
@@ -48,7 +45,7 @@ class GravityForms extends Recipe
     public function licenseKeyError(): ?string
     {
 
-        $key = $this->package->secrets()->get('license_key');
+        $key = $this->package->getSecret('license_key');
 
         $responseBody = $this->httpClient::post(
             'https://gravityapi.com/wp-json/gravityapi/v1/licenses/'.$key.'/check',
@@ -72,7 +69,7 @@ class GravityForms extends Recipe
         $url = sprintf(
             'https://gravityapi.com/wp-content/plugins/gravitymanager/api.php?op=get_plugin&slug=%s&key=%s',
             $this->package->settings['slug'],
-            $this->package->secrets()->get('license_key')
+            $this->package->getSecret('license_key')
         );
 
         $response = $this->httpClient::get($url);
