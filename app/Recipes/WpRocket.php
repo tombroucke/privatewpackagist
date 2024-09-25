@@ -4,6 +4,7 @@ namespace App\Recipes;
 
 use App\Recipes\Exceptions\InvalidResponseStatusException;
 use App\Recipes\Exceptions\UnexpectedResponseException;
+use Filament\Forms;
 
 class WpRocket extends Recipe
 {
@@ -13,7 +14,6 @@ class WpRocket extends Recipe
     protected static array $secrets = [
         'license_key',
         'license_email',
-        'license_url',
     ];
 
     /**
@@ -30,6 +30,10 @@ class WpRocket extends Recipe
     public static function forms(): array
     {
         return [
+            Forms\Components\TextInput::make('license_url')
+                ->label('License URL')
+                ->url()
+                ->required(),
         ];
     }
 
@@ -61,7 +65,7 @@ class WpRocket extends Recipe
     {
         return sprintf('%1$s; %2$s;WP-Rocket|3.6.3|%3$s|%4$s|%2$s|8.2;',
             config('packagist.user_agent'),
-            $this->package->getSecret('license_url'),
+            $this->package->settings['license_url'],
             $this->package->getSecret('license_key'),
             $this->package->getSecret('license_email'),
         );
