@@ -35,9 +35,8 @@ class PackageObserver
             );
         } else {
             if (is_null($package->license_valid_from)) {
-                $package->update([
-                    'license_valid_from' => now(),
-                ]);
+                $package->license_valid_from = now();
+                $package->saveQuietly();
             }
             $this->createRelease($package);
         }
@@ -57,7 +56,6 @@ class PackageObserver
     public function updated(Package $package): void
     {
         $errors = $package->validationErrors();
-
         if ($errors->isNotEmpty()) {
             $errors->each(fn ($error) => Notification::make()
                 ->danger()
@@ -66,9 +64,8 @@ class PackageObserver
                 ->send()
             );
             if ($package->license_valid_from && is_null($package->license_valid_to)) {
-                $package->updateQuietly([
-                    'license_valid_to' => now(),
-                ]);
+                $package->license_valid_to = now();
+                $package->saveQuietly();
             }
         } else {
             if (is_null($package->license_valid_from)) {
