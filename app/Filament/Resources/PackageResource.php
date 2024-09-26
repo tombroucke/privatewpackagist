@@ -85,9 +85,6 @@ class PackageResource extends Resource
                 ->disabled(fn ($operation) => $operation !== 'create'),
         ];
         foreach (self::getRecipes() as $recipe) {
-            if (blank($recipe::forms())) {
-                continue;
-            }
 
             $options = collect($recipe::forms());
             event(new RecipeFormsCollectedEvent($options, $recipe));
@@ -129,7 +126,7 @@ class PackageResource extends Resource
                         });
                 });
 
-            if ($secrets->isNotEmpty()) {
+            if ($options->isNotEmpty()) {
                 $options = [
                     Forms\Components\Fieldset::make('Options')
                         ->statePath('settings')
