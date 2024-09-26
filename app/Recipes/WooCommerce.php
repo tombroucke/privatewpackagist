@@ -8,6 +8,7 @@ use App\Recipes\Exceptions\NoActiveProductOrSubscriptionException;
 use App\Recipes\Exceptions\NotRespondingException;
 use App\Recipes\Exceptions\RateLimitReachedException;
 use Filament\Forms;
+use Illuminate\Support\Facades\Cache;
 
 class WooCommerce extends Recipe
 {
@@ -76,22 +77,27 @@ class WooCommerce extends Recipe
         }
 
         $signature = hash_hmac('sha256', json_encode($data), $secret);
+        $requestUid = hash('sha256', json_encode($data).$token.$secret);
 
-        $request = $this->httpClient::withHeaders([
-            "Authorization: Bearer {$token}",
-            "X-Woo-Signature: {$signature}",
-        ])->withQueryParameters([
-            'token' => $token,
-            'signature' => $signature,
-        ]);
+        $jsonResponse = Cache::remember($requestUid, 60, function () use ($token, $signature, $method, $endpoint, $body) {
+            $request = $this->httpClient::withHeaders([
+                "Authorization: Bearer {$token}",
+                "X-Woo-Signature: {$signature}",
+            ])->withQueryParameters([
+                'token' => $token,
+                'signature' => $signature,
+            ]);
 
-        if ($body) {
-            $request->withBody($body);
-        }
+            if ($body) {
+                $request->withBody($body);
+            }
 
-        $response = $request->send($method, $endpoint);
+            return $request
+                ->send($method, $endpoint)
+                ->json();
+        });
 
-        return json_decode($response, true);
+        return $jsonResponse;
     }
 
     private function getProductInformation()
