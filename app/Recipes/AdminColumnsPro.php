@@ -29,7 +29,7 @@ class AdminColumnsPro extends Recipe
     public static function forms(): array
     {
         return [
-            Forms\Components\Select::make('package')
+            Forms\Components\Select::make('slug')
                 ->options([
                     'admin-columns-pro' => 'Admin Columns Pro',
                     'ac-addon-acf' => 'ACF Add-on',
@@ -44,7 +44,6 @@ class AdminColumnsPro extends Recipe
                     'ac-addon-woocommerce' => 'WooCommerce Add-on',
                     'ac-addon-yoast-seo' => 'Yoast SEO Add-on',
                 ])
-                ->default('admin-columns-pro')
                 ->searchable()
                 ->required(),
 
