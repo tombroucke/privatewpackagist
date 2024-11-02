@@ -61,44 +61,48 @@ php artisan package:update [package]
 
 ## WPML packages
 
--   Needs a `WPML_LICENSE_KEY` and a `WPML_USER_ID` env variable
--   Required field is WPML **Slug**: sitepress-multilingual-cms, acfml, woocommerce-multilingual etc.
+You need to create a **Site Key** in [Your Registered Sites](https://wpml.org/account/sites/).
+
+You can find your **User Id** and **License key** from the [wpml.org downloads page](https://wpml.org/account/downloads/).
+Just copy a download link url, and extract the variables.
+
+https://wpml.org/?download=6088&user_id=**{{user_id}}**&subscription_key=**{{license_key}}**
 
 ## ACF package
 
--   Needs a `ACF_LICENSE_KEY` env variable
+Find your **License Key** in the [ACF licenses page](https://www.advancedcustomfields.com/my-account/view-licenses/).
 
 ## Woocommerce packages
 
--   Needs a `WOOCOMMERCE_ACCESS_TOKEN` and a `WOOCOMMERCE_ACCESS_TOKEN_SECRET` env variable
--   Required field is Woocommerce **Slug**: woocommerce-eu-vat-number, woocommerce-product-filters etc.
+Find your **Access Token** and **Access Token Secret**:
+
+-   In the `wp_options` table of a site that is already connected to your account. Look for an option with name `woocommerce_helper_data`. Extract the values from the serialized data.
 
 ## EDD (Easy Digital Downloads) packages
 
--   Needs a `{{PACKAGE_SLUG}}_LICENSE_KEY`env variable E.g. `POLYLANG_PRO_LICENSE_KEY`
 -   Required fields are
     -   **Slug**: You need to find this in the plugin / theme source code. E.g. 'Polylang Pro'
-    -   **Source url**: The url attached to your license
-    -   **Endpoint url**: You need to find this in the plugin source code (search for `edd_action`). E.g. 'https://polylang.pro'
+    -   **Source URL**: The url attached to your license
+    -   **Endpoint URL**: You need to find this in the plugin source code (search for `edd_action`). E.g. 'https://polylang.pro'
     -   **Method**: GET or POST
-    -   **Changelog extract**: Regex to extract latest release changelog, leave empty to use fallback (Isn't used anywhere right now)
 
 ## Gravity Forms packages
 
--   Needs a `GRAVITYFORMS_LICENSE_KEY` env variable
--   Required field is Gravity Forms **Slug**: gravityformsmailchimp, gravityformszapier etc.
+-   **Slug**: gravityformsmailchimp, gravityformszapier etc.
+-   **Source URL**: The url attached to your license
 
 ## PuC (YahnisElsts Plugin Update Checker) packages
 
--   Needs a `{{PACKAGE_SLUG}}_LICENSE_KEY`env variable E.g. `WOO_DISCOUNT_RULES_PRO_LICENSE_KEY`
 -   Required fields are
     -   **Slug**: You need to find this in the plugin / theme source code. E.g. 'discount-rules-v2-pro'
-    -   **Source url**: The url attached to your license
-    -   **Metadata url**: This is a little tricky to find (search for `Puc_v4_Factory::buildUpdateChecker`). E.g. 'https://my.flycart.org?wpaction=updatecheck&wpslug=discount-rules-v2-pro&dlid=${{ WOO_DISCOUNT_RULES_PRO_LICENSE_KEY }}'
+    -   **Source URL**: The url attached to your license
+    -   **Metadata URL**: This is a little tricky to find (search for `Puc_v4_Factory::buildUpdateChecker`). E.g. 'https://my.flycart.org?wpaction=updatecheck&wpslug=discount-rules-v2-pro&dlid=${{ WOO_DISCOUNT_RULES_PRO_LICENSE_KEY }}'
 
 ## WP Rocket packages
 
--   Needs a `WP_ROCKET_EMAIL`, `WP_ROCKET_KEY`, `WP_ROCKET_URL` environment variable.
+-   Find your **License Key** in your [WP Rocket account](https://wp-rocket.me/account/) by copying the link behind "Download WP Rocket"
+
+https://wp-rocket.me/download/24782/**{{license_key}}**
 
 ## Direct packages
 
@@ -848,8 +852,6 @@ These are a little tricky, not all implementations are the same. This will need 
 }
 ```
 
-Filebird needs an emailaddres (the e-mailadres you purchased filebird-pro with), you need to add it in the `FILEBIRD_PRO_EMAIL` environment variable.
-
 </details>
 
 ## Woocommerce
@@ -1096,7 +1098,6 @@ Filebird needs an emailaddres (the e-mailadres you purchased filebird-pro with),
 
 # TODO
 
--   Calculate checksum after download instead of when packages.json is generated, and store it in the DB.
 -   Add license key env variable validation to PuC.
 -   Add failed releases in notification email
 -   Exhaustive testing
