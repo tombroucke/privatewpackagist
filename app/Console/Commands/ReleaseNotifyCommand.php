@@ -36,6 +36,11 @@ class ReleaseNotifyCommand extends Command
 
         $packages = $this->getPackagesWithReleases([$from, $to]);
 
+        if ($packages->isEmpty()) {
+            $this->components->info('No updates found');
+            return;
+        }
+
         foreach ($users as $user) {
             $user->notify(new UpdatesNotification($packages, $from, $to));
         }
