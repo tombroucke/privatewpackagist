@@ -2,23 +2,24 @@
 
 namespace App\Filament\Resources;
 
-use App\Events\RecipeFormsCollectedEvent;
-use App\Filament\Resources\PackageResource\Pages;
-use App\Filament\Resources\PackageResource\RelationManagers\ReleasesRelationManager;
-use App\Models\Package;
 use Filament\Forms;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
+use App\Models\Package;
+use Filament\Forms\Get;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
+use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
+use Illuminate\Support\HtmlString;
+use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Crypt;
+use Filament\Tables\Actions\ActionGroup;
+use App\Events\RecipeFormsCollectedEvent;
+use Filament\Forms\Components\Placeholder;
+use App\Filament\Resources\PackageResource\Pages;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use App\Filament\Resources\PackageResource\RelationManagers\ReleasesRelationManager;
 
 class PackageResource extends Resource
 {
@@ -58,7 +59,13 @@ class PackageResource extends Resource
         $schema = [
             Forms\Components\TextInput::make('slug')
                 ->label('Package name')
-                ->prefix(config('packagist.vendor').'/')
+                ->prefix(function (Get $get) {
+                    $vendor = config('packagist.vendor');
+                    $type = Str::of($get('type'))
+                        ->replace('wordpress-', '')
+                        ->replace('muplugin', 'plugin');
+                    return "{$vendor}-{$type}/";
+                })
                 ->required()
                 ->autofocus()
                 ->unique(ignoreRecord: true)
@@ -73,7 +80,8 @@ class PackageResource extends Resource
                     'wordpress-theme' => 'WordPress Theme',
                 ])
                 ->searchable()
-                ->default('wordpress-plugin'),
+                ->default('wordpress-plugin')
+                ->live(),
 
             Forms\Components\Select::make('recipe')
                 ->prefixIcon('heroicon-o-light-bulb')
