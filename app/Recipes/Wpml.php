@@ -2,12 +2,12 @@
 
 namespace App\Recipes;
 
-use Filament\Forms;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
 use App\Recipes\Exceptions\NoActiveProductOrSubscriptionException;
+use Filament\Forms;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class Wpml extends Recipe
 {
@@ -87,7 +87,7 @@ class Wpml extends Recipe
             ->stripTags();
     }
 
-    public static function plugins($httpClient) : ?Collection
+    public static function plugins($httpClient): ?Collection
     {
         $plugins = Cache::remember('wpml_plugins', now()->addHours(6), function () use ($httpClient) {
             $response = $httpClient::get('http://d2salfytceyqoe.cloudfront.net/wpml33-products.json');
@@ -108,7 +108,7 @@ class Wpml extends Recipe
     {
         $plugins = $this->plugins($this->httpClient);
 
-        if (!$plugins) {
+        if (! $plugins) {
             return null;
         }
 

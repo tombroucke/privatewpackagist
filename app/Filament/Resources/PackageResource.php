@@ -2,24 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
-use App\Models\Package;
-use Filament\Forms\Get;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Resources\Resource;
-use Illuminate\Support\Collection;
-use Illuminate\Support\HtmlString;
-use Filament\Tables\Actions\Action;
-use Illuminate\Support\Facades\Crypt;
-use Filament\Tables\Actions\ActionGroup;
 use App\Events\RecipeFormsCollectedEvent;
-use Filament\Forms\Components\Placeholder;
 use App\Filament\Resources\PackageResource\Pages;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use App\Filament\Resources\PackageResource\RelationManagers\ReleasesRelationManager;
+use App\Models\Package;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Table;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 
 class PackageResource extends Resource
 {
@@ -64,6 +63,7 @@ class PackageResource extends Resource
                     $type = Str::of($get('type'))
                         ->replace('wordpress-', '')
                         ->replace('muplugin', 'plugin');
+
                     return "{$vendor}-{$type}/";
                 })
                 ->required()

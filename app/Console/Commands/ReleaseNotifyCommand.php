@@ -38,6 +38,7 @@ class ReleaseNotifyCommand extends Command
 
         if ($packages->isEmpty()) {
             $this->components->info('No updates found');
+
             return;
         }
 

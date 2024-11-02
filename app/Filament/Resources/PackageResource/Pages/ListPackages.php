@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\PackageResource\Pages;
 
-use Filament\Actions;
-use App\Models\Package;
-use App\Observers\PackageObserver;
-use Filament\Notifications\Notification;
-use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\PackageResource;
 use App\Filament\Resources\PackageResource\Widgets;
+use App\Models\Package;
+use App\Observers\PackageObserver;
+use Filament\Actions;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\ListRecords;
 
 class ListPackages extends ListRecords
 {
