@@ -2,9 +2,12 @@
 
 namespace App\Recipes;
 
-use App\Recipes\Exceptions\NoActiveProductOrSubscriptionException;
 use Filament\Forms;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use App\Recipes\Exceptions\NoActiveProductOrSubscriptionException;
 
 class Wpml extends Recipe
 {
@@ -31,8 +34,12 @@ class Wpml extends Recipe
     public static function forms(): array
     {
         return [
-            Forms\Components\TextInput::make('slug')
+            Forms\Components\Select::make('slug')
                 ->label('Slug')
+                ->options(function () {
+                    return static::plugins(new Http)
+                        ->mapWithKeys(fn ($product, $key) => [$key => strip_tags($product['name'])]);
+                })
                 ->required(),
 
             Forms\Components\TextInput::make('source_url')
@@ -80,21 +87,32 @@ class Wpml extends Recipe
             ->stripTags();
     }
 
+    public static function plugins($httpClient) : ?Collection
+    {
+        $plugins = Cache::remember('wpml_plugins', now()->addHours(6), function () use ($httpClient) {
+            $response = $httpClient::get('http://d2salfytceyqoe.cloudfront.net/wpml33-products.json');
+            $body = $response->body();
+
+            $products = json_decode($body, true);
+
+            return is_array($products) ? $products['downloads']['plugins'] ?? [] : [];
+        });
+
+        return collect($plugins);
+    }
+
     /**
      * Fetch the product information.
      */
     private function getProduct($slug)
     {
-        $response = $this->httpClient::get('http://d2salfytceyqoe.cloudfront.net/wpml33-products.json');
-        $body = $response->body();
+        $plugins = $this->plugins($this->httpClient);
 
-        $products = json_decode($body, true);
-
-        if (! is_array($products) || ! isset($products['downloads']['plugins'])) {
+        if (!$plugins) {
             return null;
         }
 
-        return collect($products['downloads']['plugins'])->firstWhere('slug', $slug);
+        return $plugins->firstWhere('slug', $slug);
     }
 
     /**
