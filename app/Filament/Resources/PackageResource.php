@@ -7,6 +7,7 @@ use App\Filament\Resources\PackageResource\Pages;
 use App\Filament\Resources\PackageResource\RelationManagers\ReleasesRelationManager;
 use App\Models\Package;
 use Filament\Forms;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -142,15 +143,17 @@ class PackageResource extends Resource
                 ];
             }
 
-            $schema[] = Forms\Components\Section::make("{$recipe::name()} Details")
-                ->icon('heroicon-o-cog-6-tooth')
-                ->description('Configure the package settings.')
-                ->visible(fn ($get) => $get('recipe') === $recipe::slug())
-                ->columns(2)
-                ->schema([
-                    ...$options,
-                    ...$secrets,
-                ]);
+            if (count($options) > 0 && count($secrets) > 0) {
+                $schema[] = Forms\Components\Section::make("{$recipe::name()} Details")
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->description('Configure the package settings.')
+                    ->visible(fn ($get) => $get('recipe') === $recipe::slug())
+                    ->columns(2)
+                    ->schema([
+                        ...$options,
+                        ...$secrets,
+                    ]);
+            }
         }
 
         return $form

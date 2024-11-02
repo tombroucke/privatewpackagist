@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\PackageResource\Pages;
 
+use Filament\Actions;
+use App\Models\Package;
+use App\Observers\PackageObserver;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\PackageResource;
 use App\Filament\Resources\PackageResource\Widgets;
-use App\Models\Package;
-use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
 
 class ListPackages extends ListRecords
 {
@@ -26,7 +28,25 @@ class ListPackages extends ListRecords
             Actions\CreateAction::make()
                 ->successRedirectUrl(fn (Package $package): string => route('filament.admin.resources.packages.edit', [
                     'record' => $package,
-                ])),
+                ]))
+                ->after(function (Package $package) {
+                    $errors = $package->validationErrors();
+
+                    if ($errors->isNotEmpty()) {
+                        $errors->each(fn ($error) => Notification::make()
+                            ->danger()
+                            ->title('Validation Error')
+                            ->body($error)
+                            ->send()
+                        );
+                    } else {
+                        if (is_null($package->license_valid_from)) {
+                            $package->license_valid_from = now();
+                            $package->saveQuietly();
+                        }
+                        PackageObserver::createRelease($package);
+                    }
+                }),
         ];
     }
 

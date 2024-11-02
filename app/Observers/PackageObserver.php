@@ -20,29 +20,6 @@ class PackageObserver
     }
 
     /**
-     * Handle the Package "created" event.
-     */
-    public function created(Package $package): void
-    {
-        $errors = $package->validationErrors();
-
-        if ($errors->isNotEmpty()) {
-            $errors->each(fn ($error) => Notification::make()
-                ->danger()
-                ->title('Validation Error')
-                ->body($error)
-                ->send()
-            );
-        } else {
-            if (is_null($package->license_valid_from)) {
-                $package->license_valid_from = now();
-                $package->saveQuietly();
-            }
-            $this->createRelease($package);
-        }
-    }
-
-    /**
      * Handle the Package "updated" event.
      */
     public function updating(Package $package)
@@ -74,7 +51,7 @@ class PackageObserver
             $package->license_valid_to = null;
             $package->saveQuietly();
 
-            $this->createRelease($package);
+            self::createRelease($package);
 
             (new PackageReleasesCache($package))->forget();
 
@@ -106,7 +83,7 @@ class PackageObserver
         app()->make(PackagesCache::class)->forget();
     }
 
-    private function createRelease(Package $package): void
+    public static function createRelease(Package $package): void
     {
         try {
             $release = $package->recipe()->update();
