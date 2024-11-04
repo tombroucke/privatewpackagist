@@ -2,6 +2,8 @@
 
 namespace App\Recipes\Concerns;
 
+use App\Recipes\Exceptions\NoDownloadLinkException;
+
 trait GetsVersionFromPlugin
 {
     /**
