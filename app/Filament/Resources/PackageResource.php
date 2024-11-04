@@ -111,6 +111,7 @@ class PackageResource extends Resource
                         ->searchable()
                         ->preload()
                         ->required()
+                        ->live()
                         ->createOptionForm(function () use ($secretType) {
                             return [
                                 Forms\Components\TextInput::make('name')
@@ -151,7 +152,7 @@ class PackageResource extends Resource
                 ];
             }
 
-            if (count($options) > 0 && count($secrets) > 0) {
+            if (count($options) > 0 || count($secrets) > 0) {
                 $schema[] = Forms\Components\Section::make("{$recipe::name()} Details")
                     ->icon('heroicon-o-cog-6-tooth')
                     ->description('Configure the package settings.')
