@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "df764b9597921644a45e0cc3bc5fc70b",
+    "content-hash": "0da29ea7ad421a2296826e85cee07687",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -2254,6 +2254,110 @@
                 "source": "https://github.com/jeffgreco13/filament-breezy/tree/v2.4.4"
             },
             "time": "2024-08-20T15:42:17+00:00"
+        },
+        {
+            "name": "jigarakatidus/command-line-generator",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jigarakatidus/command-line-generator.git",
+                "reference": "30550f6f579a872eb7699e6ce556b04a1a330a33"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jigarakatidus/command-line-generator/zipball/30550f6f579a872eb7699e6ce556b04a1a330a33",
+                "reference": "30550f6f579a872eb7699e6ce556b04a1a330a33",
+                "shasum": ""
+            },
+            "require-dev": {
+                "php": ">=8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "jigarakatidus\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jigar Dhulla",
+                    "email": "jigar.tidus@gmail.com"
+                }
+            ],
+            "description": "A simple library to generate unix command line",
+            "support": {
+                "issues": "https://github.com/jigarakatidus/command-line-generator/issues",
+                "source": "https://github.com/jigarakatidus/command-line-generator/tree/1.0.0"
+            },
+            "time": "2022-10-13T17:07:44+00:00"
+        },
+        {
+            "name": "jigarakatidus/laravel-http-to-curl",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jigar-dhulla/laravel-http-to-curl.git",
+                "reference": "c5a71c25d0112ab7db09e4a70665698f321b9b47"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jigar-dhulla/laravel-http-to-curl/zipball/c5a71c25d0112ab7db09e4a70665698f321b9b47",
+                "reference": "c5a71c25d0112ab7db09e4a70665698f321b9b47",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^8.71|^9.0|^10.0|^11.0",
+                "jigarakatidus/command-line-generator": "^1.0.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.12",
+                "mockery/mockery": "^1.4.2",
+                "orchestra/testbench": "^7.11",
+                "phpunit/phpunit": "^9.4.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "jigarakatidus\\HttpToCurl\\HttpToCurlServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "jigarakatidus\\HttpToCurl\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jigar Dhulla",
+                    "email": "jigar.tidus@gmail.com",
+                    "homepage": "https://github.com/jigarakatidus",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Extended Http to dump and die with Curl command",
+            "homepage": "https://github.com/jigarakatidus/laravel-http-to-curl",
+            "keywords": [
+                "curl",
+                "http",
+                "laravel",
+                "laravel-http-to-curl"
+            ],
+            "support": {
+                "issues": "https://github.com/jigar-dhulla/laravel-http-to-curl/issues",
+                "source": "https://github.com/jigar-dhulla/laravel-http-to-curl/tree/1.0.2"
+            },
+            "time": "2024-10-29T17:44:41+00:00"
         },
         {
             "name": "kirschbaum-development/eloquent-power-joins",

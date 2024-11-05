@@ -17,6 +17,7 @@
         "fakerphp/faker": "^1.23",
         "filament/filament": "^3.2",
         "jeffgreco13/filament-breezy": "^2.4",
+        "jigarakatidus/laravel-http-to-curl": "^1.0",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",

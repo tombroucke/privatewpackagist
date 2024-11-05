@@ -11,7 +11,7 @@ trait GetsVersionFromPlugin
      */
     private function getVersionFromPlugin($packageDownloadLink): ?string
     {
-        $fileContent = $this->httpClient::get($packageDownloadLink)->body();
+        $fileContent = $this->httpClient::withUserAgent($this->userAgent())->get($packageDownloadLink)->body();
         if (! $fileContent) {
             throw new NoDownloadLinkException($this);
         }
