@@ -414,9 +414,9 @@ caniuse-lite@^1.0.30001646, caniuse-lite@^1.0.30001663:
   resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001663.tgz"
   integrity sha512-o9C3X27GLKbLeTYZ6HBOLU1tsAcBZsLis28wrVzddShCS16RujjHp9GDHKZqrB3meE0YjhawvMFsGb/igqiPzA==
 
-chokidar@^3.5.3:
+chokidar@^3.6.0:
   version "3.6.0"
-  resolved "https://registry.npmjs.org/chokidar/-/chokidar-3.6.0.tgz"
+  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.6.0.tgz#197c6cc669ef2a8dc5e7b4d97ee4e092c3eb0d5b"
   integrity sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==
   dependencies:
     anymatch "~3.1.2"
@@ -536,9 +536,9 @@ escalade@^3.1.2:
   resolved "https://registry.npmjs.org/escalade/-/escalade-3.2.0.tgz"
   integrity sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==
 
-fast-glob@^3.3.0:
+fast-glob@^3.3.2:
   version "3.3.2"
-  resolved "https://registry.npmjs.org/fast-glob/-/fast-glob-3.3.2.tgz"
+  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.3.2.tgz#a904501e57cfdd2ffcded45e99a54fef55e46129"
   integrity sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==
   dependencies:
     "@nodelib/fs.stat" "^2.0.2"
@@ -681,9 +681,9 @@ jackspeak@^3.1.2:
   optionalDependencies:
     "@pkgjs/parseargs" "^0.11.0"
 
-jiti@^1.21.0:
+jiti@^1.21.6:
   version "1.21.6"
-  resolved "https://registry.npmjs.org/jiti/-/jiti-1.21.6.tgz"
+  resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.21.6.tgz#6c7f7398dd4b3142767f9a168af2f317a428d268"
   integrity sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==
 
 laravel-vite-plugin@^1.0:
@@ -694,15 +694,10 @@ laravel-vite-plugin@^1.0:
     picocolors "^1.0.0"
     vite-plugin-full-reload "^1.1.0"
 
-lilconfig@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.npmjs.org/lilconfig/-/lilconfig-2.1.0.tgz"
-  integrity sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==
-
-lilconfig@^3.0.0:
-  version "3.1.2"
-  resolved "https://registry.npmjs.org/lilconfig/-/lilconfig-3.1.2.tgz"
-  integrity sha512-eop+wDAvpItUys0FWkHIKeC9ybYrTGbU41U5K7+bttZZeohvnY7M9dZ5kB21GNWiFT2q1OoPTvncPCgSOVO5ow==
+lilconfig@^3.0.0, lilconfig@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/lilconfig/-/lilconfig-3.1.3.tgz#a1bcfd6257f9585bf5ae14ceeebb7b559025e4c4"
+  integrity sha512-/vlFKAoH5Cgt3Ie+JLhRbwOsCQePABiU3tJ1egGvyQ+33R/vcwM2Zl2QR/LzjsBeItPt3oSVXapn+m4nQDvpzw==
 
 lines-and-columns@^1.1.6:
   version "1.2.4"
@@ -734,7 +729,7 @@ merge2@^1.3.0:
   resolved "https://registry.npmjs.org/merge2/-/merge2-1.4.1.tgz"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-micromatch@^4.0.4, micromatch@^4.0.5:
+micromatch@^4.0.4, micromatch@^4.0.8:
   version "4.0.8"
   resolved "https://registry.npmjs.org/micromatch/-/micromatch-4.0.8.tgz"
   integrity sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==
@@ -833,10 +828,10 @@ path-scurry@^1.11.1:
     lru-cache "^10.2.0"
     minipass "^5.0.0 || ^6.0.2 || ^7.0.0"
 
-picocolors@^1.0.0, picocolors@^1.0.1, picocolors@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/picocolors/-/picocolors-1.1.0.tgz"
-  integrity sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==
+picocolors@^1.0.0, picocolors@^1.0.1, picocolors@^1.1.0, picocolors@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.1.1.tgz#3d321af3eab939b083c8f929a1d12cda81c26b6b"
+  integrity sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==
 
 picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   version "2.3.1"
@@ -869,17 +864,17 @@ postcss-js@^4.0.1:
   dependencies:
     camelcase-css "^2.0.1"
 
-postcss-load-config@^4.0.1:
+postcss-load-config@^4.0.2:
   version "4.0.2"
-  resolved "https://registry.npmjs.org/postcss-load-config/-/postcss-load-config-4.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/postcss-load-config/-/postcss-load-config-4.0.2.tgz#7159dcf626118d33e299f485d6afe4aff7c4a3e3"
   integrity sha512-bSVhyJGL00wMVoPUzAVAnbEoWyqRxkjv64tUl427SKnPrENtq6hJwUojroMz2VB+Q1edmi4IfrAPpami5VVgMQ==
   dependencies:
     lilconfig "^3.0.0"
     yaml "^2.3.4"
 
-postcss-nested@^6.0.1:
+postcss-nested@^6.2.0:
   version "6.2.0"
-  resolved "https://registry.npmjs.org/postcss-nested/-/postcss-nested-6.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/postcss-nested/-/postcss-nested-6.2.0.tgz#4c2d22ab5f20b9cb61e2c5c5915950784d068131"
   integrity sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ==
   dependencies:
     postcss-selector-parser "^6.1.1"
@@ -901,7 +896,7 @@ postcss-selector-parser@6.0.10:
     cssesc "^3.0.0"
     util-deprecate "^1.0.2"
 
-postcss-selector-parser@^6.0.11, postcss-selector-parser@^6.1.0, postcss-selector-parser@^6.1.1:
+postcss-selector-parser@^6.1.0, postcss-selector-parser@^6.1.1, postcss-selector-parser@^6.1.2:
   version "6.1.2"
   resolved "https://registry.npmjs.org/postcss-selector-parser/-/postcss-selector-parser-6.1.2.tgz"
   integrity sha512-Q8qQfPiZ+THO/3ZrOrO0cJJKfpYCagtMUkXbnEfmgUjwXg6z/WBeOyS9APBBPCTSiDV+s4SwQGu8yFsiMRIudg==
@@ -914,16 +909,7 @@ postcss-value-parser@^4.0.0, postcss-value-parser@^4.2.0:
   resolved "https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz"
   integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
 
-postcss@^8.4.23, postcss@^8.4.43:
-  version "8.4.47"
-  resolved "https://registry.npmjs.org/postcss/-/postcss-8.4.47.tgz"
-  integrity sha512-56rxCq7G/XfB4EkXq9Egn5GCqugWvDFjafDOThIdMBsI15iqPqR5r15TfSr1YPYeEI19YeaXMCbY6u88Y76GLQ==
-  dependencies:
-    nanoid "^3.3.7"
-    picocolors "^1.1.0"
-    source-map-js "^1.2.1"
-
-postcss@^8.4.47:
+postcss@^8.4.43, postcss@^8.4.47:
   version "8.4.47"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.47.tgz#5bf6c9a010f3e724c503bf03ef7947dcb0fea365"
   integrity sha512-56rxCq7G/XfB4EkXq9Egn5GCqugWvDFjafDOThIdMBsI15iqPqR5r15TfSr1YPYeEI19YeaXMCbY6u88Y76GLQ==
@@ -956,7 +942,7 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
-resolve@^1.1.7, resolve@^1.22.2:
+resolve@^1.1.7, resolve@^1.22.8:
   version "1.22.8"
   resolved "https://registry.npmjs.org/resolve/-/resolve-1.22.8.tgz"
   integrity sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==
@@ -1072,9 +1058,9 @@ strip-ansi@^7.0.1:
   dependencies:
     ansi-regex "^6.0.1"
 
-sucrase@^3.32.0:
+sucrase@^3.35.0:
   version "3.35.0"
-  resolved "https://registry.npmjs.org/sucrase/-/sucrase-3.35.0.tgz"
+  resolved "https://registry.yarnpkg.com/sucrase/-/sucrase-3.35.0.tgz#57f17a3d7e19b36d8995f06679d121be914ae263"
   integrity sha512-8EbVDiu9iN/nESwxeSxDKe0dunta1GOlHufmSSXxMD2z2/tMZpDMpvXQGsc+ajGo8y2uYUmixaSRUc/QPoQ0GA==
   dependencies:
     "@jridgewell/gen-mapping" "^0.3.2"
@@ -1090,33 +1076,33 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-tailwindcss@^3.4.13:
-  version "3.4.13"
-  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.4.13.tgz#3d11e5510660f99df4f1bfb2d78434666cb8f831"
-  integrity sha512-KqjHOJKogOUt5Bs752ykCeiwvi0fKVkr5oqsFNt/8px/tA8scFPIlkygsf6jXrfCqGHz7VflA6+yytWuM+XhFw==
+tailwindcss@^3.4.16:
+  version "3.4.16"
+  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.4.16.tgz#35a7c3030844d6000fc271878db4096b6a8d2ec9"
+  integrity sha512-TI4Cyx7gDiZ6r44ewaJmt0o6BrMCT5aK5e0rmJ/G9Xq3w7CX/5VXl/zIPEJZFUK5VEqwByyhqNPycPlvcK4ZNw==
   dependencies:
     "@alloc/quick-lru" "^5.2.0"
     arg "^5.0.2"
-    chokidar "^3.5.3"
+    chokidar "^3.6.0"
     didyoumean "^1.2.2"
     dlv "^1.1.3"
-    fast-glob "^3.3.0"
+    fast-glob "^3.3.2"
     glob-parent "^6.0.2"
     is-glob "^4.0.3"
-    jiti "^1.21.0"
-    lilconfig "^2.1.0"
-    micromatch "^4.0.5"
+    jiti "^1.21.6"
+    lilconfig "^3.1.3"
+    micromatch "^4.0.8"
     normalize-path "^3.0.0"
     object-hash "^3.0.0"
-    picocolors "^1.0.0"
-    postcss "^8.4.23"
+    picocolors "^1.1.1"
+    postcss "^8.4.47"
     postcss-import "^15.1.0"
     postcss-js "^4.0.1"
-    postcss-load-config "^4.0.1"
-    postcss-nested "^6.0.1"
-    postcss-selector-parser "^6.0.11"
-    resolve "^1.22.2"
-    sucrase "^3.32.0"
+    postcss-load-config "^4.0.2"
+    postcss-nested "^6.2.0"
+    postcss-selector-parser "^6.1.2"
+    resolve "^1.22.8"
+    sucrase "^3.35.0"
 
 thenify-all@^1.0.0:
   version "1.6.0"
