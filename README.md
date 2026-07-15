@@ -1,6 +1,6 @@
-> [!WARNING]
-> I haven't tagged a release yet, but the application should work just fine. If you encounter a bug, fetch the latest changes and see if this fixes the issue. if it doesn't, please [create an issue](https://github.com/tombroucke/privatewpackagist/issues/new)\
-> As the application is still in an early stage, I am open to suggestions and improvements. [start a discussing](https://github.com/tombroucke/privatewpackagist/discussions/new/choose)
+> [!IMPORTANT]
+> **This repository is no longer maintained.**
+> I've turned this project into a hosted SaaS — check out [private-packages.com](https://private-packages.com) for a fully managed app.
 
 This application allows you to maintain a composer repository with all your premium WordPress plugins. It is highly inspired by https://github.com/generoi/github-action-update-plugins, You can use the same recipes mentioned in their README file.
 
@@ -41,7 +41,7 @@ php artisan make:filament-user
 
 # Setup
 
--   2FA is required, you will be prompted to set this up after the first login
+- 2FA is required, you will be prompted to set this up after the first login
 
 # Schedule package updates
 
@@ -76,31 +76,31 @@ Find your **License Key** in the [ACF licenses page](https://www.advancedcustomf
 
 Find your **Access Token** and **Access Token Secret**:
 
--   In the `wp_options` table of a site that is already connected to your account. Look for an option with name `woocommerce_helper_data`. Extract the values from the serialized data.
+- In the `wp_options` table of a site that is already connected to your account. Look for an option with name `woocommerce_helper_data`. Extract the values from the serialized data.
 
 ## EDD (Easy Digital Downloads) packages
 
--   Required fields are
-    -   **Slug**: You need to find this in the plugin / theme source code. E.g. 'Polylang Pro'
-    -   **Source URL**: The url attached to your license
-    -   **Endpoint URL**: You need to find this in the plugin source code (search for `edd_action`). E.g. 'https://polylang.pro'
-    -   **Method**: GET or POST
+- Required fields are
+    - **Slug**: You need to find this in the plugin / theme source code. E.g. 'Polylang Pro'
+    - **Source URL**: The url attached to your license
+    - **Endpoint URL**: You need to find this in the plugin source code (search for `edd_action`). E.g. 'https://polylang.pro'
+    - **Method**: GET or POST
 
 ## Gravity Forms packages
 
--   **Slug**: gravityformsmailchimp, gravityformszapier etc.
--   **Source URL**: The url attached to your license
+- **Slug**: gravityformsmailchimp, gravityformszapier etc.
+- **Source URL**: The url attached to your license
 
 ## PuC (YahnisElsts Plugin Update Checker) packages
 
--   Required fields are
-    -   **Slug**: You need to find this in the plugin / theme source code. E.g. 'discount-rules-v2-pro'
-    -   **Source URL**: The url attached to your license
-    -   **Metadata URL**: This is a little tricky to find (search for `Puc_v4_Factory::buildUpdateChecker`). E.g. 'https://my.flycart.org?wpaction=updatecheck&wpslug=discount-rules-v2-pro&dlid=${{ WOO_DISCOUNT_RULES_PRO_LICENSE_KEY }}'
+- Required fields are
+    - **Slug**: You need to find this in the plugin / theme source code. E.g. 'discount-rules-v2-pro'
+    - **Source URL**: The url attached to your license
+    - **Metadata URL**: This is a little tricky to find (search for `Puc_v4_Factory::buildUpdateChecker`). E.g. 'https://my.flycart.org?wpaction=updatecheck&wpslug=discount-rules-v2-pro&dlid=${{ WOO_DISCOUNT_RULES_PRO_LICENSE_KEY }}'
 
 ## WP Rocket packages
 
--   Find your **License Key** in your [WP Rocket account](https://wp-rocket.me/account/) by copying the link behind "Download WP Rocket"
+- Find your **License Key** in your [WP Rocket account](https://wp-rocket.me/account/) by copying the link behind "Download WP Rocket"
 
 https://wp-rocket.me/download/24782/**{{license_key}}**
 
@@ -108,7 +108,7 @@ https://wp-rocket.me/download/24782/**{{license_key}}**
 
 Packages with direct links E.g. Revolution Slider, WPBakery Visual Composer
 
--   You can add environment variable in the name. Note that the variable needs to be prefixed with the plugin name
+- You can add environment variable in the name. Note that the variable needs to be prefixed with the plugin name
 
 ## Manual packages
 
@@ -1098,6 +1098,6 @@ These are a little tricky, not all implementations are the same. This will need 
 
 # TODO
 
--   Add license key env variable validation to PuC.
--   Add failed releases in notification email
--   Exhaustive testing
+- Add license key env variable validation to PuC.
+- Add failed releases in notification email
+- Exhaustive testing
